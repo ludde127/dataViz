@@ -1,0 +1,19 @@
+.content-container {
+    width: 90%;
+    border-left: 2px inset darkgray;
+    margin: auto;
+    padding-left: 4%;
+    padding-right: 4%;
+    padding-top: 1%;
+    padding-bottom:1%;
+    margin-top: 2%;
+    margin-bottom: 2%;
+}
+
+@media screen and (max-width: 800px) {
+    .content-container {width: 98%;}
+}
+
+@media screen and (max-width: 1500px) and (min-width: 1300px) {
+    .content-container {width: 80%;}
+}

@@ -9,10 +9,15 @@ https://docs.djangoproject.com/en/4.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
-
+import os
+import pathlib
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+from django.utils import timezone
+
+from secret.secret import POSTGRES__PASS
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -20,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-mt9eowb)=r&b17iw(p*1y=evza5j50fe%^0)jb7hg)tpml6-o)'
+SECRET_KEY = 'django-insecure-mk&!v3@y9dasdww&r@u%z7bf#4p@qg2&b2dqp6@8!ck3)^_@gm_v^%'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -31,12 +36,18 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
+    'dataViz.apps.AdminConfig',
+    'users',
+    'bootstrap5',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    "crispy_forms",
+    "crispy_bootstrap5",
+    "dashboard",
+    "data"
 ]
 
 MIDDLEWARE = [
@@ -50,6 +61,8 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'dataViz.urls'
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 TEMPLATES = [
     {
@@ -76,8 +89,12 @@ WSGI_APPLICATION = 'dataViz.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        "ENGINE": 'django.db.backends.postgresql',
+        "NAME": 'dataViz',
+        "USER": 'postgres',
+        "PASSWORD": POSTGRES__PASS,
+        "HOST": "localhost",
+        "PORT": ""
     }
 }
 
@@ -100,13 +117,14 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTH_USER_MODEL = "users.User"
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'sv-swe'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Stockholm'
 
 USE_I18N = True
 
@@ -117,8 +135,23 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 STATIC_URL = 'static/'
-
+STATICFILES_DIRS = (
+    BASE_DIR.joinpath('static/'),  # or project_static, whatever
+)
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Base url to serve media files
+MEDIA_URL = '/media/'
+
+# Path where media is stored
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+
+
+BASE_CONTEXT = {"email": "ludvig@llindholm.com",
+                "time": timezone.now,
+                "brand_name": "DataViz"}
+
+DATA_FILES = BASE_DIR.joinpath("DEVELOPMENT_STORAGE")
