@@ -16,6 +16,7 @@ class NormalUser(models.Model):
     description = models.TextField("Description about me.", max_length=1000)
     permissions = models.OneToOneField(verbose_name="permissions", to="users.ContentPermissions",
                                        on_delete=models.CASCADE, null=True, editable=False, default=None)
+    api_access_count = models.IntegerField("Amount of calls to the api", default=0)
 
     def __str__(self):
         return self.user.__str__()

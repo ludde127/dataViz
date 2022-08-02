@@ -47,22 +47,29 @@ class DataStorage(models.Model):
 
     def add_data(self, parsed):
         self.__add_data(parsed, "a+")
+        self.owner.api_access_count += 1
+        self.owner.save()
 
     def put_data(self, data):
         self.__add_data(data, "w+")
+        self.owner.api_access_count += 1
+        self.owner.save()
 
     def delete_data(self):
         if self.file_path().exists():
             with open(self.file_path(), "w") as _:
                 pass
-
+            self.owner.api_access_count += 1
+            self.owner.save()
 
     def get_all_data(self):
+        data = ""
         if self.file_path().exists():
             with open(self.file_path(), "r") as f:
                 data = f.readlines()
-            return "\n".join(data)
-        return ""
+        self.owner.api_access_count += 1
+        self.owner.save()
+        return "\n".join(data)
 
     def assert_json_format(self, parsed_json):
         missing = list()
