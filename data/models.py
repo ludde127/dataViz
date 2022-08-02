@@ -1,6 +1,5 @@
 import uuid
 from django.db import models
-import json
 from dataViz.settings import DATA_FILES
 # Create your models here.
 from users.models import NormalUser
@@ -10,6 +9,9 @@ class DataStorage(models.Model):
     owner = models.ForeignKey(NormalUser, on_delete=models.CASCADE)
     csv_names = models.CharField(verbose_name="Names for the csv-files.", max_length=1000)
     key = models.CharField(verbose_name="KEY", default=uuid.uuid4, unique=True, max_length=200) #  TODO MAKE THIS ACTUALLY SAFE
+
+    name = models.CharField(verbose_name="Name", max_length=100, null=False, unique=True)
+    description = models.TextField(verbose_name="Description", max_length=3000, null=True)
 
     def file_path(self):
         return DATA_FILES.joinpath(str(self.key)+".csv")
@@ -21,12 +23,12 @@ class DataStorage(models.Model):
     def get_by_key(key):
         return DataStorage.objects.get(key=key)
 
-    def add_data(self, parsed):
+    def __add_data(self, parsed, file_opening="a+"):
         self.assert_json_format(parsed)
         is_multiple = isinstance(parsed[self.csv_names[0]], list)
         try:
             existed = self.file_path().exists()
-            with open(self.file_path(), "a+") as f:
+            with open(self.file_path(), file_opening) as f:
                 if not existed:
                     line = ",".join(self.csv_column_names())
                     f.write(f"{line}\n")
@@ -42,6 +44,18 @@ class DataStorage(models.Model):
             import os
             os.makedirs(self.file_path().parent)
             self.add_data(parsed)
+
+    def add_data(self, parsed):
+        self.__add_data(parsed, "a+")
+
+    def put_data(self, data):
+        self.__add_data(data, "w+")
+
+    def delete_data(self):
+        if self.file_path().exists():
+            with open(self.file_path(), "w") as _:
+                pass
+
 
     def get_all_data(self):
         if self.file_path().exists():
