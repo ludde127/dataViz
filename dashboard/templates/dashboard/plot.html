@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <div class="container-fluid d-flex justify-content-center">
+        <div style="width:80%;">
+            <canvas id="chart"></canvas>
+        </div>
+    </div>
+{% endblock %}
+{% block custom_scripts %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.js" integrity="sha512-d6nObkPJgV791iTGuBoVC9Aa2iecqzJRE0Jiqvk85BhLHAPhWqkuBiQb1xz2jvuHNqHLYoN3ymPfpiB1o+Zgpw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script>
+            const ctx = document.getElementById('chart');
+            const myChart = new Chart(ctx, {{ chartJSON | safe }});
+    </script>
+
+{% endblock %}

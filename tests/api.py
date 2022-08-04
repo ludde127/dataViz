@@ -26,6 +26,20 @@ def random_dict(names=("a", "b", "c")):
     return dictionary
 
 
+def random_floats(names, amount=1):
+    dictionary = dict()
+    for name in names:
+        # FLOATS
+        if amount == 1:
+            dictionary[name] = random.choices(range(1, 10000))[0]/3.3
+        else:
+            c = list()
+            for _ in range(amount):
+                c.append(random.choices(range(1, 10000))[0]/3.3)
+            dictionary[name] = c
+    return dictionary
+
+
 class Data(unittest.TestCase):
     names = ("a", "b", "c")
 

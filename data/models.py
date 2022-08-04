@@ -71,6 +71,24 @@ class DataStorage(models.Model):
         self.owner.save()
         return "\n".join(data)
 
+    def column_wise(self):
+        """Returns the data formatted like [(col1, [d1, d2, d3...]), (col2, [d1, d2, d3...])]"""
+        data = []
+        column_wise = []
+        if self.file_path().exists():
+            with open(self.file_path(), "r") as f:
+                data = f.readlines()
+
+        for row in data:
+            for n, col in enumerate(row.split(",")):
+                try:
+                    column_wise[n][1].append(col)
+                except (IndexError, TypeError):
+                    column_wise.append((self.csv_column_names()[n], list()))
+                    column_wise[n][1].append(col)
+
+        return column_wise
+
     def assert_json_format(self, parsed_json):
         missing = list()
         for name in self.csv_column_names():
