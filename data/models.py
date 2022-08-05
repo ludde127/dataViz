@@ -25,7 +25,8 @@ class DataStorage(models.Model):
 
     def __add_data(self, parsed, file_opening="a+"):
         self.assert_json_format(parsed)
-        is_multiple = isinstance(parsed[self.csv_names[0]], list)
+
+        is_multiple = isinstance(parsed[self.csv_column_names()[0]], list)
         try:
             existed = self.file_path().exists()
             with open(self.file_path(), file_opening) as f:
@@ -96,4 +97,4 @@ class DataStorage(models.Model):
                 missing.append(str(name))
         if len(missing) > 0:
             raise AssertionError("Some of the specified data "
-                                 "names where missing: " + str(missing))
+                                 "names where missing: " + str(missing) + " The existing where " + str(parsed_json.keys()))
