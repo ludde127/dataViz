@@ -10,6 +10,7 @@ class DataStorage(models.Model):
     csv_names = models.CharField(verbose_name="Names for the csv-files.", max_length=1000)
     key = models.CharField(verbose_name="KEY", default=uuid.uuid4, unique=True, max_length=200) #  TODO MAKE THIS ACTUALLY SAFE
 
+    rows = models.IntegerField(verbose_name="Amount of rows", default=0)
     name = models.CharField(verbose_name="Name", max_length=100, null=False, unique=True)
     description = models.TextField(verbose_name="Description", max_length=3000, null=True)
 
@@ -32,19 +33,23 @@ class DataStorage(models.Model):
             with open(self.file_path(), file_opening) as f:
                 if not existed:
                     line = ",".join(self.csv_column_names())
+                    self.rows += 1
                     f.write(f"{line}\n")
                 if not is_multiple:
                     line = ",".join([str(parsed[key]) for key in self.csv_column_names()])
+                    self.rows += 1
                     f.write(f"{line}\n")
                 else:
                     length = len(parsed[self.csv_names[0]])
                     for i in range(length):
                         line = ",".join([str(parsed[key][i]) for key in self.csv_column_names()])
+                        self.rows += 1
                         f.write(f"{line}\n")
         except FileNotFoundError:
             import os
             os.makedirs(self.file_path().parent)
             self.add_data(parsed)
+        self.save()
 
     def add_data(self, parsed):
         self.__add_data(parsed, "a+")
