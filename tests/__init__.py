@@ -1,6 +1,6 @@
 
 
-test_server = True
+test_server = False
 if not test_server:
     api_key = "3fa2846c-37fc-45f0-a87b-73bf567e23c0"
     names = ["a", "b", "c"]
