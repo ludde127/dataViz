@@ -18,7 +18,10 @@ def access_data(request, key):
         data = None
     if data is not None:
         if request.method == "POST":
-            data.add_data(request.data)
+            try:
+                data.add_data(request.data)
+            except AssertionError as e:
+                return Response(str(e), status=status.HTTP_406_NOT_ACCEPTABLE)
             data.save()
             return Response("SUCCESS", status=status.HTTP_200_OK)
         elif request.method == "GET":
