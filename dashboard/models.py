@@ -25,6 +25,7 @@ border_colors = [
 class Plot:
     def __init__(self, datastore: DataStorage, plot_type,
                  title_label,
+                 column_wise_data,
                  labels=None,
                  _background_colors=None,
                  _border_colors=None):
@@ -32,12 +33,12 @@ class Plot:
 
         self.plot_type = plot_type
         self.title_label = title_label
-
+        self.column_wise_data = column_wise_data
         if labels is not None:
             self.labels = labels
             self.use_first_col_as_labels = False
         else:
-            self.labels = self.datastore.column_wise()[0]
+            self.labels = self.column_wise_data[0]
             self.use_first_col_as_labels = True
         number_labels = len(self.labels)
 
@@ -55,17 +56,18 @@ class Plot:
                                  :number_labels if
                                  number_labels < len(border_colors) else len(border_colors)]
 
-    def json(self):
+    def json_together(self):
         head_dictionary = dict()
 
         head_data = {"labels": self.labels[1], "datasets": [
             {
+                "pointRadius": 1,
                 "data": column_values, "label": column_name,
                 "backgroundColor": self.background_colors[n % len(background_colors)],
                 "borderColor": self.border_colors[n % len(self.border_colors)
                                                   ]} for n, (column_name, column_values) in
             enumerate(
-                self.datastore.column_wise() if not self.use_first_col_as_labels else self.datastore.column_wise()[1:])
+                self.column_wise_data if not self.use_first_col_as_labels else self.column_wise_data[1:])
         ]}
         head_dictionary["data"] = head_data
         head_dictionary["type"] = self.plot_type
@@ -80,10 +82,10 @@ class Plot:
                     "display": True,
                     "scaleLabel": {
                         "display": True,
-                        "labelString": self.datastore.csv_column_names()[0] if self.use_first_col_as_labels else "Index"
+                        "labelString": self.column_wise_data[0][0] if self.use_first_col_as_labels else "Index"
                     }
                 }]
-            }
+            },
         }
 
         pprint(head_dictionary)
@@ -101,7 +103,8 @@ class PlottingSetup(models.Model):
     x_tick_size = models.FloatField("X-Tick", null=True, blank=True)
     y_tick_size = models.FloatField("Y-Tick", null=True, blank=True)
 
-    def plottable(self):
+    def plottable_together(self):
+        column_wise_data = self.data.column_wise()
         return Plot(
             self.data, self.plot_type,
-            self.data.key).json()
+            self.data.key, column_wise_data).json_together()
