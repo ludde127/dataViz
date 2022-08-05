@@ -30,7 +30,7 @@ SECRET_KEY = DJANGO_SECRET_KEY
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = not IS_PRODUCTION
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "llindholm.com"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "llindholm.com", "192.168.0.155"]
 
 
 # Application definition
