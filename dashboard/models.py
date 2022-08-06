@@ -75,7 +75,7 @@ class Plot:
         head_dictionary["options"] = {"plugins": {
             "title": {
                 "display": True,
-                "text": self.datastore.key,
+                "text": self.datastore.name if self.datastore.name else self.datastore.key,
             }},
             "scales": {
                 "xAxes": [{
