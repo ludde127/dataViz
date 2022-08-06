@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    {% for block in blocks %}
+        <div class="content-container">
+            {% include "blocks/standard_content.html" with content=block hsize=1 user=user %}
+            <a href='{% url 'block' block.human_identifiable_id %}' class="btn btn-primary">
+                Visit <strong>{{ block.human_identifiable_id|capfirst }}</strong>!
+            </a>
+            <hr>
+        </div>
+    {% endfor %}
+
+
+{% endblock %}

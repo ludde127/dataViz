@@ -7,4 +7,5 @@ def context_render(request, template, context=None, *args, **kwargs):
     if context is None:
         context = dict()
     context.update(BASE_CONTEXT)
+    context["user"] = request.user
     return render(request, template, context, *args, **kwargs)

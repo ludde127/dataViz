@@ -5,7 +5,12 @@ from dashboard.models import PlottingSetup, DataStorage
 
 
 def index(request):
-    return context_render(request, "dashboard/index.html", {"title": "Home"})
+    if request.user.is_authenticated:
+        return context_render(request, "dashboard/index.html",
+                              {"title": "Home", "data_stores": DataStorage.objects.filter(owner=request.user.normaluser).all()})
+    else:
+        return context_render(request, "dashboard/index.html",
+                              {"title": "Home", "data_stores": None})
 
 
 def plot(request, key, together=True):

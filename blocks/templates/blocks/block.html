@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% for cont in content %}
+        <div class="content-container">
+            {% include "blocks/standard_content.html" with content=cont hsize=2 %}
+            <a href='{% url 'content' cont.id %}' class="btn btn-primary">
+                <strong>View</strong>!
+            </a>
+            <hr>
+        </div>
+    {% endfor %}
+{% endblock %}

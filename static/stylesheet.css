@@ -17,3 +17,19 @@
 @media screen and (max-width: 1500px) and (min-width: 1300px) {
     .content-container {width: 80%;}
 }
+
+.vertical_horizontal_center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+form {
+    margin:auto;
+    max-width: 600px;
+}
+h1 {margin-top:1vh;}
+
+strong {text-decoration: underline;}
+
+.plot {width: 100%; max-width: 1000px;}

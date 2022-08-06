@@ -1,5 +1,26 @@
 {% extends "base.html" %}
 
 {% block content %}
-    INDEX
+    <div class="container-lg" style="margin:auto;">
+        <div class="text-center">
+            <h1>Dashboard</h1>
+
+        </div>
+        {% if data_stores %}
+            {% for store in data_stores %}
+                <h2>{{ store.name }}</h2>
+                <p>{{ store.description }}</p>
+
+                <div>
+                    <h3>Stats</h3>
+                    <p>{{ store.rows }} Rows.</p>
+                    <p>Approx. {{ store.storage_size_in_best_format }}</p>
+                </div>
+
+                <a href="{% url "plot" store.key %}">View Plot</a>
+                <hr>
+            {% endfor %}
+        {% endif %}
+    </div>
+
 {% endblock %}

@@ -1,0 +1,11 @@
+<div class="container-fluid" style="margin-left:{% widthratio depth 1 2 %}%">
+    {% for comment in top_comments %}
+        <div class="content-container">
+
+        {% include "blocks/standard_content.html" with content=comment hsize=depth|add:2 %}
+        {% if comment.has_comments and depth < 10 %}
+            {% include "blocks/comments.html" with top_comments=comment.get_comments depth=depth|add:1 %}
+        {% endif %}
+        </div>
+    {% endfor %}
+</div>
