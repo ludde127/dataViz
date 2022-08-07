@@ -14,13 +14,13 @@ BYTES_PER_KB = 1024
 
 def bytes_to_pretty_string(bytes: float) -> str:
     if bytes > BYTES_PER_GB/10:
-        return f"{bytes/BYTES_PER_GB} GB"
+        return f"{round(bytes/BYTES_PER_GB, 3)} GB"
     elif bytes > BYTES_PER_MB/10:
-        return f"{bytes/BYTES_PER_MB} MB"
+        return f"{round(bytes/BYTES_PER_MB, 3)} MB"
     elif bytes > BYTES_PER_KB/10:
-        return f"{bytes/BYTES_PER_KB} KB"
+        return f"{round(bytes/BYTES_PER_KB, 3)} KB"
     else:
-        return f"{bytes} Bytes"
+        return f"{round(bytes)} Bytes"
 
 
 def make_secret_key():
@@ -40,6 +40,9 @@ class DataStorage(models.Model):
 
     secret_key = models.CharField(verbose_name="Secret Api Key", editable=False,
                                   default=make_secret_key, unique=True, max_length=64)
+
+    index_column = models.CharField(verbose_name="Index column", default="time", max_length=30)
+    index_column_values_are_time = models.BooleanField(verbose_name="Index is a time format", default=True)
 
     def __str__(self):
         return f"{self.name} - {self.owner}"
