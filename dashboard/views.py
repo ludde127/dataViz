@@ -19,18 +19,12 @@ def index(request):
 
 def plot(request, key, together=True):
     data = get_object_or_404(DataStorage, key=key)
-
     if request.method == "POST":
         # Plot settings
         pass
-    if hasattr(data, "plottingsetup"):
-        if together:
-            plottableJSON = data.plottingsetup.plottable_together()
-    else:
-        _ = PlottingSetup.objects.create(data=data)
-        if together:
-            plottableJSON = _.plottable_together()
-    return context_render(request, "dashboard/plot.html", context={"title": "plot", "chartJSON": plottableJSON,
+    plots = data.plottingsetup_set.all()
+
+    return context_render(request, "dashboard/plot.html", context={"title": "plot", "plots": plots,
                                                                    "data_store": data})
 
 

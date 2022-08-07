@@ -43,12 +43,14 @@ class DataStorage(models.Model):
     secret_key = models.CharField(verbose_name="Secret Api Key", editable=False,
                                   default=make_secret_key, unique=True, max_length=64)
 
-    index_column = models.CharField(verbose_name="Index column", default="time", max_length=30)
+    index_column = models.CharField(verbose_name="Index column", default=None, max_length=30, blank=True, null=True)
     index_column_values_are_time = models.BooleanField(verbose_name="Index is a time format", default=True)
 
     def clean(self):
         if self.index_column not in self.csv_column_names():
             raise ValidationError("The index must be one of the columns.")
+        if self.index_column is None and self.index_column_values_are_time:
+            raise ValidationError("A null index cant be a time index.")
         return super().clean()
 
     def __str__(self):
@@ -138,13 +140,14 @@ class DataStorage(models.Model):
         self.owner.save()
         return "\n".join(data)
 
-    def to_pandas(self):
+    def to_pandas(self, apply_operations=True):
         """Loads it and converts the index to datetime if it is indeed a time index."""
         df = pd.read_csv(self.file_path(), index_col=False, names=self.csv_column_names())
-        if self.index_column and self.index_column_values_are_time:
-            df[self.index_column] = pd.to_datetime(df[self.index_column], unit="s")
-        if self.index_column:
-            df = df.set_index(self.index_column)
+        if apply_operations:
+            if self.index_column and self.index_column_values_are_time:
+                df[self.index_column] = pd.to_datetime(df[self.index_column], unit="s")
+            if self.index_column:
+                df = df.set_index(self.index_column)
         return df
 
     def column_wise(self):

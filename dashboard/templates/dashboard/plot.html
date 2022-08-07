@@ -3,22 +3,30 @@
 {% block content %}
 
     <div class="container-fluid text-center">
-        <h1>{{ data_store.name }}</h1>
+        <h1>{{ data_store.name|capfirst }}</h1>
         {% if data_store.description %}
         <p>{{ data_store.description|capfirst }}</p>
         {% endif %}
-        <div class="plot text-center" style="margin:auto;">
-            <canvas id="chart"></canvas>
-        </div>
+        <br>
 
+        {% for plot in plots %}
+        <h2>{{ plot.name }}</h2>
+        <div class="plot text-center" style="margin:auto;">
+            <canvas id="chart{{ forloop.counter0 }}"></canvas>
+        </div>
+        {% endfor %}
     </div>
 {% endblock %}
 {% block custom_scripts %}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.js" integrity="sha512-d6nObkPJgV791iTGuBoVC9Aa2iecqzJRE0Jiqvk85BhLHAPhWqkuBiQb1xz2jvuHNqHLYoN3ymPfpiB1o+Zgpw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <script>
-            const ctx = document.getElementById('chart');
-            const myChart = new Chart(ctx, {{ chartJSON | safe }});
+            {% for plot in plots %}
+
+            const ctx{{ forloop.counter0 }} = document.getElementById('chart{{ forloop.counter0 }}');
+            const myChart{{ forloop.counter0 }} = new Chart(ctx{{ forloop.counter0 }}, {{ plot.plottable | safe }});
+            {% endfor %}
+
     </script>
 
 {% endblock %}
