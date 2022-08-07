@@ -124,7 +124,7 @@ class PlottingSetup(models.Model):
         dataframe = self.data.to_pandas(apply_operations=False)
         dataframe = dataframe.set_index(self.index_column)
         if self.index_is_time:
-            dataframe = pd.to_datetime(dataframe, unit="s")
+            dataframe.index = pd.to_datetime(dataframe.index, unit="s")
         for column in dataframe:
             if column not in self.columns_to_plot:
                 del dataframe[column]
