@@ -1,6 +1,8 @@
 import json
 from pprint import pprint
 
+import pandas as pd
+from django.core.exceptions import ValidationError
 from django.db import models
 from data.models import DataStorage
 
@@ -53,7 +55,7 @@ class Plot:
         if self.datastore.index_column_values_are_time and self.datastore.rows > 500:
             self.df = self.df.resample("30T").mean()
 
-    def json_together(self):
+    def json(self):
         head_dictionary = dict()
 
         head_data = {"labels": [str(t) for t in self.df.index], "datasets": [
@@ -90,15 +92,42 @@ class Plot:
 
 
 class PlottingSetup(models.Model):
-    data = models.OneToOneField(DataStorage, on_delete=models.CASCADE)
+    data = models.ForeignKey(DataStorage, on_delete=models.CASCADE)
+
+    name = models.CharField("Name for the chart.", max_length=200, default="No name")
     plot_type = models.CharField("Plot type", max_length=35, default="line")
 
     x_tick_size = models.FloatField("X-Tick", null=True, blank=True)
     y_tick_size = models.FloatField("Y-Tick", null=True, blank=True)
+
+    index_column = models.CharField("Index column (X in graph)", max_length=45)
+
+    columns_to_plot = models.CharField("Columns to plot against X.", max_length=500)
+
+    index_is_time = models.BooleanField("Index is time", default=False)
     round_index = models.BooleanField("Round float index", default=False)
 
-    def plottable_together(self):
-        dataframe = self.data.to_pandas()
+    def __str__(self):
+        return f"{self.name} for {self.data.__str__()}"
+
+    def y_columns(self):
+        return [s.strip() for s in self.columns_to_plot.split(",")]
+
+    def clean(self):
+        if not all((c in self.data.csv_column_names() for c in self.y_columns())):
+            raise ValidationError("All the columns to show in Y must exist in the datasets columns.")
+        if self.index_column not in self.data.csv_column_names():
+            raise ValidationError("The index column must exist in the databases columns.")
+        return super().clean()
+
+    def plottable(self):
+        dataframe = self.data.to_pandas(apply_operations=False)
+        dataframe = dataframe.set_index(self.index_column)
+        if self.index_is_time:
+            dataframe = pd.to_datetime(dataframe, unit="s")
+        for column in dataframe:
+            if column not in self.columns_to_plot:
+                del dataframe[column]
         return Plot(
             self.data, self.plot_type,
-            self.data.key, dataframe, round_index=self.round_index).json_together()
+            self.data.key, dataframe, round_index=self.round_index).json()
