@@ -3,7 +3,7 @@ import unittest
 from pprint import pprint
 
 import requests
-from . import url
+from . import url, headers
 import string
 import numpy as np
 
@@ -43,9 +43,12 @@ def random_floats(names, amount=1):
 class Data(unittest.TestCase):
     names = ("a", "b", "c")
 
+    def setUp(self) -> None:
+        requests.delete(url, headers=headers)
+
     def one_random_request(self):
         d = random_dict(self.names)
-        resp = requests.post(url, json=d)
+        resp = requests.post(url, json=d, headers=headers)
         self.assertTrue(resp.status_code == 200, "response errored for json " + str(d))
         return d
 
@@ -54,28 +57,28 @@ class Data(unittest.TestCase):
             self.one_random_request()
 
     def test_get_status_code(self):
-        self.assertTrue(requests.get(url).status_code==200, "Get did not work for url " + url)
+        self.assertTrue(requests.get(url, headers=headers).status_code==200, "Get did not work for url " + url)
 
     def test_verify_post_change(self):
-        old = requests.get(url)
+        old = requests.get(url, headers=headers)
         change = self.one_random_request()
         as_csv_row = ",".join([str(change[c]) for c in ("a", "b", "c")])
-        new = requests.get(url)
+        new = requests.get(url, headers=headers)
         self.assertEqual(as_csv_row, str(new.text).split("\n")[-1])
         self.assertNotEqual(old.text, new.text)
         self.assertTrue(len(old.text) < len(new.text))
 
     def test_delete(self):
-        requests.delete(url)
-        self.assertEqual("", requests.get(url).text)
+        requests.delete(url, headers=headers)
+        self.assertEqual("", requests.get(url, headers=headers).text)
 
     def test_put(self):
         self.one_random_request()
         self.one_random_request()
         self.one_random_request()
 
-        requests.put(url, random_dict(self.names))
-        self.assertEqual(1, len(requests.get(url).text.split("\n")))
+        requests.put(url, random_dict(self.names), headers=headers)
+        self.assertEqual(1, len(requests.get(url, headers=headers).text.split("\n")))
 
 
 if __name__ == "__main__":

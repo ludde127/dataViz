@@ -2,10 +2,15 @@
 
 {% block content %}
 
-    <div class="container-fluid d-flex justify-content-center">
-        <div style="width:80%;">
+    <div class="container-fluid text-center">
+        <h1>{{ data_store.name }}</h1>
+        {% if data_store.description %}
+        <p>{{ data_store.description|capfirst }}</p>
+        {% endif %}
+        <div class="plot text-center" style="margin:auto;">
             <canvas id="chart"></canvas>
         </div>
+
     </div>
 {% endblock %}
 {% block custom_scripts %}

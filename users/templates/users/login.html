@@ -2,6 +2,14 @@
 {% load crispy_forms_filters %}
 {% block content %}
     <div class="container-fluid">
+        <div class="container-fluid d-flex justify-content-center">
+            <div style="text-align: center;">
+                <h1>Login</h1>
+                <br>
+                <p>If you <strong>do not</strong> have an account you can create one <a href="{% url 'create_account' %}">here.</a></p>
+
+            </div>
+        </div>
         <form action="{% url "login" %}" method="POST">
             {% csrf_token %}
             {{ form|crispy }}

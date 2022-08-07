@@ -1,5 +1,29 @@
 {% extends "base.html" %}
 
 {% block content %}
-    INDEX
+    <div class="container-lg" style="margin:auto;">
+        <div class="text-center">
+            <h1>Dashboard</h1>
+
+        </div>
+        {% if data_stores %}
+            {% for store in data_stores %}
+                <div class="container text-center">
+                <h2>{{ store.name|capfirst }}</h2>
+                <p>{{ store.description }}</p>
+
+                <div>
+                    <h3>Stats</h3>
+                    <p>{{ store.rows }} Rows.</p>
+                    <p>Approx. {{ store.storage_size_in_best_format }}</p>
+                    <a href="{% url "secret_key" store.key %}" class="btn btn-warning">View secret key.</a>
+                </div>
+
+                <a class="btn btn-primary" href="{% url "plot" store.key %}">View Plot</a>
+                <hr>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
 {% endblock %}
