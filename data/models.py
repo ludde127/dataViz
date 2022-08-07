@@ -23,6 +23,10 @@ def bytes_to_pretty_string(bytes: float) -> str:
         return f"{bytes} Bytes"
 
 
+def make_secret_key():
+    return secrets.token_urlsafe(32)
+
+
 class DataStorage(models.Model):
     owner = models.ForeignKey(NormalUser, on_delete=models.CASCADE)
     csv_names = models.CharField(verbose_name="Names for the csv-files.", max_length=1000)
@@ -35,7 +39,7 @@ class DataStorage(models.Model):
     description = models.TextField(verbose_name="Description", max_length=3000, null=True)
 
     secret_key = models.CharField(verbose_name="Secret Api Key", editable=False,
-                                  default=lambda: secrets.token_urlsafe(32), unique=True, max_length=64)
+                                  default=make_secret_key, unique=True, max_length=64)
 
     def __str__(self):
         return f"{self.name} - {self.owner}"
