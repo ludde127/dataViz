@@ -9,3 +9,5 @@ else:
     api_key = "6258e3c5-315d-42d4-a6fc-7cebf4abea98"
     names = ["a", "b", "c"]
     url = "https://llindholm.com/data/access/" + api_key
+
+headers={'Authorization': 'TOK:<mAmq8-3c880bMCmxy_LQkUJyV_r4-uR09zvu0tLEDz4>'}

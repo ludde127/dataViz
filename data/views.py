@@ -16,7 +16,7 @@ def access_data(request, key):
         data = DataStorage.get_by_key(key)
     except DataStorage.DoesNotExist:
         data = None
-    if data is not None:
+    if data is not None and data.valid_authorization(request):
         if request.method == "POST":
             try:
                 data.add_data(request.data)

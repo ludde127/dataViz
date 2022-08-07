@@ -55,6 +55,12 @@ class Plot:
             self.border_colors = border_colors[
                                  :number_labels if
                                  number_labels < len(border_colors) else len(border_colors)]
+        self.fix_index()
+
+    def fix_index(self):
+        print(isinstance(self.labels[1][0], float), type(self.labels[1][0]), self.labels[1][0])
+        if isinstance(self.labels[1][0], float):
+            self.labels[1] = map(lambda x: round(x, 1), self.labels[1])
 
     def json_together(self):
         head_dictionary = dict()
@@ -74,7 +80,7 @@ class Plot:
 
         head_dictionary["options"] = {"plugins": {
             "title": {
-                "display": True,
+                "display": False,
                 "text": self.datastore.name if self.datastore.name else self.datastore.key,
             }},
             "scales": {
@@ -88,7 +94,6 @@ class Plot:
             },
         }
 
-        pprint(head_dictionary)
         return json.dumps(head_dictionary)
 
 
