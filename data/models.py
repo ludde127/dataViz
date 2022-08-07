@@ -37,6 +37,9 @@ class DataStorage(models.Model):
     secret_key = models.CharField(verbose_name="Secret Api Key", editable=False,
                                   default=lambda: secrets.token_urlsafe(32), unique=True, max_length=64)
 
+    def __str__(self):
+        return f"{self.name} - {self.owner}"
+
     def valid_authorization(self, request):
         try:
             auth = str(request.environ.get('HTTP_AUTHORIZATION'))  # Gives TOK:<mAmq8-3c880bMCmxy_LQkUJy18r4-uR09zvu0tLEDz4>
