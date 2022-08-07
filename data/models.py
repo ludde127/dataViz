@@ -142,7 +142,7 @@ class DataStorage(models.Model):
         """Loads it and converts the index to datetime if it is indeed a time index."""
         df = pd.read_csv(self.file_path(), index_col=False, names=self.csv_column_names())
         if self.index_column and self.index_column_values_are_time:
-            df[self.index_column] = pd.to_datetime(df[self.index_column])
+            df[self.index_column] = pd.to_datetime(df[self.index_column], unit="s")
         if self.index_column:
             df = df.set_index(self.index_column)
         return df
