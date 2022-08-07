@@ -25,56 +25,45 @@ border_colors = [
 class Plot:
     def __init__(self, datastore: DataStorage, plot_type,
                  title_label,
-                 column_wise_data,
-                 labels=None,
+                 dataframe,
                  _background_colors=None,
-                 _border_colors=None):
+                 _border_colors=None, round_index=True):
         self.datastore = datastore
 
         self.plot_type = plot_type
         self.title_label = title_label
-        self.column_wise_data = column_wise_data
-        if labels is not None:
-            self.labels = labels
-            self.use_first_col_as_labels = False
-        else:
-            self.labels = self.column_wise_data[0]
-            self.use_first_col_as_labels = True
-        number_labels = len(self.labels)
+        self.df = dataframe
 
+        num_columns = len(self.df.columns)
         if _background_colors is not None:
             self.background_colors = _background_colors
         else:
             self.background_colors = background_colors[
-                                     :number_labels if
-                                     number_labels < len(background_colors) else len(background_colors)]
+                                     :num_columns if
+                                     num_columns < len(background_colors) else len(background_colors)]
 
         if _border_colors is not None:
             self.border_colors = _border_colors
         else:
             self.border_colors = border_colors[
-                                 :number_labels if
-                                 number_labels < len(border_colors) else len(border_colors)]
-        self.fix_index()
-
-    def fix_index(self):
-        print(isinstance(self.labels[1][0], float), type(self.labels[1][0]), self.labels[1][0])
-        if isinstance(self.labels[1][0], float):
-            self.labels[1] = map(lambda x: round(x, 1), self.labels[1])
+                                 :num_columns if
+                                 num_columns < len(border_colors) else len(border_colors)]
+        if round_index:
+            self.df.index = map(round, self.df.index)
+        if self.datastore.index_column_values_are_time and self.datastore.rows > 500:
+            self.df = self.df.resample("30T").mean()
 
     def json_together(self):
         head_dictionary = dict()
 
-        head_data = {"labels": self.labels[1], "datasets": [
+        head_data = {"labels": self.df.index.to_list(), "datasets": [
             {
                 "pointRadius": 1,
-                "data": column_values, "label": column_name,
+                "data": self.df[column_name].to_list(), "label": column_name,
                 "backgroundColor": self.background_colors[n % len(background_colors)],
                 "borderColor": self.border_colors[n % len(self.border_colors)
-                                                  ]} for n, (column_name, column_values) in
-            enumerate(
-                self.column_wise_data if not self.use_first_col_as_labels else self.column_wise_data[1:])
-        ]}
+                                                  ]} for n, column_name in enumerate(self.df.columns)]
+                    }
         head_dictionary["data"] = head_data
         head_dictionary["type"] = self.plot_type
 
@@ -88,7 +77,7 @@ class Plot:
                     "display": True,
                     "scaleLabel": {
                         "display": True,
-                        "labelString": self.column_wise_data[0][0] if self.use_first_col_as_labels else "Index"
+                        "labelString": self.datastore.index_column
                     }
                 }]
             },
@@ -101,15 +90,15 @@ class Plot:
 
 
 class PlottingSetup(models.Model):
-    data = models.OneToOneField(DataStorage, on_delete=models.PROTECT)
-
+    data = models.OneToOneField(DataStorage, on_delete=models.CASCADE)
     plot_type = models.CharField("Plot type", max_length=35, default="line")
-    labels = models.CharField("Labels", max_length=500, null=True, blank=True)
+
     x_tick_size = models.FloatField("X-Tick", null=True, blank=True)
     y_tick_size = models.FloatField("Y-Tick", null=True, blank=True)
+    round_index = models.BooleanField("Round float index", default=False)
 
     def plottable_together(self):
-        column_wise_data = self.data.column_wise()
+        dataframe = self.data.to_pandas()
         return Plot(
             self.data, self.plot_type,
-            self.data.key, column_wise_data).json_together()
+            self.data.key, dataframe, round_index=self.round_index).json_together()
