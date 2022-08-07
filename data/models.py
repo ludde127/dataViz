@@ -1,4 +1,6 @@
 import uuid
+
+from django.core.exceptions import ValidationError
 from django.db import models
 from dataViz.settings import DATA_FILES
 # Create your models here.
@@ -33,7 +35,7 @@ class DataStorage(models.Model):
     key = models.CharField(verbose_name="KEY", default=uuid.uuid4, unique=True, max_length=200) #  TODO MAKE THIS ACTUALLY SAFE
 
     rows = models.IntegerField(verbose_name="Amount of rows", default=0)
-    storage_size = models.IntegerField(verbose_name="Storage Size (GB)", default=0)
+    storage_size = models.IntegerField(verbose_name="Storage Size (Bytes)", default=0)
 
     name = models.CharField(verbose_name="Name", max_length=100, null=False, unique=True)
     description = models.TextField(verbose_name="Description", max_length=3000, null=True)
@@ -43,6 +45,11 @@ class DataStorage(models.Model):
 
     index_column = models.CharField(verbose_name="Index column", default="time", max_length=30)
     index_column_values_are_time = models.BooleanField(verbose_name="Index is a time format", default=True)
+
+    def clean(self):
+        if self.index_column not in self.csv_column_names():
+            raise ValidationError("The index must be one of the columns.")
+        return super().clean()
 
     def __str__(self):
         return f"{self.name} - {self.owner}"
@@ -132,7 +139,13 @@ class DataStorage(models.Model):
         return "\n".join(data)
 
     def to_pandas(self):
-        return pd.read_csv(self.file_path(), index_col=False)
+        """Loads it and converts the index to datetime if it is indeed a time index."""
+        df = pd.read_csv(self.file_path(), index_col=False, names=self.csv_column_names())
+        if self.index_column and self.index_column_values_are_time:
+            df[self.index_column] = pd.to_datetime(df[self.index_column])
+        if self.index_column:
+            df = df.set_index(self.index_column)
+        return df
 
     def column_wise(self):
         """Returns the data formatted like [(col1, [d1, d2, d3...]), (col2, [d1, d2, d3...])]"""
