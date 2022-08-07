@@ -56,7 +56,7 @@ class Plot:
     def json_together(self):
         head_dictionary = dict()
 
-        head_data = {"labels": [str(t) for t in self.df.index.dt], "datasets": [
+        head_data = {"labels": [str(t) for t in self.df.index], "datasets": [
             {
                 "pointRadius": 1,
                 "data": self.df[column_name].to_list(), "label": column_name,
