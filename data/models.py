@@ -38,8 +38,8 @@ class DataStorage(models.Model):
     name = models.CharField(verbose_name="Name", max_length=100, null=False, unique=True)
     description = models.TextField(verbose_name="Description", max_length=3000, null=True)
 
-    #secret_key = models.CharField(verbose_name="Secret Api Key", editable=False,
-    #                              default=make_secret_key, unique=False, max_length=64)
+    secret_key = models.CharField(verbose_name="Secret Api Key", editable=False,
+                                  default=make_secret_key, unique=False, max_length=64)
 
     def __str__(self):
         return f"{self.name} - {self.owner}"
