@@ -42,12 +42,15 @@ def plot(request, key):
         else:
             messages.error(request, "Could not save the plotting setup form")
         return redirect("plot", key=key)
+    if data.public or request.user.is_authenticated and request.user.normaluser == data.owner:
+        plots = data.plottingsetup_set.all()
 
-    plots = data.plottingsetup_set.all()
-
-    return context_render(request, "dashboard/plot.html", context={"title": "plot", "plots": plots,
-                                                                   "data_store": data,
-                                                                   "form": PlottingSetupForm()})
+        return context_render(request, "dashboard/plot.html", context={"title": "plot", "plots": plots,
+                                                                       "data_store": data,
+                                                                       "form": PlottingSetupForm()})
+    else:
+        messages.error(request, "You do not have the required permissions")
+        return redirect("index")
 
 
 @login_required

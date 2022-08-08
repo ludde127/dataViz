@@ -37,6 +37,7 @@ class DataStorage(models.Model):
     rows = models.IntegerField(verbose_name="Amount of rows", default=0)
     storage_size = models.IntegerField(verbose_name="Storage Size (Bytes)", default=0)
 
+    public = models.BooleanField(verbose_name="Should this be public?", default=True)
     name = models.CharField(verbose_name="Name", max_length=100, null=False, unique=True)
     description = models.TextField(verbose_name="Description", max_length=3000, null=True)
 
