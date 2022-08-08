@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 
 from dataViz.utils import context_render
 from dashboard.models import PlottingSetup, DataStorage
@@ -19,6 +19,8 @@ def index(request):
                 dsf.save(commit=True)
             else:
                 messages.error(request, "Could not save datastore.")
+            return redirect("index")
+
         return context_render(request, "dashboard/index.html",
                               {"title": "Home",
                                "data_stores": DataStorage.objects.filter(owner=request.user.normaluser).all(),
@@ -39,6 +41,8 @@ def plot(request, key):
             psf.save()
         else:
             messages.error(request, "Could not save the plotting setup form")
+        return redirect("plot", key=key)
+
     plots = data.plottingsetup_set.all()
 
     return context_render(request, "dashboard/plot.html", context={"title": "plot", "plots": plots,
