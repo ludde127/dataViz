@@ -55,7 +55,7 @@ class Plot:
         if index_is_time and self.datastore.rows > 500:
             self.df = self.df.resample("30T").mean()
         elif self.datastore.rows > 500:
-            self.df = self.df.groupby(self.df.index//(len(self.df)/500)).mean()
+            self.df = self.df.groupby(self.df.index).mean()
 
     def json(self):
         head_dictionary = dict()
