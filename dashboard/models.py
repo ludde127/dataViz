@@ -107,6 +107,10 @@ class PlottingSetup(models.Model):
     index_is_time = models.BooleanField("Index is time", default=False)
     round_index = models.BooleanField("Round float index", default=False)
 
+    class Meta:
+        unique_together = ["data", "plot_type",
+                           "index_column", "columns_to_plot"]
+
     def __str__(self):
         return f"{self.name} for {self.data.__str__()}"
 
