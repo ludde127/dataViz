@@ -29,7 +29,7 @@ class Plot:
                  title_label,
                  dataframe,
                  _background_colors=None,
-                 _border_colors=None, round_index=True):
+                 _border_colors=None, round_index=True, index_is_time=False):
         self.datastore = datastore
 
         self.plot_type = plot_type
@@ -52,8 +52,10 @@ class Plot:
                                  num_columns < len(border_colors) else len(border_colors)]
         if round_index:
             self.df.index = map(round, self.df.index)
-        if self.datastore.index_column_values_are_time and self.datastore.rows > 500:
+        if index_is_time and self.datastore.rows > 500:
             self.df = self.df.resample("30T").mean()
+        elif self.datastore.rows > 500:
+            self.df = self.df.groupby(self.df.index//(len(self.df)/500)).mean()
 
     def json(self):
         head_dictionary = dict()
@@ -134,4 +136,5 @@ class PlottingSetup(models.Model):
                 del dataframe[column]
         return Plot(
             self.data, self.plot_type,
-            self.data.key, dataframe, round_index=self.round_index).json()
+            self.data.key, dataframe, round_index=self.round_index,
+            index_is_time=self.index_is_time).json()
