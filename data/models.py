@@ -93,12 +93,7 @@ class DataStorage(models.Model):
 
         is_multiple = isinstance(parsed[self.csv_column_names()[0]], list)
         try:
-            existed = self.file_path().exists()
             with open(self.file_path(), file_opening) as f:
-                if not existed:
-                    line = ",".join(self.csv_column_names())
-                    self.rows += 1
-                    f.write(f"{line}\n")
                 if not is_multiple:
                     line = ",".join([str(parsed[key]) for key in self.csv_column_names()])
                     self.rows += 1
