@@ -124,6 +124,8 @@ class PlottingSetup(models.Model):
             raise ValidationError("All the columns to show in Y must exist in the datasets columns.")
         if self.index_column not in self.data.csv_column_names():
             raise ValidationError("The index column must exist in the databases columns.")
+        if self.index_is_time and self.round_index:
+            raise ValidationError("Rounding of the index is only supported when it is not a time index.")
         return super().clean()
 
     def plottable(self):
