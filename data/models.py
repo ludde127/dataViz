@@ -1,3 +1,4 @@
+import os
 import uuid
 
 from django.core.exceptions import ValidationError
@@ -172,3 +173,14 @@ class DataStorage(Permissions):
         if len(missing) > 0:
             raise AssertionError("Some of the specified data "
                                  "names where missing: " + str(missing) + " The existing where " + str(parsed_json.keys()))
+
+    def latest_row(self):
+        with open(self.file_path(), 'rb') as f:
+            try:  # catch OSError in case of a one line file
+                f.seek(-2, os.SEEK_END)
+                while f.read(1) != b'\n':
+                    f.seek(-2, os.SEEK_CUR)
+            except OSError:
+                f.seek(0)
+            last_line = f.readline().decode()
+        return ", ".join([f"{n}: {v}" for n, v in zip(self.csv_column_names(), last_line.split(","))])
