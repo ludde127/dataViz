@@ -12,6 +12,9 @@
 
         {% for plot in plots %}
         <h2>{{ plot.name }}</h2>
+        <div class="btn-group">
+            <a class="btn btn-secondary" href="{% url 'modify_plot' plot.id %}">Modify</a>
+        </div>
         <div class="plot text-center" style="margin:auto;">
             <canvas id="chart{{ forloop.counter0 }}"></canvas>
         </div>

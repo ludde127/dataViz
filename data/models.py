@@ -2,9 +2,11 @@ import uuid
 
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models import Q
+
 from dataViz.settings import DATA_FILES
 # Create your models here.
-from users.models import NormalUser
+from users.models import NormalUser, Permissions
 from os import path as os_path
 import secrets
 import pandas as pd
@@ -29,19 +31,17 @@ def make_secret_key():
     return secrets.token_urlsafe(32)
 
 
-class DataStorage(models.Model):
-    owner = models.ForeignKey(NormalUser, on_delete=models.CASCADE)
-    csv_names = models.CharField(verbose_name="Names for the csv-files.", max_length=1000)
+class DataStorage(Permissions):
+    csv_names = models.CharField(verbose_name="Data column names (ex. 'time, velocity, position')", max_length=1000)
     key = models.CharField(verbose_name="KEY", default=uuid.uuid4, unique=True, max_length=200) #  TODO MAKE THIS ACTUALLY SAFE
 
     rows = models.IntegerField(verbose_name="Amount of rows", default=0)
     storage_size = models.IntegerField(verbose_name="Storage Size (Bytes)", default=0)
 
-    public = models.BooleanField(verbose_name="Should this be public?", default=True)
     name = models.CharField(verbose_name="Name", max_length=100, null=False, unique=True)
-    description = models.TextField(verbose_name="Description", max_length=3000, null=True)
+    description = models.TextField(verbose_name="Description", max_length=3000, null=True, blank=True)
 
-    secret_key = models.CharField(verbose_name="Secret Api Key", editable=False,
+    secret_key = models.CharField(verbose_name="Secret Api Key", editable=True,
                                   default=make_secret_key, unique=True, max_length=64)
 
     index_column = models.CharField(verbose_name="Index column", default=None, max_length=30, blank=True, null=True)

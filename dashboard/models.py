@@ -5,6 +5,7 @@ import pandas as pd
 from django.core.exceptions import ValidationError
 from django.db import models
 from data.models import DataStorage
+from users.models import NormalUser, Permissions
 
 background_colors = [
     'rgba(255, 99, 132, 0.2)',
@@ -93,10 +94,10 @@ class Plot:
 # Create your models here.
 
 
-class PlottingSetup(models.Model):
+class PlottingSetup(Permissions):
     data = models.ForeignKey(DataStorage, on_delete=models.CASCADE)
 
-    name = models.CharField("Name for the chart.", max_length=200, default="No name")
+    name = models.CharField("Name for the chart.", max_length=200, default="Unnamed")
     plot_type = models.CharField("Plot type", max_length=35, default="line")
 
     x_tick_size = models.FloatField("X-Tick", null=True, blank=True)

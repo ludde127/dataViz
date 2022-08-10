@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load crispy_forms_filters %}
+
+{% block content %}
+    <div class="container-fluid d-flex justify-content-center">
+    <div>
+    <h1>Modify the datastore <span class="emp">{{ data.name }}</span></h1>
+    <form method="post" action="{% url 'modify_data' data.key %}">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button class="btn btn-primary" type="submit" value="Submit">Submit</button>
+    </form>
+    </div>
+    </div>
+{% endblock %}
