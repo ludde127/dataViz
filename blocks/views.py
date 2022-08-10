@@ -7,7 +7,7 @@ from dataViz.utils import context_render
 
 # Create your views here.
 def index(request):
-    blocks = list(itertools.islice(BaseBlock.get_viewable(request), 10))  # Get 10 first
+    blocks = list(itertools.islice(BaseBlock.all_user_can_view(request.user.normaluser, BaseBlock), 10))  # Get 10 first
     return context_render(request, "blocks/index.html", {"title": "Home", "blocks": blocks})
 
 

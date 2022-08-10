@@ -1,17 +1,14 @@
 from django.db import models
-from users.models import ContentPermissions
+from users.models import Permissions
 
 
 # Create your models here.
 
 
-class BaseTextContent(models.Model):
+class BaseTextContent(Permissions):
     title = models.CharField(max_length=80, null=False)
     text = models.TextField(max_length=10000, null=False)
     created = models.DateTimeField("Created", auto_now_add=True)
-    author = models.ForeignKey("users.NormalUser", null=False, on_delete=models.CASCADE)
-    permissions = models.ForeignKey(verbose_name="Permissions",
-                                    to=ContentPermissions, on_delete=models.CASCADE, null=True)
 
     class Meta:
         abstract = True
@@ -65,11 +62,3 @@ class Content(BaseTextMediaContent):
     def get_comments(self):
         comments = list(self.__comments())
         return comments
-
-    def permissions_as_dict(self, request):
-        return {
-            "can_view": self.permissions.get_view_permission(request),
-            "can_delete": self.permissions.get_delete_permission(request),
-            "can_change": self.permissions.get_change_permission(request),
-            "can_add": self.permissions.get_add_permission(request),
-        }

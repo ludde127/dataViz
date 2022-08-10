@@ -41,7 +41,7 @@ class DataStorage(Permissions):
     name = models.CharField(verbose_name="Name", max_length=100, null=False, unique=True)
     description = models.TextField(verbose_name="Description", max_length=3000, null=True, blank=True)
 
-    secret_key = models.CharField(verbose_name="Secret Api Key", editable=False,
+    secret_key = models.CharField(verbose_name="Secret Api Key", editable=True,
                                   default=make_secret_key, unique=True, max_length=64)
 
     index_column = models.CharField(verbose_name="Index column", default=None, max_length=30, blank=True, null=True)

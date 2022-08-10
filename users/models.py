@@ -34,45 +34,6 @@ class NormalUser(models.Model):
         return self in content.permissions.delete_permission
 
 
-class ContentPermissions(models.Model):
-    view_permission = models.ManyToManyField(NormalUser, "view_permission")
-    change_permission = models.ManyToManyField(NormalUser, "change_permission")
-    delete_permission = models.ManyToManyField(NormalUser, "delete_permission")
-    add_permission = models.ManyToManyField(NormalUser, "add_permission")
-    all_can_view = models.BooleanField(default=True)
-
-    def get_change_permission(self, request):
-        return self.change_permission.contains(request.user.normaluser)
-
-    def get_delete_permission(self, request):
-        return self.delete_permission.contains(request.user.normaluser)
-
-    def get_add_permission(self, request):
-        return self.add_permission.contains(request.user.normaluser)
-
-    def get_view_permission(self, request):
-        return self.view_permission.contains(request.user.normaluser)
-
-    def for_normaluser(self):
-        return hasattr(self, "normaluser")
-
-    def for_baseblock(self):
-        return hasattr(self, "baseblock")
-
-    def for_content(self):
-        return hasattr(self, "content")
-
-    def __str__(self):
-        if self.for_normaluser():
-            return f"Permissions for user {self.normaluser.user.username}'s profile."
-        elif self.baseblock:
-            return f"Permissions for block {self.baseblock.id}."
-        elif self.content:
-            return f"Permissions for content {self.content.id} by {self.content.author}"
-        else:
-            raise NotImplementedError("This usage of the class is not already implemented.")
-
-
 class Permissions(models.Model):
     public = models.BooleanField("Is public", default=False)
     owner = models.ForeignKey(NormalUser, on_delete=models.CASCADE, related_name="+")
@@ -94,6 +55,13 @@ class Permissions(models.Model):
         return super().clean()
 
     @staticmethod
+    def can_user_view_query(user):
+        return Q(owner=user) | ((Q(public=True) &
+                                 (~Q(subjects__in=(user,)))) |
+                                (Q(public=False) & Q(
+                                    subjects__in=(user,))))
+
+    @staticmethod
     def all_user_can_view(user: NormalUser, _class):
         """query = Q(owner=user)
 
@@ -108,7 +76,4 @@ class Permissions(models.Model):
         query.add(public_not_blacklisted, Q.OR)
         query.add(not_public_whitelist, Q.OR)"""
 
-        return _class.objects.filter(Q(owner=user) | ((Q(public=True) &
-                                                          (~Q(subjects__in=(user,)))) |
-                                                         (Q(public=False) & Q(
-                                                             subjects__in=(user,)))))
+        return _class.objects.filter(Permissions.can_user_view_query(user))

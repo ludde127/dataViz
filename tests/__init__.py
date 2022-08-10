@@ -2,7 +2,7 @@
 
 test_server = False
 if not test_server:
-    api_key = "fcc8a2f7-e073-4e30-bb37-326c4676418f"
+    api_key = "1f69ec31-20fe-4722-9463-25d906fc9283"
     names = ["a", "b", "c"]
     url = "http://127.0.0.1:8000/data/access/" + api_key
 else:
@@ -10,4 +10,4 @@ else:
     names = ["a", "b", "c"]
     url = "https://llindholm.com/data/access/" + api_key
 
-headers={'Authorization': 'TOK:<-p1J6G-kGmlwO5u_fifBdE8qen8yBo2JVygN-zbavTk>'}
+headers={'Authorization': 'TOK:<vF_jH8zcKvKILmqj9wSEKajItY2F3PM_DTmfyGbvcEw>'}
