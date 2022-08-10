@@ -35,3 +35,5 @@ strong {text-decoration: underline;}
 .btn {margin-top: 1vh;}
 .plot {width: 100%; max-width: 1000px;min-height: 300px;}
 button[type="submit"] {width: 100%; margin:auto; margin-top: 1vh;}
+
+.emp {font-style: italic;text-decoration: underline black;}
