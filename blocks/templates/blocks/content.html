@@ -5,6 +5,6 @@
         {% include "blocks/standard_content.html" with content=content hsize=2 %}
     </div>
     {% if content.has_comments %}
-        {% include "blocks/comments.html" with top_comments={% get_comments_with_permissions request content %} depth=1 %}
+        {% include "blocks/comments.html" with top_comments=content|get_comments:user depth=1 %}
     {% endif %}
 {% endblock %}

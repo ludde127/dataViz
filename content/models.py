@@ -59,6 +59,6 @@ class Content(BaseTextMediaContent):
     def has_comments(self):
         return self.comments is not None and self.__comments().exists()
 
-    def get_comments(self):
-        comments = list(self.__comments())
+    def get_comments(self, user):
+        comments = self.comments.exclude(id__lte=self.id).filter(Permissions.can_user_view_query(user.normaluser))
         return comments

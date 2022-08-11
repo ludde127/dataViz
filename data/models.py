@@ -16,6 +16,8 @@ BYTES_PER_GB = 1024**3
 BYTES_PER_MB = 1024**2
 BYTES_PER_KB = 1024
 
+class InconstantTypes:
+    pass
 
 def bytes_to_pretty_string(bytes: float) -> str:
     if bytes > BYTES_PER_GB/10:
@@ -184,3 +186,28 @@ class DataStorage(Permissions):
                 f.seek(0)
             last_line = f.readline().decode()
         return ", ".join([f"{n}: {v}" for n, v in zip(self.csv_column_names(), last_line.split(","))])
+
+    def stream(self):
+        """Streams the data row-wise split into a list for each column"""
+        if self.file_path().exists():
+            with open(self.file_path(), "r") as file:
+                while line := file.readline():
+                    yield line.split(",")
+        yield StopIteration
+
+    def constant_types(self):
+        """Returns a dictionary with column_name:type key-value pairs if
+         the types are constant troughout all the columns. If a column has inconsistent types that column gets
+          the class InconstantTypes"""
+
+        types = dict()
+        first = True
+        for row_values in self.stream():
+            if first:
+                types = {k: type(v) for k, v in zip(self.csv_column_names(), row_values)}
+            else:
+                for key, val in zip(self.csv_column_names(), row_values):
+                    if type(val) != types[key]:
+                        types[key] = InconstantTypes
+            first = False
+        return types
