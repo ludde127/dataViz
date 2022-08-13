@@ -8,7 +8,8 @@ from users.models import NormalUser
 
 class BaseBlock(BaseTextMediaContent):
     content = models.ManyToManyField(Content, "content")
-    human_identifiable_id = models.CharField(max_length=100, default=uuid.uuid4, null=False, unique=True)
+    human_identifiable_id = models.CharField(verbose_name="Display name", max_length=100,
+                                             default=uuid.uuid4, null=False, unique=True)
     video = None  # Disallow videos
 
 

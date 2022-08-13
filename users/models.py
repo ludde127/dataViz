@@ -41,6 +41,7 @@ class Permissions(models.Model):
 
     is_whitelist = models.BooleanField("Is whitelist", default=True)
     is_blacklist = models.BooleanField("Is blacklist", default=False)
+    is_removed = models.BooleanField("Is this object removed", default=False)
 
     class Meta:
         abstract = True

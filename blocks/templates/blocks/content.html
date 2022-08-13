@@ -2,9 +2,9 @@
 {% load tags %}
 {% block content %}
     <div class="content-container">
-        {% include "blocks/standard_content.html" with content=content hsize=2 %}
+        {% include "blocks/standard_content.html" with content=content hsize=2 form=empty_content_form %}
     </div>
     {% if content.has_comments %}
-        {% include "blocks/comments.html" with top_comments=content|get_comments:user depth=1 %}
+        {% include "blocks/comments.html" with top_comments=content|get_comments:user depth=1 form=empty_content_form %}
     {% endif %}
 {% endblock %}
