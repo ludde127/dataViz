@@ -49,7 +49,8 @@ INSTALLED_APPS = [
     "dashboard",
     "data",
     "content",
-    "blocks"
+    "blocks",
+    "tags"
 ]
 
 MIDDLEWARE = [

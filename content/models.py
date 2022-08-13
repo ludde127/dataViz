@@ -1,5 +1,5 @@
 from django.db import models
-from users.models import Permissions
+from users.models import Permissions, NormalUser
 
 
 # Create your models here.
@@ -37,7 +37,14 @@ class ContentEdits(BaseTextContent):
     next_edit = models.ForeignKey("self", on_delete=models.CASCADE, null=True)
 
     def __str__(self):
-        return f"Edit {self.created} by {self.author}"
+        return f"Edit {self.created} by {self.owner.user.username}"
+
+    def last_edit(self):
+        # Right now this is slow, should not matter in normal use.
+        last = None
+        while n := self.next_edit:
+            last = n
+        return last
 
 
 class Content(BaseTextMediaContent):
@@ -59,6 +66,23 @@ class Content(BaseTextMediaContent):
     def has_comments(self):
         return self.comments is not None and self.__comments().exists()
 
-    def get_comments(self):
-        comments = list(self.__comments())
+    def get_comments(self, user):
+        comments = self.comments.exclude(id__lte=self.id).filter(Permissions.can_user_view_query(user.normaluser))
         return comments
+
+    def safe_delete(self):
+        edit = ContentEdits(title=self.title, text=self.text, owner=self.owner)
+        self.insert_edit(edit)
+        self.title = "REMOVED"
+        self.text = "REMOVED"
+        self.is_removed = True
+        self.edits.save()
+        self.save()
+
+    def insert_edit(self, edit):
+        """Inserts the edit into the potentially empty singlelinked chain."""
+        if self.edits:
+            self.edits.last_edit().next_edit = edit
+            self.edits.last_edit().save()
+        else:
+            self.edits = edit
