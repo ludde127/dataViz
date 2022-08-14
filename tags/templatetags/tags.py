@@ -15,3 +15,8 @@ def all_viewable_comments(content, user: NormalUser):
 @register.filter
 def get_comments(content, user: NormalUser):
     return all_viewable_comments(content, user)
+
+
+@register.filter
+def bool_to_int(boolean):
+    return 1 if boolean else 0

@@ -2,7 +2,9 @@
 {% load crispy_forms_filters %}
 
 {% block content %}
-
+    {% if content|length > 10 %}
+       {% include 'blocks/_add_top_content.html' with form=form block_id=block_id %}
+    {% endif %}
     {% for cont in content %}
         <div class="content-container">
             {% include "blocks/standard_content.html" with content=cont hsize=2 remove_comment_button=True %}
@@ -12,5 +14,8 @@
             <hr>
         </div>
     {% endfor %}
+    {% if blocks|length <= 10 %}
+       {% include 'blocks/_add_top_content.html' with form=form block_id=block_id %}
+    {% endif %}
 
 {% endblock %}
