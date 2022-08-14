@@ -56,3 +56,5 @@ uuid==1.30
 virtualenv==20.7.2
 virtualenv-clone==0.5.6
 webencodings==0.5.1
+
+pandas~=1.4.3

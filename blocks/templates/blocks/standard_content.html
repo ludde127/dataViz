@@ -10,7 +10,7 @@
         <button class="btn btn-primary" id="comment-button-{{ content.id }}">Comment on this!</button>
         {% endif %}
         {% if content.owner == request.user.normaluser and not content.is_removed %}
-            <a class="btn btn-secondary" href="#">Change</a>
+            <a class="btn btn-secondary" href="{% url 'modify' content.id is_block|bool_to_int %}">Change</a>
             <form action="{% url 'delete_content' content.id %}" method="post">
                 {% csrf_token %}
                 <button class="btn btn-danger">Delete</button>

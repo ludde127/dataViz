@@ -50,7 +50,8 @@ INSTALLED_APPS = [
     "data",
     "content",
     "blocks",
-    "tags"
+    "tags",
+    "reversion"
 ]
 
 MIDDLEWARE = [
