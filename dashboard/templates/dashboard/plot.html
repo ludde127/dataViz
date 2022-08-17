@@ -9,7 +9,15 @@
         <p>{{ data_store.description|capfirst }}</p>
         {% endif %}
         <br>
-
+        <h3>A short python example to post data.</h3>
+        <hr>
+        <pre style="width: 98%;margin:auto;"><code>
+            url = "https://llindholm.com/data/access/<strong>{{ data_store.key }}</strong>"
+            <br>
+            resp = requests.post(url, json={"col1": val1, "col2": val2, "col3": val3},\
+            <br>
+            headers={'Authorization': 'TOK:SECRET_API_TOKEN'}).text
+        </code></pre>
         {% for plot in plots %}
         <h2>{{ plot.name }}</h2>
         <div class="btn-group">
