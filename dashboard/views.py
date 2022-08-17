@@ -18,7 +18,8 @@ def index(request):
             owner = DataStorage(owner=request.user.normaluser)
             dsf = DataStorageForm(request.POST, instance=owner)
             if dsf.is_valid():
-                dsf.save(commit=True)
+                dsf = dsf.save(commit=True)
+
                 return redirect("index")
 
             else:

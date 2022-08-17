@@ -177,6 +177,8 @@ class DataStorage(Permissions):
                                  "names where missing: " + str(missing) + " The existing where " + str(parsed_json.keys()))
 
     def latest_row(self):
+        if not self.file_path().exists():
+            return None
         with open(self.file_path(), 'rb') as f:
             try:  # catch OSError in case of a one line file
                 f.seek(-2, os.SEEK_END)
