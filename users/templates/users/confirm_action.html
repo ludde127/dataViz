@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container-fluid">
+        <h1>Are you sure you want to make this action?</h1>
+        <article>
+            {{ confirmation_text }}
+        </article>
+        <a class="btn btn-danger">Confirm</a>
+        <a class="btn btn-primary">Abort</a>
+
+    </div>
+
+{% endblock %}
