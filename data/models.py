@@ -68,7 +68,6 @@ class DataStorage(Permissions):
                 auth = auth.split(":")[-1].replace("<", "").replace(">","")
         except KeyError:
             raise ValueError("You must set the http authorization header to your secret api key")
-        print(auth)
         return auth == self.secret_key
 
     def file_path(self):

@@ -51,7 +51,8 @@ INSTALLED_APPS = [
     "content",
     "blocks",
     "tags",
-    "reversion"
+    "reversion",
+    "energy_utils"
 ]
 
 MIDDLEWARE = [
