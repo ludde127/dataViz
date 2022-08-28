@@ -14,7 +14,7 @@ class Command(BaseCommand):
         if first is not None:
             all_ = TeslaTokens.objects.filter(smart_charging=True).all()
 
-            if first.start_time <= datetime.datetime.now(tz=pytz.timezone("Europe/Stockholm")) <= first.end_time:
+            if first.start_time <= datetime.datetime.now(tz=pytz.UTC) <= first.end_time:  # UTC AS IT WAS TIMESTAMPS
                 e = 0
                 n = 0
                 for tokens in all_:
@@ -31,6 +31,6 @@ class Command(BaseCommand):
                 for tokens in all_:
                     tokens.stop_charging_all(force=False)
                 self.stdout.write(self.style.SUCCESS(f"Will not start charging"
-                                                     f" before {first.start_time}"))
+                                                     f" before {first.start_time.astimezone('Europe/Stockholm')}"))
         else:
             self.stdout.write(self.style.ERROR("No time is scheduled"))
