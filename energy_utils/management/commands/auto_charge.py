@@ -31,6 +31,6 @@ class Command(BaseCommand):
                 for tokens in all_:
                     tokens.stop_charging_all(force=False)
                 self.stdout.write(self.style.SUCCESS(f"Will not start charging"
-                                                     f" before {first.start_time.astimezone('Europe/Stockholm')}"))
+                                                     f" before {first.start_time.astimezone(tz=pytz.timezone('Europe/Stockholm'))}"))
         else:
             self.stdout.write(self.style.ERROR("No time is scheduled"))
