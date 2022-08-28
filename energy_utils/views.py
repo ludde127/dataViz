@@ -17,7 +17,8 @@ def energy_index(request):
                 tesla_token = TeslaTokens.objects.get(owner=request.user.normaluser)
             except TeslaTokens.DoesNotExist:
                 tesla_token = TeslaTokens.objects.create(owner=request.user.normaluser)
-            is_charging = tesla_token.is_charging()
+            if not tesla_token.has_expired():
+                is_charging = tesla_token.is_charging()
         else:
             tesla_token = None
         return context_render(request, "energy_utils/index.html",
@@ -32,9 +33,11 @@ def energy_index(request):
         if request.user.is_authenticated:
             form = TeslaTokenForm(request.POST)
             tesla_token = TeslaTokens.objects.get(owner=request.user.normaluser)
-            is_charging = tesla_token.is_charging()
+            if not tesla_token.has_expired():
+                is_charging = tesla_token.is_charging()
 
             if form.is_valid():
+                tesla_token.smart_charging = str(form.cleaned_data["smart_charging"])
                 tesla_token.create_tokens(str(form.cleaned_data["secret_url"]))
                 messages.success(request, "Token successfully added.")
             else:
@@ -62,4 +65,16 @@ def start_charging(request):
 def stop_charging(request):
     tok = get_object_or_404(TeslaTokens, owner=request.user.normaluser)
     tok.stop_charging_all()
+    return redirect("energy_index")
+
+
+@login_required
+def delete_tesla_tokens(request):
+    tok = get_object_or_404(TeslaTokens, owner=request.user.normaluser)
+    tok.token = None
+    tok.refresh_token = None
+    tok.verifier = None
+    tok.expiry = 0
+    tok.save()
+    messages.success(request, "The tokens have been deleted.")
     return redirect("energy_index")

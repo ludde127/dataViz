@@ -21,6 +21,7 @@ class TeslaTokens(models.Model):
     refresh_token = models.CharField("Refresh token", max_length=1000, editable=False, default=None, null=True)
 
     verifier = models.CharField("Verifier", max_length=200, editable=False, default=None, null=True)
+    smart_charging = models.BooleanField("Enable smart charging", default=False)
     owner = models.ForeignKey(NormalUser, on_delete=models.CASCADE)
 
     def get_url_for_token_creation(self):
@@ -43,7 +44,10 @@ class TeslaTokens(models.Model):
         self.save()
 
     def __new_client(self):
-        return Client(self.token, self.refresh_token, self.expiry.timestamp())
+        try:
+            return Client(self.token, self.refresh_token, self.expiry.timestamp())
+        except AssertionError:
+            return None
 
     def all_vehicles(self, client=None):
         if client is not None:
@@ -66,6 +70,12 @@ class TeslaTokens(models.Model):
         client = self.__new_client()
         states = [client.charge_state(v) for v in client.vehicles]
         return any((state["response"]["charging_state"] == "Charging" for state in states))
+
+    def seconds_until_expiry(self):
+        return self.expiry.timestamp() - datetime.datetime.now().timestamp()
+
+    def has_expired(self):
+        return self.seconds_until_expiry() < 0
 
 
 class TeslaChargingAction(models.Model):

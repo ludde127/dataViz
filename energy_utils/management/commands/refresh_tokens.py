@@ -11,7 +11,7 @@ class Command(BaseCommand):
         e = 0
         n = 0
         for tokens in all_:
-            if tokens.expiry.timestamp() - datetime.datetime.now().timestamp() < 60*30:
+            if tokens.seconds_until_expiry() < 60*30:
                 try:
                     tokens.refresh_tokens()
                 except Exception as e:

@@ -3,16 +3,32 @@
 {% block content %}
 <div class="container-fluid">
     <h1 class="text-center">Energy Utilities</h1>
+    <hr>
     <div class="left-offset-textbox">
     {% if tesla_token and tesla_token.token %}
         <h2>You have a connected vehicle.</h2>
-        {% if not is_charging %}
+        <p>If you want to delete the tokens from this website
+            click <a href="{% url 'tesla_delete_tokens' %}"
+                     onclick="return confirm('Are you sure you want to delete your tokens?');">here</a></p>
+        {% if tesla_token.has_expired %}
+            <p><strong>The token has however expired please add a new token.</strong></p>
+            <p>Click this <a href="{{ tesla_url_token_generation }}" target="_blank">link</a> and login to tesla and please copy the link you were redirected to which contains a
+            one time token.</p>
+            <form method="post" action="{% url 'energy_index' %}" style="margin-left: 0;">
+                {% csrf_token %}
+                {{ tesla_form|crispy }}
+                <button class="btn btn-primary" type="submit">Submit</button>
+            </form>
+        {% else %}
+            {% if not is_charging %}
             <p>The vehicle is currently not charging.</p>
             <a class="btn btn-primary" href="{% url 'vehicle_start_charging' %}">Start Charging</a>
-        {% else %}
-            <p>The vehicle is currently charging.</p>
-            <a class="btn btn-primary" href="{% url 'vehicle_stop_charging' %}">Stop Charging</a>
+            {% else %}
+                <p>The vehicle is currently charging.</p>
+                <a class="btn btn-primary" href="{% url 'vehicle_stop_charging' %}">Stop Charging</a>
+            {% endif %}
         {% endif %}
+
     {% elif request.user.is_authenticated %}
         <p class="text-center">To enable the smart charging scheduling you must first generate a token for
             use to use when starting and stopping the charging.</p>
