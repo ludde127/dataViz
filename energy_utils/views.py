@@ -25,7 +25,7 @@ def energy_index(request):
                               context={"tesla_token": tesla_token, "title": "Energy Utilities",
                                        "tesla_form": TeslaTokenForm() if tesla_token is not None else None,
                                        "tesla_url_token_generation":
-                                           None if tesla_token is None or tesla_token.token is None
+                                           None if tesla_token is None
                                            else tesla_token.get_url_for_token_creation(),
                                        "is_charging": is_charging
                                        })
