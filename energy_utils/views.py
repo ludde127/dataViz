@@ -3,7 +3,7 @@ from pprint import pprint
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
-from energy_utils.models import TeslaTokens
+from energy_utils.models import TeslaTokens, scheduled_charging
 from dataViz.utils import context_render
 from .forms import TeslaTokenForm
 
@@ -27,7 +27,8 @@ def energy_index(request):
                                        "tesla_url_token_generation":
                                            None if tesla_token is None
                                            else tesla_token.get_url_for_token_creation(),
-                                       "is_charging": is_charging
+                                       "is_charging": is_charging,
+                                       "scheduled": scheduled_charging()
                                        })
     elif request.method == "POST":
         if request.user.is_authenticated:
@@ -47,7 +48,8 @@ def energy_index(request):
                                                "tesla_url_token_generation":
                                                    None if tesla_token.token or tesla_token is None
                                                    else tesla_token.get_url_for_token_creation(),
-                                               "is_charging": is_charging
+                                               "is_charging": is_charging,
+                                               "scheduled": scheduled_charging()
                                                })
         else:
             messages.error(request, "You are not logged in.")

@@ -7,6 +7,9 @@
     <div class="left-offset-textbox">
     {% if tesla_token and tesla_token.token %}
         <h2>You have a connected vehicle.</h2>
+        {% if tesla_token.auto_charge and scheduled %}
+        <h3>Charging is scheduled for {{ scheduled }}</h3>
+        {% endif %}
         <p>If you want to delete the tokens from this website
             click <a href="{% url 'tesla_delete_tokens' %}"
                      onclick="return confirm('Are you sure you want to delete your tokens?');">here</a></p>
