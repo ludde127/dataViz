@@ -9,31 +9,39 @@
         <p>{{ data_store.description|capfirst }}</p>
         {% endif %}
         <br>
-        <h3>A short python example to post data.</h3>
-        <hr>
-        <pre style="width: 98%;margin:auto;"><code>
-            url = "https://llindholm.com/data/access/<strong>{{ data_store.key }}</strong>"
-            <br>
-            resp = requests.post(url, json={"col1": val1, "col2": val2, "col3": val3},\
-            <br>
-            headers={'Authorization': 'TOK:SECRET_API_TOKEN'}).text
-        </code></pre>
+        {% if not shared %}
+
+            <h3>A short python example to post data.</h3>
+            <hr>
+            <pre style="width: 98%;margin:auto;"><code>
+                url = "https://llindholm.com/data/access/<strong>{{ data_store.key }}</strong>"
+                <br>
+                resp = requests.post(url, json={{data_store.example_entry}},\
+                <br>
+                headers={'Authorization': 'TOK:SECRET_API_TOKEN'}).text
+            </code></pre>
+        {% endif %}
         {% for plot in plots %}
         <h2>{{ plot.name }}</h2>
+        {% if not shared %}
         <div class="btn-group">
             <a class="btn btn-secondary" href="{% url 'modify_plot' plot.id %}">Modify</a>
+            <a class="btn btn-primary" href="{% url 'plot_all_can_view' data_store.key %}">Share this! <small>All with this link can view</small></a>
         </div>
+        {% endif %}
         <div class="plot text-center" style="margin:auto;">
             <canvas id="chart{{ forloop.counter0 }}"></canvas>
         </div>
-        {% endfor %}
 
+        {% endfor %}
+        {% if form %}
         <h1>Add a new chart</h1>
         <form method="post" action="{% url 'plot' data_store.key %}">
             {% csrf_token %}
             {{ form|crispy }}
             <button class="btn btn-primary" type="submit" value="Submit">Submit</button>
         </form>
+        {% endif %}
     </div>
 {% endblock %}
 {% block custom_scripts %}

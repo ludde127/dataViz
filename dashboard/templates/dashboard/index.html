@@ -31,12 +31,18 @@
             {% endfor %}
         {% endif %}
         <div class="text-center">
+            {% if request.user.is_authenticated %}
             <h1>Add a datastore</h1>
             <form method="post" action="{% url 'index' %}">
                 {% csrf_token %}
                 {{ form|crispy }}
                 <button class="btn btn-primary" type="submit" value="Submit">Submit</button>
             </form>
+            {% else %}
+                <h1>Welcome!</h1>
+                <p>Please <a href="{% url 'login' %}">login</a> to enable creation of datastores which is an quick and easy way to store and plot
+                sensor data and many other sources with simple POST requests.</p>
+            {% endif %}
         </div>
     </div>
 

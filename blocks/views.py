@@ -36,7 +36,6 @@ def block(request, hid):
     _content = list(itertools.islice(_block.content.filter(Permissions.can_user_view_query(request.user.normaluser)),
                                      25))  # TODO Fix
     url = reverse('add_top_content', kwargs={"block_id": _block.id})
-    print(url)
     return context_render(request, "blocks/block.html", {"title": hid, "content": _content,
                                                          "form": ContentForm(), "block_id": _block.id})
 
@@ -100,7 +99,6 @@ def add_block(request):
 @login_required
 def add_top_content(request, block_id):
     if request.method != "POST":
-        print("FUCK IFF")
         return HttpResponseNotFound()
     else:
         parent = get_object_or_404(BaseBlock, id=block_id)

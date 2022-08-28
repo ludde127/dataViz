@@ -2,6 +2,8 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect
+from django.urls import reverse
+from django.utils.safestring import mark_safe
 
 from dataViz.utils import context_render
 from dashboard.models import PlottingSetup, DataStorage
@@ -14,6 +16,7 @@ from data.forms import DataStorageForm
 
 def index(request):
     if request.user.is_authenticated:
+
         if request.method == "POST":
             owner = DataStorage(owner=request.user.normaluser)
             dsf = DataStorageForm(request.POST, instance=owner)
@@ -24,11 +27,14 @@ def index(request):
 
             else:
                 messages.error(request, "Could not save datastore.")
+        else:
+            dsf = DataStorageForm()
+
         available = DataStorage.all_user_can_view(request.user.normaluser, _class=DataStorage)
         return context_render(request, "dashboard/index.html",
                               {"title": "Home",
                                "data_stores": available.all(),
-                               "form": DataStorageForm()})
+                               "form": dsf})
     else:
         if request.method == "POST":
             messages.error(request, "You can not add a datastore as you are not logged in.")
@@ -92,3 +98,36 @@ def modify_plot(request, id):
         form = PlottingSetupForm(instance=plot)
     return context_render(request, "dashboard/modify_plot.html", context={"title": "Modify Plot",
                                                                           "form": form, "old": plot})
+
+
+@login_required
+def delete_datastore(request, key:str):
+    ds = get_object_or_404(DataStorage, key=key)
+    n = ds.name
+    if request.user.normaluser == ds.owner:
+        ds.delete_data()
+        ds.delete()
+        messages.info(request, f"Deleted the datastore '{n}'.")
+    else:
+        messages.error(request, f"You are not the owner. Did nothing.")
+    return redirect("index")
+
+
+@login_required
+def get_all_can_view_link(request, key):
+    ds = get_object_or_404(DataStorage, key=key)
+    if ds.owner == request.user.normaluser:
+        all_key = ds.create_all_can_view_key()
+        url = reverse('all_can_view', kwargs={'key': key, 'all_can_view_key': all_key})
+        messages.success(request, mark_safe(f"All can view <a href={url}>url</a>"))
+    else:
+        messages.error(request, "You are not the owner.")
+    return redirect("plot", key=key)
+
+
+def plot_all_can_view(request, key, all_can_view_key):
+    ds = get_object_or_404(DataStorage, key=key, all_can_view_key=all_can_view_key)
+
+    return context_render(request, "dashboard/plot.html",
+                          context={"title": "plot", "plots": ds.plottingsetup_set.all(), "data_store": ds,
+                                   "shared": True})

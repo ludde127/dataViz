@@ -49,6 +49,7 @@ class DataStorage(Permissions):
 
     index_column = models.CharField(verbose_name="Index column", default=None, max_length=30, blank=True, null=True)
     index_column_values_are_time = models.BooleanField(verbose_name="Index is a time format", default=True)
+    all_can_view_key = models.UUIDField(default=uuid.uuid4)
 
     def clean(self):
         if self.index_column not in self.csv_column_names():
@@ -67,7 +68,6 @@ class DataStorage(Permissions):
                 auth = auth.split(":")[-1].replace("<", "").replace(">","")
         except KeyError:
             raise ValueError("You must set the http authorization header to your secret api key")
-        print(auth)
         return auth == self.secret_key
 
     def file_path(self):
@@ -213,3 +213,22 @@ class DataStorage(Permissions):
                         types[key] = InconstantTypes
             first = False
         return types
+
+    def example_entry(self):
+        index = self.index_column
+        t = self.index_column_values_are_time
+
+        def placeholder(column:str):
+            if column == index and t:
+                return "Time_either_unix_seconds_or_datetime"
+            elif column == index:
+                return "IndexValue"
+            else:
+                return "SomeValue"
+
+        return {k: placeholder(k) for k in self.csv_column_names()}.__repr__()
+
+    def create_all_can_view_key(self):
+        self.all_can_view_key = uuid.uuid4()
+        self.save()
+        return self.all_can_view_key

@@ -11,7 +11,8 @@
         {% endif %}
         {% if content.owner == request.user.normaluser and not content.is_removed %}
             <a class="btn btn-secondary" href="{% url 'modify' content.id is_block|bool_to_int %}">Change</a>
-            <form action="{% url 'delete_content' content.id %}" method="post">
+            <form action="{% url 'delete_content' content.id %}" method="post" onclick="return confirm('Are you sure you' +
+             ' want to delete this content? This can not be  undone.');">
                 {% csrf_token %}
                 <button class="btn btn-danger">Delete</button>
             </form>
