@@ -84,7 +84,9 @@ class TeslaTokens(models.Model):
         return self.expiry.timestamp() - datetime.datetime.now().timestamp()
 
     def has_expired(self):
-        return self.seconds_until_expiry() < 0
+        if self.expiry:
+            return self.seconds_until_expiry() < 0
+        return True
 
 
 class TeslaChargingAction(models.Model):
