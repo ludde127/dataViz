@@ -9,6 +9,18 @@ from energy_utils.tesla.client import Client
 # Create your models here.
 
 
+def scheduled_charging():
+    latest = sorted([v for v in Charging.objects.filter(valid=True).all() if v.still_valid()],
+                    key=lambda _: _.start_time)
+    print(latest)
+    if len(latest) == 0:
+        return None
+    first_time = min((l.start_time for l in latest))
+    first = [c for c in latest if c.start_time == first_time][0]
+    print(first)
+    return first
+
+
 class EnergyUsage(models.Model):
     amount = \
         models.FloatField(verbose_name="Usage in kWh", default=0)
