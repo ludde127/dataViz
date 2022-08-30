@@ -23,12 +23,14 @@
                 <button class="btn btn-primary" type="submit">Submit</button>
             </form>
         {% else %}
+            {% if is_charing is not null %}
             {% if not is_charging %}
             <p>The vehicle is currently not charging.</p>
             <a class="btn btn-primary" href="{% url 'vehicle_start_charging' %}">Start Charging</a>
             {% else %}
                 <p>The vehicle is currently charging.</p>
                 <a class="btn btn-primary" href="{% url 'vehicle_stop_charging' %}">Stop Charging</a>
+            {% endif %}
             {% endif %}
         {% endif %}
 
