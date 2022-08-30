@@ -78,9 +78,11 @@ class TeslaTokens(models.Model):
         client = self.__new_client()
         for v in self.all_vehicles(client).keys():
             client.start_charging(v)
+
+        if not self.should_be_charging_now:
+            TeslaChargingAction.objects.create(start_stop=True, token=self)
         self.should_be_charging_now = True
 
-        TeslaChargingAction.objects.create(start_stop=True, token=self)
         self.save()
 
     def is_charging(self):
