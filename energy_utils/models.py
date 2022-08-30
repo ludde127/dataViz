@@ -97,7 +97,7 @@ class TeslaTokens(models.Model):
         return True
 
     def __str__(self):
-        return f"TOKEN -- {self.token.owner}"
+        return f"TOKEN -- {self.owner}"
 
 
 class TeslaChargingAction(models.Model):
