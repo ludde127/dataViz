@@ -24,7 +24,6 @@ class EnergyUsage(models.Model):
     owner = models.ForeignKey(NormalUser, on_delete=models.CASCADE)
 
 
-
 class TeslaTokens(models.Model):
     token = models.CharField(verbose_name="Token", max_length=1000, editable=False, default=None, null=True)
     expiry = models.DateTimeField("Token expiry", editable=True, default=None, null=True)
@@ -98,7 +97,7 @@ class TeslaTokens(models.Model):
         return True
 
     def __str__(self):
-        return f"TOKEN -- {self.token.owner.user.username}"
+        return f"TOKEN -- {self.token.owner}"
 
 
 class TeslaChargingAction(models.Model):
@@ -108,7 +107,7 @@ class TeslaChargingAction(models.Model):
     token = models.ForeignKey(TeslaTokens, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.time}, -- {self.token.owner.user.username}"
+        return f"{self.time}, -- {self.token.owner}"
 
 
 class Charging(models.Model):
