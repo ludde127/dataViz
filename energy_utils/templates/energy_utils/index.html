@@ -7,8 +7,8 @@
     <div class="left-offset-textbox">
     {% if tesla_token and tesla_token.token %}
         <h2>You have a connected vehicle.</h2>
-        {% if tesla_token.auto_charge and scheduled %}
-        <h3>Charging is scheduled for {{ scheduled }}</h3>
+        {% if tesla_token.smart_charging and scheduled %}
+        <h5>Charging is scheduled for {{ scheduled.start_time }} until {{ scheduled.end_time }}</h5>
         {% endif %}
         <p>If you want to delete the tokens from this website
             click <a href="{% url 'tesla_delete_tokens' %}"
@@ -23,7 +23,7 @@
                 <button class="btn btn-primary" type="submit">Submit</button>
             </form>
         {% else %}
-            {% if is_charing is not null %}
+            {% if is_charging != None %}
             {% if not is_charging %}
             <p>The vehicle is currently not charging.</p>
             <a class="btn btn-primary" href="{% url 'vehicle_start_charging' %}">Start Charging</a>
