@@ -1,5 +1,5 @@
 from pprint import pprint
-
+from requests import Timeout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
@@ -22,7 +22,7 @@ def energy_index(request):
             if not tesla_token.has_expired():
                 try:
                     is_charging = tesla_token.is_charging()
-                except TimeoutError:
+                except Timeout:
                     # Tesla is weird
                     is_charging = None
                     messages.error(request, "We could not connect to the vehicle try again later.")
