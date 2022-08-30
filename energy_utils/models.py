@@ -11,14 +11,10 @@ from energy_utils.tesla.client import Client
 
 def scheduled_charging():
     latest = sorted([v for v in Charging.objects.filter(valid=True).all() if v.still_valid()],
-                    key=lambda _: _.start_time)
-    print(latest)
+                    key=lambda _: _.mean_price) # Cheapest to most expensive.
     if len(latest) == 0:
         return None
-    first_time = min((l.start_time for l in latest))
-    first = [c for c in latest if c.start_time == first_time][0]
-    print(first)
-    return first
+    return latest[0]
 
 
 class EnergyUsage(models.Model):
@@ -26,6 +22,7 @@ class EnergyUsage(models.Model):
         models.FloatField(verbose_name="Usage in kWh", default=0)
     time = models.DateTimeField(verbose_name="Time", auto_created=True)
     owner = models.ForeignKey(NormalUser, on_delete=models.CASCADE)
+
 
 
 class TeslaTokens(models.Model):
@@ -100,6 +97,9 @@ class TeslaTokens(models.Model):
             return self.seconds_until_expiry() < 0
         return True
 
+    def __str__(self):
+        return f"TOKEN -- {self.token.owner.user.username}"
+
 
 class TeslaChargingAction(models.Model):
     start_stop = models.BooleanField("If this was start command this is True if stop it is False")
@@ -107,11 +107,19 @@ class TeslaChargingAction(models.Model):
 
     token = models.ForeignKey(TeslaTokens, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return f"{self.time}, -- {self.token.owner.user.username}"
+
 
 class Charging(models.Model):
     start_time = models.DateTimeField(default=None, null=True)
     end_time = models.DateTimeField(default=None, null=True)
+
+    mean_price = models.FloatField(default=0)
     valid = models.BooleanField(default=True)
+
+    class Meta:
+        unique_together = ["start_time", "end_time"]  # Easier to extend later.
 
     def should_charge(self):
         return self.start_time.timestamp() <= time.time() <= self.end_time.timestamp()
@@ -120,4 +128,6 @@ class Charging(models.Model):
         self.valid = time.time() <= self.end_time.timestamp()
         self.save()
         return self.valid
+
+
 
