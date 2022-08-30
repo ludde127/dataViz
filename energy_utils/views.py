@@ -1,5 +1,6 @@
 from pprint import pprint
-from requests import Timeout
+
+import requests
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
@@ -13,8 +14,9 @@ def energy_index(request):
     is_charging = False
 
     if request.method == "GET":
+        schedule_charging = scheduled_charging()
+
         if request.user.is_authenticated:
-            schedule_charging = scheduled_charging()
             try:
                 tesla_token = TeslaTokens.objects.get(owner=request.user.normaluser)
             except TeslaTokens.DoesNotExist:
@@ -22,7 +24,7 @@ def energy_index(request):
             if not tesla_token.has_expired():
                 try:
                     is_charging = tesla_token.is_charging()
-                except Timeout:
+                except requests.exceptions.HTTPError:
                     # Tesla is weird
                     is_charging = None
                     messages.error(request, "We could not connect to the vehicle try again later.")
@@ -36,7 +38,7 @@ def energy_index(request):
                                            else tesla_token.get_url_for_token_creation(),
                                        "is_charging": is_charging,
                                        "timeOutError": is_charging is None,
-                                       "scheduled": None
+                                       "scheduled": schedule_charging
                                        })
     elif request.method == "POST":
         if request.user.is_authenticated:
