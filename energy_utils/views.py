@@ -11,14 +11,21 @@ from .forms import TeslaTokenForm
 # Create your views here.
 def energy_index(request):
     is_charging = False
+
     if request.method == "GET":
         if request.user.is_authenticated:
+            schedule_charging = scheduled_charging()
             try:
                 tesla_token = TeslaTokens.objects.get(owner=request.user.normaluser)
             except TeslaTokens.DoesNotExist:
                 tesla_token = TeslaTokens.objects.create(owner=request.user.normaluser)
             if not tesla_token.has_expired():
-                is_charging = tesla_token.is_charging()
+                try:
+                    is_charging = tesla_token.is_charging()
+                except TimeoutError:
+                    # Tesla is weird
+                    is_charging = None
+                    messages.error(request, "We could not connect to the vehicle try again later.")
         else:
             tesla_token = None
         return context_render(request, "energy_utils/index.html",
@@ -28,7 +35,8 @@ def energy_index(request):
                                            None if tesla_token is None
                                            else tesla_token.get_url_for_token_creation(),
                                        "is_charging": is_charging,
-                                       "scheduled": scheduled_charging()
+                                       "timeOutError": is_charging is None,
+                                       "scheduled": None
                                        })
     elif request.method == "POST":
         if request.user.is_authenticated:
