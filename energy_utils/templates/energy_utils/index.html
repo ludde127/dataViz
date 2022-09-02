@@ -5,7 +5,7 @@
     <h1 class="text-center">Energy Utilities</h1>
     <hr>
     <div class="left-offset-textbox">
-    {% if tesla_token and tesla_token.token %}
+    {% if tesla_token and tesla_token.token and request.user.is_authenticated %}
         <h2>You have a connected vehicle.</h2>
         {% if tesla_token.smart_charging and scheduled %}
         <h5>Charging is scheduled for {{ scheduled.start_time }} until {{ scheduled.end_time }}</h5>
@@ -44,7 +44,16 @@
             {{ tesla_form|crispy }}
             <button class="btn btn-primary" type="submit">Submit</button>
         </form>
+    {% else %}
+
+        <h4 class="warning">Please login and revisit this page again,
+            all utilities on this page requires authentication.</h4>
+        <br>
+        <p>When logged in you will be able to add Tesla vehicles so that they will be charged at the cheapest hourly
+        energy prices. At this moment the energy prices are only gotten for SE4, a energy zone in sweden.
+            More zones will soon be added.</p>
     {% endif %}
+
     </div>
 </div>
 {% endblock %}

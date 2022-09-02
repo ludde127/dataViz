@@ -5,6 +5,12 @@
     </h{% if hsize %}{% if hsize <= 6 %}{{ hsize }}{% else %}6{% endif %}{% endif %}>
     <br>
     <p>{{ content.text }}</p>
+    {% if content.image %}
+    <div class="text-center" style="width: 80%;max-width: 60vw;max-height: 40vh;height: 15vh;">
+        <img src="{{content.image.url}}" alt="User uploaded image." style="object-fit: cover;height: 100%;width: auto;"/>
+    </div>
+
+    {% endif %}
     <div class="btn-group">
         {% if not remove_comment_button %}
         <button class="btn btn-primary" id="comment-button-{{ content.id }}">Comment on this!</button>
@@ -27,7 +33,7 @@
 </div>
 {% if form and not remove_comment_button %}
 <div id="comment-box-{{ content.id }}" style="margin-top:2vh;display: none;">
-    <form method="post" action="{% url 'content' content.id %}">
+    <form method="post" action="{% url 'content' content.id %}" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form|crispy }}
         <button type="submit" value="Submit" class="btn btn-primary">Add comment.</button>

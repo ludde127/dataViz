@@ -4,7 +4,7 @@
     <h2>Add new content!</h2>
 </div>
 {% if request.user.is_authenticated %}
-<form method="post" action="{% url 'add_top_content' block_id %}">
+<form method="post" action="{% url 'add_top_content' block_id %}" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form|crispy }}
     <button type="submit" value="Submit" class="btn btn-primary">Submit</button>
