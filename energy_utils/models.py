@@ -11,7 +11,7 @@ from energy_utils.tesla.client import Client
 
 def scheduled_charging():
     latest = sorted([v for v in Charging.objects.filter(valid=True).all() if v.still_valid()],
-                    key=lambda _: _.mean_price) # Cheapest to most expensive.
+                    key=lambda _: _.mean_price)  # Cheapest to most expensive.
     if len(latest) == 0:
         return None
     return latest[0]
@@ -24,6 +24,24 @@ class EnergyUsage(models.Model):
     owner = models.ForeignKey(NormalUser, on_delete=models.CASCADE)
 
 
+class TeslaChargingAction(models.Model):
+    start_stop = models.BooleanField("If this was start command this is True if stop it is False")
+    time = models.DateTimeField(verbose_name="Time", auto_created=True, auto_now=True)
+
+    current_pct_charged = models.FloatField()
+
+    def __str__(self):
+        return f"{self.time}"
+
+
+class TeslaVehicle(models.Model):
+    vehicle_id = models.CharField(max_length=100, unique=True)
+    display_name = models.CharField(max_length=300)
+
+    is_charging = models.BooleanField(default=False)
+    actions = models.ManyToManyField(TeslaChargingAction)
+
+
 class TeslaTokens(models.Model):
     token = models.CharField(verbose_name="Token", max_length=1000, editable=False, default=None, null=True)
     expiry = models.DateTimeField("Token expiry", editable=True, default=None, null=True)
@@ -33,6 +51,10 @@ class TeslaTokens(models.Model):
     smart_charging = models.BooleanField("Enable smart charging", default=False)
     owner = models.ForeignKey(NormalUser, on_delete=models.CASCADE)
     should_be_charging_now = models.BooleanField(default=False)
+
+    vehicles = models.ManyToManyField(TeslaVehicle)
+
+    energy_zone = models.CharField("Energy zone", max_length=15, default="SE_4")
 
     def get_url_for_token_creation(self):
         url, verf = Client.create_auth_url()
@@ -55,39 +77,53 @@ class TeslaTokens(models.Model):
 
     def __new_client(self):
         try:
-            return Client(self.token, self.refresh_token, self.expiry.timestamp())
+            return Client(self.token, self.refresh_token,
+                          self.expiry.timestamp(), (v.vehicle_id for v in self.vehicles.all()))
         except AssertionError:
             return None
 
     def all_vehicles(self, client=None):
-        if client is not None:
-            return client.vehicles
-        return self.__new_client().vehicles
+        if client is None:
+            client = self.__new_client()
+        ids = {int(v.vehicle_id) for v in self.vehicles.all()}
+        for vehicle_id, display_name in client.query_vehicles().items():
+            if vehicle_id not in ids:
+                print(vehicle_id, ids, type(vehicle_id), type(list(ids)[0]))
+                self.vehicles.add(TeslaVehicle.objects.create(vehicle_id=vehicle_id, display_name=display_name))
+                ids.add(vehicle_id)
+        for id in ids:
+            client.wake_up(id) # Wakes them so they are ready to take commands.
+
+        return ids
+
+    def __charging_action(self, vehicle_id, started_charging, save=True):
+        """Set started_charging to true if this is to save the action of starting a charge."""
+        current_pct_charged = float(self.__new_client().charge_state(vehicle_id)["response"]["battery_level"])
+        self.vehicles.get(vehicle_id=vehicle_id).actions.add(
+            TeslaChargingAction.objects.create(start_stop=started_charging, current_pct_charged=current_pct_charged))
+        if save:
+            self.save()
 
     def stop_charging_all(self, force=True):
         if self.should_be_charging_now or force:
             client = self.__new_client()
-            for v in self.all_vehicles(client).keys():
+            for v in self.all_vehicles(client):
                 client.stop_charging(v)
+                self.__charging_action(v, started_charging=False, save=False)
             self.should_be_charging_now = False
-
-            TeslaChargingAction.objects.create(start_stop=False, token=self)
             self.save()
 
     def start_charging_all(self):
         client = self.__new_client()
-        for v in self.all_vehicles(client).keys():
+        for v in self.all_vehicles(client):
             client.start_charging(v)
-
-        if not self.should_be_charging_now:
-            TeslaChargingAction.objects.create(start_stop=True, token=self)
+            self.__charging_action(v, started_charging=True, save=False)
         self.should_be_charging_now = True
-
         self.save()
 
     def is_charging(self):
         client = self.__new_client()
-        states = [client.charge_state(v) for v in client.vehicles]
+        states = [client.charge_state(v) for v in self.all_vehicles(client)]
         return any((state["response"]["charging_state"] == "Charging" for state in states))
 
     def seconds_until_expiry(self):
@@ -100,16 +136,6 @@ class TeslaTokens(models.Model):
 
     def __str__(self):
         return f"TOKEN -- {self.owner}"
-
-
-class TeslaChargingAction(models.Model):
-    start_stop = models.BooleanField("If this was start command this is True if stop it is False")
-    time = models.DateTimeField(verbose_name="Time", auto_created=True, auto_now=True)
-
-    token = models.ForeignKey(TeslaTokens, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return f"{self.time}, -- {self.token.owner}"
 
 
 class Charging(models.Model):
@@ -130,5 +156,13 @@ class Charging(models.Model):
         self.save()
         return self.valid
 
+
+class EnergyDayAhead(models.Model):
+    price = models.FloatField(blank=False)
+    time = models.DateTimeField(blank=False)
+    energy_zone = models.CharField(blank=False, max_length=10)
+
+    class Meta:
+        unique_together = ["time", "energy_zone"]
 
 

@@ -11,7 +11,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         first = scheduled_charging()
-        if first is not None:
+        if first is not None and first.mean_price < 3:
             all_ = TeslaTokens.objects.filter(smart_charging=True).all()
 
             if first.start_time <= datetime.datetime.now(tz=pytz.UTC) <= first.end_time:  # UTC AS IT WAS TIMESTAMPS
