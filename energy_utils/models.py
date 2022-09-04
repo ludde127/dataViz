@@ -88,7 +88,6 @@ class TeslaTokens(models.Model):
         ids = {int(v.vehicle_id) for v in self.vehicles.all()}
         for vehicle_id, display_name in client.query_vehicles().items():
             if vehicle_id not in ids:
-                print(vehicle_id, ids, type(vehicle_id), type(list(ids)[0]))
                 self.vehicles.add(TeslaVehicle.objects.create(vehicle_id=vehicle_id, display_name=display_name))
                 ids.add(vehicle_id)
         for id in ids:
