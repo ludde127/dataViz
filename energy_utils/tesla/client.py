@@ -12,13 +12,13 @@ class Client:
     auth_url = "https://auth.tesla.com/oauth2/v3/token"
     __headers = {"Content-Type": "application/json", "X-Tesla-User-Agent": "TeslaCharger/v0.1.1"}
 
-    def __init__(self, auth_token, refresh_token, expiry):
+    def __init__(self, auth_token, refresh_token, expiry, vehicles=()):
         self.__expiry = expiry
         self.__refresh_token = refresh_token.strip()
         self.__auth_token = auth_token
         assert not self.is_expired()
         self.__headers["authorization"] = f"Bearer {auth_token}".strip()
-        self.vehicles = self.__vehicles()
+        self.vehicles = self.__vehicles() if not vehicles else vehicles
 
     def is_expired(self):
         return self.__expiry < time.time()
@@ -43,12 +43,24 @@ class Client:
         else:
             raise resp.raise_for_status()
 
+    def wake_up(self, vehicle_id):
+        resp = requests.post(url=self.base_url + f"/vehicles/{vehicle_id}/wake_up", headers=self.__headers)
+
+        if resp.status_code == 200:
+            return resp.json()
+        else:
+            raise resp.raise_for_status()
+
     def set_charge_limit(self, vehicle_id: int, limit: int):
         return self.post(self.base_url + f"/vehicles/{vehicle_id}/command/set_charge_limit?percent={limit}")
 
     def __vehicles(self):
         json = self.get(url=self.base_url + "/vehicles")
         return {k: v for k, v in [(v["id"], v['display_name']) for v in json["response"]]}
+
+    def query_vehicles(self):
+        self.vehicles = self.__vehicles()
+        return self.vehicles
 
     @staticmethod
     def create_auth_url():

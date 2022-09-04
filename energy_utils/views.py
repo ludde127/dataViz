@@ -24,8 +24,9 @@ def energy_index(request):
             if not tesla_token.has_expired():
                 try:
                     is_charging = tesla_token.is_charging()
-                except requests.exceptions.HTTPError:
+                except requests.exceptions.HTTPError as e:
                     # Tesla is weird
+                    pprint(e)
                     is_charging = None
                     messages.error(request, "We could not connect to the vehicle try again later.")
         else:
@@ -50,6 +51,7 @@ def energy_index(request):
             if form.is_valid():
                 tesla_token.smart_charging = str(form.cleaned_data["smart_charging"])
                 tesla_token.create_tokens(str(form.cleaned_data["secret_url"]))
+                #tesla_token.energy_zone = form.cleaned_data["energy_zone"]
                 messages.success(request, "Token successfully added.")
             else:
                 return context_render(request, "energy_utils/index.html",

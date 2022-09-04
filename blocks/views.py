@@ -1,3 +1,5 @@
+from pprint import pprint
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseNotFound
@@ -43,7 +45,7 @@ def block(request, hid):
 def content(request, id):
     _content = get_object_or_404(Content, id=id)
     if request.method == "POST" and request.user.is_authenticated:
-        form = ContentForm(request.POST, instance=Content(owner=request.user.normaluser))
+        form = ContentForm(request.POST, request.FILES, instance=Content(owner=request.user.normaluser))
         if form.is_valid():
             saved = form.save()
             _content.comments.add(saved)
@@ -102,7 +104,7 @@ def add_top_content(request, block_id):
         return HttpResponseNotFound()
     else:
         parent = get_object_or_404(BaseBlock, id=block_id)
-        c = ContentForm(request.POST, instance=Content(owner=request.user.normaluser))
+        c = ContentForm(request.POST, request.FILES, instance=Content(owner=request.user.normaluser))
         if c.is_valid():
             c = c.save()
             parent.content.add(c)
@@ -122,10 +124,13 @@ def modify(request, id, is_block):
     obj = get_object_or_404(BaseBlock if is_block else Content, id=id, owner=request.user.normaluser)
 
     if request.method == "POST":
-        form = BlockForm(request.POST, instance=obj) if is_block else ContentForm(request.POST, instance=obj)
+        form = BlockForm(request.POST, request.FILES, instance=obj) if is_block else\
+            ContentForm(request.POST, request.FILES, instance=obj)
 
         if form.is_valid():
+            pprint(form.cleaned_data)
             b = form.save()
+            print(b.image, "IMAGE")
             messages.success(request, "Successfully made changes.")
             return redirect("content", id) if not is_block else redirect("social_index")
         else:

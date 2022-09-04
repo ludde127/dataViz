@@ -4,7 +4,7 @@
     <h2>Add a new block!</h2>
 </div>
 {% if request.user.is_authenticated %}
-<form method="post" action="{% url 'add_block' %}">
+<form method="post" action="{% url 'add_block' %}" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form|crispy }}
     <button type="submit" value="Submit" class="btn btn-primary">Add a block.</button>

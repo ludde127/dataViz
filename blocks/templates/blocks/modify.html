@@ -7,7 +7,7 @@
     <h2>Change <span class="fa-italic"> {{ content.title }}</span></h2>
 </div>
 {% if request.user.is_authenticated %}
-<form method="post" action="{% url 'modify' content.id is_block|bool_to_int %}">
+<form method="post" action="{% url 'modify' content.id is_block|bool_to_int %}" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form|crispy }}
     <button type="submit" value="Submit" class="btn btn-primary">Submit</button>
