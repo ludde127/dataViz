@@ -8,7 +8,7 @@
     {% if tesla_token and tesla_token.token and request.user.is_authenticated %}
         <h2>You have a connected vehicle.</h2>
         {% if tesla_token.smart_charging and scheduled %}
-        <h5>Charging is scheduled for {{ scheduled.start_time }} until {{ scheduled.end_time }}</h5>
+        <h5>Charging is scheduled for {{ scheduled.start_time }} until {{ scheduled.end_time }} at a mean price of {{ scheduled.mean_price|floatformat }} öre/kWh.</h5>
         {% endif %}
         <p>If you want to delete the tokens from this website
             click <a href="{% url 'tesla_delete_tokens' %}"
