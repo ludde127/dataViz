@@ -95,10 +95,14 @@ class TeslaTokens(models.Model):
 
         return ids
 
-    def __charging_action(self, vehicle_id, started_charging, save=True):
+    def __charging_action(self, vehicle_id, started_charging, save=True, client=None):
         """Set started_charging to true if this is to save the action of starting a charge."""
-        current_pct_charged = float(self.__new_client().charge_state(vehicle_id)["response"]["battery_level"])
-        self.vehicles.get(vehicle_id=vehicle_id).actions.add(
+        if client is None:
+            client = self.__new_client()
+        current_pct_charged = float(client.charge_state(vehicle_id)["response"]["battery_level"])
+        vehicle = self.vehicles.get(vehicle_id=vehicle_id)
+        action = vehicle.actions
+        action.add(
             TeslaChargingAction.objects.create(start_stop=started_charging, current_pct_charged=current_pct_charged))
         if save:
             self.save()
@@ -108,7 +112,7 @@ class TeslaTokens(models.Model):
             client = self.__new_client()
             for v in self.all_vehicles(client):
                 client.stop_charging(v)
-                self.__charging_action(v, started_charging=False, save=False)
+                self.__charging_action(v, started_charging=False, save=False, client=client)
             self.should_be_charging_now = False
             self.save()
 
@@ -116,7 +120,7 @@ class TeslaTokens(models.Model):
         client = self.__new_client()
         for v in self.all_vehicles(client):
             client.start_charging(v)
-            self.__charging_action(v, started_charging=True, save=False)
+            self.__charging_action(v, started_charging=True, save=False, client=client)
         self.should_be_charging_now = True
         self.save()
 
