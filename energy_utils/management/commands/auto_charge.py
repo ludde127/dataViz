@@ -22,8 +22,8 @@ class Command(BaseCommand):
                         tokens.start_charging_all()
 
                         n += 1
-                    except Exception as e:
-                        self.stdout.write(self.style.ERROR(e))
+                    except Exception as _e:
+                        self.stdout.write(self.style.ERROR(_e))
                         e += 1
                 self.stdout.write(self.style.SUCCESS(f"Ran the charging script, started charging for"
                                                      f" {n}/{len(all_)} with {e} errors."))

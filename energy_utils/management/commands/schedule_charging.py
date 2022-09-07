@@ -5,6 +5,7 @@ from django.core.management.base import BaseCommand, CommandError
 from energy_utils.models import Charging
 from energy_utils.electricity_prices.get_data import Prices
 import datetime
+import django
 
 
 class Command(BaseCommand):
@@ -18,8 +19,10 @@ class Command(BaseCommand):
         #print(type(cheapest["index"]), type(cheapest["prices"]))
         end_of_cheap = cheapest["index"][0].timestamp()
         start_charging = end_of_cheap - WINDOW_SIZE * 3600
-
-        Charging.objects.update_or_create(start_time=datetime.datetime.fromtimestamp(start_charging),
-                                          end_time=datetime.datetime.fromtimestamp(end_of_cheap),
-                                          mean_price=cheapest["prices"][0])
+        try:
+            Charging.objects.update_or_create(start_time=datetime.datetime.fromtimestamp(start_charging),
+                                                end_time=datetime.datetime.fromtimestamp(end_of_cheap),
+                                                mean_price=cheapest["prices"][0])
+        except Charging.DoesNotExist as e:
+            pass # It has already been detected before.
         self.stdout.write(self.style.SUCCESS(f"Will start charging {datetime.datetime.fromtimestamp(start_charging)}"))

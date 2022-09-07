@@ -50,6 +50,8 @@ class AbstractContent(BaseTextMediaContent):
     def safe_delete(self):
         self.title = "REMOVED"
         self.text = "REMOVED"
+        self.image = None
+        self.video = None
         self.is_removed = True
         self.save()
 

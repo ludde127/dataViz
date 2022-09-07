@@ -151,6 +151,9 @@ class Charging(models.Model):
     class Meta:
         unique_together = ["start_time", "end_time"]  # Easier to extend later.
 
+    def __str__(self):
+        return f"{self.start_time} Until {self.end_time}; {self.mean_price}"
+
     def should_charge(self):
         return self.start_time.timestamp() <= time.time() <= self.end_time.timestamp()
 
