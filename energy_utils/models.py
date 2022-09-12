@@ -122,7 +122,8 @@ class TeslaTokens(models.Model):
         client = self.__new_client()
         for v in self.all_vehicles(client):
             client.start_charging(v)
-            self.__charging_action(v, started_charging=True, save=False, client=client)
+            if not self.should_be_charging_now:
+                self.__charging_action(v, started_charging=True, save=False, client=client)
         self.should_be_charging_now = True
         self.save()
 
