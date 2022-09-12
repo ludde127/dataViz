@@ -1,8 +1,8 @@
-import unittest
+from django.test import TestCase
 from energy_utils.models import TeslaTokens
 
 
-class EnergyUtils(unittest.TestCase):
+class EnergyUtils(TestCase):
     def test_refreshes(self):
         for t in TeslaTokens.objects.all():
             t.refresh_tokens()
@@ -15,4 +15,3 @@ class EnergyUtils(unittest.TestCase):
         print(f"Number charging is {charging_num}")
 
 
-subscribed_production_tests = [EnergyUtils().run]
