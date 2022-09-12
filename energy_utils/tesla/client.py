@@ -18,7 +18,7 @@ class Client:
         self.__auth_token = auth_token
         assert not self.is_expired()
         self.__headers["authorization"] = f"Bearer {auth_token}".strip()
-        self.vehicles = self.__vehicles() if not vehicles else vehicles
+        self.vehicles = self.__vehicles() if not vehicles else list(vehicles)
 
     def is_expired(self):
         return self.__expiry < time.time()
