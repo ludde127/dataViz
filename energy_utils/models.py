@@ -76,20 +76,22 @@ class TeslaTokens(models.Model):
         self.save()
 
     def __new_client(self):
-        try:
-            return Client(self.token, self.refresh_token,
-                          self.expiry.timestamp(), (v.vehicle_id for v in self.vehicles.all()))
-        except AssertionError:
-            return None
+        return Client(self.token, self.refresh_token,
+                      self.expiry.timestamp(), (v.vehicle_id for v in self.vehicles.all()))
 
-    def all_vehicles(self, client=None):
+    def all_vehicles(self, client=None, force_vehicle_check=False):
         if client is None:
-            client = self.__new_client()
+            try:
+                client = self.__new_client()
+            except Exception as e:
+                if force_vehicle_check:
+                    raise e
         ids = {int(v.vehicle_id) for v in self.vehicles.all()}
-        for vehicle_id, display_name in client.query_vehicles().items():
-            if vehicle_id not in ids:
-                self.vehicles.add(TeslaVehicle.objects.create(vehicle_id=vehicle_id, display_name=display_name))
-                ids.add(vehicle_id)
+        if force_vehicle_check:
+            for vehicle_id, display_name in client.query_vehicles().items():
+                if vehicle_id not in ids:
+                    self.vehicles.add(TeslaVehicle.objects.create(vehicle_id=vehicle_id, display_name=display_name))
+                    ids.add(vehicle_id)
         for id in ids:
             client.wake_up(id) # Wakes them so they are ready to take commands.
 

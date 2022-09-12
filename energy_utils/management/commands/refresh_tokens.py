@@ -14,8 +14,8 @@ class Command(BaseCommand):
             if tokens.seconds_until_expiry() < 60*30:
                 try:
                     tokens.refresh_tokens()
-                except Exception as e:
-                    print(e)
+                except Exception as _e:
+                    print(_e)
                     e += 1
                 else:
                     n += 1
