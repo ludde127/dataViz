@@ -77,7 +77,7 @@ class TeslaTokens(models.Model):
 
     def __new_client(self):
         return Client(self.token, self.refresh_token,
-                      self.expiry.timestamp(), (v.vehicle_id for v in self.vehicles.all()))
+                      self.expiry.timestamp(), [v.vehicle_id for v in self.vehicles.all()])
 
     def all_vehicles(self, client=None, force_vehicle_check=False):
         if client is None:
