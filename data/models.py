@@ -1,3 +1,4 @@
+import datetime
 import os
 import uuid
 
@@ -32,6 +33,10 @@ def bytes_to_pretty_string(bytes: float) -> str:
 
 def make_secret_key():
     return secrets.token_urlsafe(32)
+
+
+def float_timestamp_to_dt(v: float) -> datetime.datetime:
+    return datetime.datetime.fromtimestamp(v)
 
 
 class DataStorage(Permissions):
@@ -187,7 +192,15 @@ class DataStorage(Permissions):
             except OSError:
                 f.seek(0)
             last_line = f.readline().decode()
-        return ", ".join([f"{n}: {v}" for n, v in zip(self.csv_column_names(), last_line.split(","))])
+
+        def to_datetime_if_time_index(n, v):
+            if n == self.index_column and self.index_column_values_are_time:
+                return n, float_timestamp_to_dt(v)
+            return n, v
+
+        return ", ".join([f"{n}: {v}" for n, v in
+                          (to_datetime_if_time_index(n, v) for n, v in zip(self.csv_column_names(),
+                                                                           last_line.split(",")))])
 
     def stream(self):
         """Streams the data row-wise split into a list for each column"""

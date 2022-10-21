@@ -48,6 +48,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.js" integrity="sha512-d6nObkPJgV791iTGuBoVC9Aa2iecqzJRE0Jiqvk85BhLHAPhWqkuBiQb1xz2jvuHNqHLYoN3ymPfpiB1o+Zgpw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <script>
+            {# Todo, modify so that choosing timeframes is possible, should probably stream data as that happends. #}
             {% for plot in plots %}
 
             const ctx{{ forloop.counter0 }} = document.getElementById('chart{{ forloop.counter0 }}');

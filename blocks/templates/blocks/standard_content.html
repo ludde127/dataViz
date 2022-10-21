@@ -4,7 +4,7 @@
     <h{% if hsize %}{% if hsize <= 6 %}{{ hsize }}{% else %}6{% endif %}{% endif %}>{{ content.title }}
     </h{% if hsize %}{% if hsize <= 6 %}{{ hsize }}{% else %}6{% endif %}{% endif %}>
     <br>
-    <p>{{ content.text }}</p>
+    <pre>{{ content.text }}</pre>
     {% if content.image %}
     <div class="text-center" style="width: 80%;max-width: 60vw;max-height: 40vh;height: 15vh;">
         <img src="{{content.image.url}}" alt="User uploaded image." style="object-fit: cover;height: 100%;width: auto;"/>
