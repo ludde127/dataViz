@@ -21,6 +21,7 @@
                 headers={'Authorization': 'TOK:SECRET_API_TOKEN'}).text
             </code></pre>
         {% endif %}
+        <h3>Now only plotting last 10k datapoints by default.</h3>
         {% for plot in plots %}
         <h2>{{ plot.name }}</h2>
         {% if not shared %}

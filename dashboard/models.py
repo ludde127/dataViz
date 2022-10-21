@@ -130,10 +130,10 @@ class PlottingSetup(Permissions):
             raise ValidationError("Rounding of the index is only supported when it is not a time index.")
         return super().clean()
 
-    def plottable(self):
+    def plottable(self, plot_last=10000):
         dataframe = self.data.to_pandas(apply_operations=False)
-        if len(dataframe.values) > 2000:
-            dataframe = dataframe.iloc[-2000:]
+        if len(dataframe.values) > plot_last:
+            dataframe = dataframe.iloc[-plot_last:]
         dataframe = dataframe.set_index(self.index_column)
         if self.index_is_time:
             dataframe.index = pd.to_datetime(dataframe.index, unit="s")
