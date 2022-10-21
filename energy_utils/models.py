@@ -84,8 +84,7 @@ class TeslaTokens(models.Model):
             try:
                 client = self.__new_client()
             except Exception as e:
-                if force_vehicle_check:
-                    raise e
+                raise e
         ids = {int(v.vehicle_id) for v in self.vehicles.all()}
         if force_vehicle_check:
             for vehicle_id, display_name in client.query_vehicles().items():
