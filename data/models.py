@@ -195,7 +195,7 @@ class DataStorage(Permissions):
 
         def to_datetime_if_time_index(n, v):
             if n == self.index_column and self.index_column_values_are_time:
-                return n, float_timestamp_to_dt(int(v))
+                return n, float_timestamp_to_dt(int(float(v)))
             return n, v
 
         return ", ".join([f"{n}: {v}" for n, v in
