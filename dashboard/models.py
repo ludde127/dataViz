@@ -133,7 +133,7 @@ class PlottingSetup(Permissions):
     def plottable(self):
         dataframe = self.data.to_pandas(apply_operations=False)
         if len(dataframe.values) > 2000:
-            dataframe = dataframe.iloc[:-2000]
+            dataframe = dataframe.iloc[-2000:]
         dataframe = dataframe.set_index(self.index_column)
         if self.index_is_time:
             dataframe.index = pd.to_datetime(dataframe.index, unit="s")
