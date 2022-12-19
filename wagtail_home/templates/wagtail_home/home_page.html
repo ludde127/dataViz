@@ -5,5 +5,21 @@
 {% block body_class %}template-homepage{% endblock %}
 
 {% block content %}
-    {{ page.body|richtext }}
+    <div class="container center-block">
+        <h1>{{ page.title }}</h1>
+        <p>{{ page.body|richtext }}</p>
+
+        {% for child in page.get_children %}
+            <div class="card" style="margin-top:2vh;">
+              <div class="card-header">
+                <a href="{% pageurl child %}"><h3>{{ child.title }}</h3></a>
+              </div>
+              <div class="card-body">
+                {% with child=child.specific %}
+                    <p>{{ child.intro|richtext }}</p>
+                {% endwith %}
+              </div>
+            </div>
+        {% endfor %}
+    </div>
 {% endblock %}

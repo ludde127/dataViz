@@ -9,6 +9,7 @@ from modelcluster.fields import ParentalKey, ParentalManyToManyField
 from modelcluster.contrib.taggit import ClusterTaggableManager
 from taggit.models import TaggedItemBase
 
+
 from wagtail.models import Page, Orderable
 
 # https://docs.wagtail.org/en/v4.1.1/getting_started/tutorial.html
@@ -17,6 +18,7 @@ class NotePageTag(TaggedItemBase):
     content_object = ParentalKey(
         "NotesPage", related_name="tagged_items", on_delete=models.CASCADE
     )
+
 class NotesIndexPage(Page):
     #title = RichTextField(blank=False)
     intro = RichTextField(blank=True)
@@ -98,6 +100,11 @@ class NoteTagIndexPage(Page):
         # Update template context
         context = super().get_context(request)
         context['notepages'] = notepages
+        return context
+
+    def get_context(self, request):
+        context = super().get_context(request)
+        context.update(BASE_CONTEXT)
         return context
 
 from wagtail.snippets.models import register_snippet
