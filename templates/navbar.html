@@ -8,7 +8,7 @@
       <a class="navbar-brand" href="{% url 'index' %}">L. L<small>indholm</small></a>
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="{% url 'social_index' %}">Social</a>
+          <a class="nav-link" href="/pages/">Pages</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="{% url 'energy_index' %}">Energy</a>
@@ -19,6 +19,9 @@
         {% if request.user.is_staff %}
         <li class="nav-item">
             <a class="nav-link" href="/admin">Admin</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/cms">Wagtail Admin</a>
         </li>
         {% endif %}
       </ul>
