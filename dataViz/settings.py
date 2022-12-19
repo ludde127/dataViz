@@ -52,7 +52,23 @@ INSTALLED_APPS = [
     "blocks",
     "tags",
     #"reversion",
-    "energy_utils"
+    "energy_utils",
+    'wagtail.contrib.forms',
+    'wagtail.contrib.redirects',
+    'wagtail.embeds',
+    'wagtail.sites',
+    'wagtail.users',
+    'wagtail.snippets',
+    'wagtail.documents',
+    'wagtail.images',
+    'wagtail.search',
+    'wagtail.admin',
+    'wagtail',
+
+    'modelcluster',
+    'taggit',
+    'wagtail_home',
+    'study_notes'
 ]
 
 MIDDLEWARE = [
@@ -63,6 +79,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'wagtail.contrib.redirects.middleware.RedirectMiddleware',
+
 ]
 
 ROOT_URLCONF = 'dataViz.urls'
@@ -161,6 +179,9 @@ BASE_CONTEXT = {"email": "ludvig@llindholm.com",
                 "brand_name": "DataViz", "MEDIA_URL": MEDIA_URL}
 
 DATA_FILES = BASE_DIR.joinpath("DEVELOPMENT_STORAGE")
+WAGTAIL_SITE_NAME = 'DataViz'
+WAGTAILADMIN_BASE_URL = "llindholm.com/cms"
+
 
 if IS_PRODUCTION:
     import sentry_sdk
