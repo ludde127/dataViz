@@ -9,10 +9,13 @@
     margin-top: 2%;
     margin-bottom: 2%;
 }
+.text-container {margin-left: 8vw;margin-right: 8vw; padding: 2vw;border-left: 2px inset black;}
+
 .left-offset-textbox {margin-left: 15%;}
 @media screen and (max-width: 800px) {
     .content-container {width: 98%;}
     .left-offset-textbox {margin-left: 10px;}
+    .text-container {margin-left: 5px; padding: 5px;}
 }
 
 @media screen and (max-width: 1500px) and (min-width: 1300px) {
@@ -40,3 +43,5 @@ strong {text-decoration: underline;}
 button[type="submit"] {width: 100%; margin:auto; margin-top: 1vh;}
 
 .emp {font-style: italic;text-decoration: underline black;}
+.custom-image {border: yellow 10px;border-radius: 15px;}
+.tags {padding: 0.5vw;}

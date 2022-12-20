@@ -68,7 +68,9 @@ INSTALLED_APPS = [
     'modelcluster',
     'taggit',
     'wagtail_home',
-    'study_notes'
+    'study_notes',
+    'wagtailcodeblock',
+
 ]
 
 MIDDLEWARE = [
@@ -182,7 +184,23 @@ DATA_FILES = BASE_DIR.joinpath("DEVELOPMENT_STORAGE")
 WAGTAIL_SITE_NAME = 'DataViz'
 WAGTAILADMIN_BASE_URL = "llindholm.com/cms"
 
-
+WAGTAIL_CODE_BLOCK_LANGUAGES = (
+    ('bash', 'Bash/Shell'),
+    ('css', 'CSS'),
+    ('diff', 'diff'),
+    ('html', 'HTML'),
+    ('javascript', 'Javascript'),
+    ('json', 'JSON'),
+    ('python', 'Python'),
+    ('scss', 'SCSS'),
+    ('yaml', 'YAML'),
+    ('scala', 'Scala'),
+    ('rust', 'Rust'),
+    ('cpp', 'C++')
+)
+WAGTAIL_CODE_BLOCK_LINE_NUMBERS = True
+WAGTAIL_CODE_BLOCK_COPY_TO_CLIPBOARD = True
+WAGTAIL_CODE_BLOCK_THEME = 'okaidia'
 if IS_PRODUCTION:
     import sentry_sdk
     from sentry_sdk.integrations.django import DjangoIntegration
