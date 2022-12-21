@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% load wagtailcore_tags wagtailimages_tags %}
+{% load wagtailmath %}
 
 {% block body_class %}template-blogpage{% endblock %}
 
@@ -59,5 +60,9 @@
 
     </div>
 
+{% endblock %}
+
+{% block custom_scripts %}
+    <script src="{% mathjax %}"></script>
 {% endblock %}
 
