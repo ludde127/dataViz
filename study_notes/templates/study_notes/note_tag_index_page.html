@@ -2,23 +2,36 @@
 {% load wagtailcore_tags %}
 
 {% block content %}
+    <div class="text-container text-center">
 
     {% if request.GET.tag %}
-        <h4>Showing pages tagged "{{ request.GET.tag }}"</h4>
+        <h3>Showing pages tagged <span class="badge rounded-pill bg-info">{{ request.GET.tag }}</span></h3>
+
+    {% else %}
+        <h2>Got no Tag</h2>
     {% endif %}
+    <br>
+        <div class="text-container">
 
-    {% for page in notepages %}
+        <ol class="list-group list-group-numbered">
 
-          <p>
-              <strong><a href="{% pageurl page %}">{{ page.title }}</a></strong><br />
-              <small>Revised: {{ page.latest_revision_created_at }}</small><br />
-              {% if page.author %}
-                <p>By {{ page.author.profile }}</p>
-              {% endif %}
-          </p>
 
-    {% empty %}
-        No pages found with that tag.
-    {% endfor %}
+            {% for page in notepages %}
+
+            <li class="list-group-item d-flex justify-content-between align-items-start">
+                <div class="ms-2 me-auto">
+                  <div class="fw-bold"><a href="{% pageurl page %}" style="color: black;margin-bottom: 10px;">{{ page.title }}</a></div>
+                    <p>{{ page.specific.intro }}</p>
+                </div>
+            <span class="badge bg-primary rounded-pill"><small>Revised: {{ page.latest_revision_created_at }}</small></span>
+            </li>
+
+            {% empty %}
+                No pages found with that tag.
+            {% endfor %}
+        </ol>
+
+        </div>
+    </div>
 
 {% endblock %}

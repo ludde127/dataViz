@@ -8,13 +8,15 @@
 {% block content %}
 
     <div class="text-container">
-        <h1>{{ page.title }}</h1>
+        <h1>{{ page.title }}</h1><span style="margin-bottom: 2vh;" class="badge rounded-pill bg-secondary"><small>{{ page.date }}</small></span>
+
         {% if page.tags.all.count %}
-        <div class="tags">
+        <div class="tags inline-block">
             {% for tag in page.tags.all %}
-                <a class="badge rounded-pill bg-info text-dark" href="{% slugurl 'tags' %}?tag={{ tag }}">{{ tag }}</a>
+                <a class="badge rounded-pill bg-info text-dark" style="font-size: 2vh;" href="{% slugurl 'tags' %}?tag={{ tag }}">{{ tag }}</a>
             {% endfor %}
         </div>
+        <br>
         {% endif %}
         {% with categories=page.categories.all %}
             {% if categories %}
@@ -37,7 +39,7 @@
                 <h2>{{ block.value }}</h2>
             {% elif block.block_type == 'image' %}
                 <div class="custom-image" style="padding: 2vw;">
-                    {% image block.value width-600 %}
+                    {% image block.value height-800 %}
                 </div>
             {% else %}
                 <div>
@@ -46,6 +48,8 @@
                     </section>
                 </div>
             {% endif %}
+            <hr>
+
         {% endfor %}
 
         {% for item in page.gallery_images.all %}
@@ -54,9 +58,10 @@
                 <p>{{ item.caption }}</p>
             </div>
         {% endfor %}
-        <span class="badge rounded-pill bg-secondary">{{ page.date }}</span>
         <br>
-        <a href="{{ page.get_parent.url }}"><button type="button" class="btn btn-secondary">Return to all notes</button></a>
+        <div class="text-center">
+            <a href="{{ page.get_parent.url }}"><button type="button" class="btn btn-primary btn-lg">Return to all notes</button></a>
+        </div>
 
     </div>
 
