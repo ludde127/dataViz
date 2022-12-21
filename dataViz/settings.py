@@ -70,7 +70,7 @@ INSTALLED_APPS = [
     'wagtail_home',
     'study_notes',
     'wagtailcodeblock',
-
+    'wagtailmath',
 ]
 
 MIDDLEWARE = [

@@ -3,12 +3,12 @@ from django import forms
 from wagtail.blocks import RichTextBlock, CharBlock
 from wagtail.images.blocks import ImageChooserBlock
 from wagtailcodeblock.blocks import CodeBlock
+from wagtailmath.blocks import MathBlock # Have to do this weird fix https://github.com/JamesRamm/wagtailmath/issues/7
 
 from wagtail.admin.panels import FieldPanel, InlinePanel, MultiFieldPanel
 from django.db import models
 from wagtail.search import index
 
-import blocks
 from dataViz.settings import BASE_CONTEXT
 from modelcluster.fields import ParentalKey, ParentalManyToManyField
 from modelcluster.contrib.taggit import ClusterTaggableManager
@@ -54,7 +54,8 @@ class NotesPage(Page):
         ('heading', CharBlock(form_classname="title")),
         ('paragraph', RichTextBlock()),
         ('image', ImageChooserBlock()),
-        ('code', CodeBlock(label="Code"))
+        ('code', CodeBlock(label="Code")),
+        ('equation', MathBlock())
     ], use_json_field=True)
 
 
@@ -111,12 +112,9 @@ class NoteTagIndexPage(Page):
 
         # Update template context
         context = super().get_context(request)
-        context['notepages'] = notepages
-        return context
-
-    def get_context(self, request):
-        context = super().get_context(request)
         context.update(BASE_CONTEXT)
+
+        context['notepages'] = notepages
         return context
 
 from wagtail.snippets.models import register_snippet

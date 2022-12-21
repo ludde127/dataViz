@@ -9,7 +9,7 @@
     margin-top: 2%;
     margin-bottom: 2%;
 }
-.text-container {margin-left: 8vw;margin-right: 8vw; padding: 2vw;border-left: 2px inset black;}
+.text-container {margin-left: 8vw;margin-right: 8vw; padding: 2vw;border-left: 1px inset darkgray;}
 
 .left-offset-textbox {margin-left: 15%;}
 @media screen and (max-width: 800px) {
