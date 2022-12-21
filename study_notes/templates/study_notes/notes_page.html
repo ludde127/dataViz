@@ -34,7 +34,7 @@
 
         {% for block in page.body %}
             {% if block.block_type == 'heading' %}
-                <h1>{{ block.value }}</h1>
+                <h2>{{ block.value }}</h2>
             {% elif block.block_type == 'image' %}
                 <div class="custom-image" style="padding: 2vw;">
                     {% image block.value width-600 %}
