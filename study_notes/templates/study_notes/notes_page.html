@@ -41,6 +41,27 @@
                 <div class="custom-image" style="padding: 2vw;">
                     {% image block.value height-800 %}
                 </div>
+            {% elif block.block_type == 'quiz' %}
+                <div id="quiz-holder-{{ forloop.counter0 }}">
+                        <p>Placeholder Quiz</p>
+                        <div class="card text-center">
+                          <div class="card-header" id="quiz-title-{{ forloop.counter0 }}">
+                              {{ block.value.title }}
+                          </div>
+                          <div class="card-body">
+                            <p class="card-text" id="quiz-q-{{ forloop.counter0 }}"></p>
+                            <div class="inline-block">
+                                <label for="quiz-input-field-{{ forloop.counter0 }}">Answer&nbsp;</label><input id="quiz-input-field-{{ forloop.counter0 }}" type="text">
+                                <button class="btn btn-success" onclick="quizRunner({{ forloop.counter0 }})">Submit</button>
+
+                            </div>
+
+                          </div>
+                          <div class="card-footer text-muted" id="quiz-progress-{{ forloop.counter0 }}">
+                            Card x/all
+                          </div>
+                        </div>
+                </div>
             {% else %}
                 <div>
                     <section class="block-{{ block.block_type }}">
@@ -69,5 +90,22 @@
 
 {% block custom_scripts %}
     <script src="{% mathjax %}"></script>
+    <script lang="js">
+        let quiz_data = {{ quiz_json|safe }};
+        var current_card = 0; // TODO FIX THIS WILL ONLY WORK WITH ONE
+        function quizRunner(counter) {
+
+            let input = document.getElementById("quiz-input-field-"+counter).value;
+            current_card+=1;
+            if (quiz_data[current_card]["cards"].length > current_card) {
+                document.getElementById("quiz-q-"+counter).innerHTML = quiz_data[current_card]["cards"][current_card];
+            } else {
+                current_card=0;
+                document.getElementById("quiz-q-"+counter).innerHTML = "Slut på kort";
+            }
+
+            return false;
+        }
+    </script>
 {% endblock %}
 

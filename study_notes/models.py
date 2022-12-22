@@ -1,6 +1,6 @@
 from wagtail.fields import RichTextField, StreamField
 from django import forms
-from wagtail.blocks import RichTextBlock, CharBlock
+from wagtail.blocks import RichTextBlock, CharBlock, StructBlock, IntegerBlock, StreamBlock
 from wagtail.images.blocks import ImageChooserBlock
 from wagtailcodeblock.blocks import CodeBlock
 from wagtailmath.blocks import MathBlock # Have to do this weird fix https://github.com/JamesRamm/wagtailmath/issues/7
@@ -14,10 +14,20 @@ from modelcluster.fields import ParentalKey, ParentalManyToManyField
 from modelcluster.contrib.taggit import ClusterTaggableManager
 from taggit.models import TaggedItemBase
 
-
+import json
 from wagtail.models import Page, Orderable
 
 # https://docs.wagtail.org/en/v4.1.1/getting_started/tutorial.html
+
+class QuizCard(StructBlock):
+    question = CharBlock(required=True)
+    answer = CharBlock(required=True)
+    score = IntegerBlock(required=False)
+class ManyQuizCards(StructBlock):
+    title = CharBlock(max_length=200, required=False)
+    cards = StreamBlock([("Card", QuizCard()), ], use_json_field=True)
+    passing_score = IntegerBlock(required=False)
+
 
 class NotePageTag(TaggedItemBase):
     content_object = ParentalKey(
@@ -55,7 +65,8 @@ class NotesPage(Page):
         ('paragraph', RichTextBlock()),
         ('image', ImageChooserBlock()),
         ('code', CodeBlock(label="Code")),
-        ('equation', MathBlock())
+        ('equation', MathBlock()),
+        ("quiz", ManyQuizCards())
     ], use_json_field=True)
 
 
@@ -79,7 +90,20 @@ class NotesPage(Page):
         # Update context to include only published posts, ordered by reverse-chron
         context = super().get_context(request)
         context.update(BASE_CONTEXT)
+        quiz_json = {}
+        for (i, b) in enumerate(self.body.blocks_by_name("quiz")):
+            block = b.value
+            print(block)
+            inner = {"title": block["title"], "passing_score": block["passing_score"]}
+            cards = {}
+            for (j, card) in enumerate(block["cards"]):
+                cards[str(j)] = {"q": card.value["question"], "a": card.value["answer"]}
+            inner["cards"] = cards
 
+            quiz_json[str(i)] = inner
+        context["quiz_json"] = json.dumps(quiz_json)
+        context["quiz"] = quiz_json
+        print(context["quiz_json"])
         return context
 
     def main_image(self):
@@ -138,3 +162,5 @@ class NoteCategory(models.Model):
 
     class Meta:
         verbose_name_plural = 'Note categories'
+
+
