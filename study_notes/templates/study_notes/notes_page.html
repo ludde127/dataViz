@@ -2,7 +2,7 @@
 
 {% load wagtailcore_tags wagtailimages_tags %}
 {% load wagtailmath %}
-
+{% load custom_filters %}
 {% block body_class %}template-blogpage{% endblock %}
 
 {% block content %}
@@ -33,7 +33,6 @@
         {% endwith %}
 
         <div class="intro">{{ page.intro }}</div>
-
         {% for block in page.body %}
             {% if block.block_type == 'heading' %}
                 <h2>{{ block.value }}</h2>
@@ -42,23 +41,26 @@
                     {% image block.value height-800 %}
                 </div>
             {% elif block.block_type == 'quiz' %}
-                <div id="quiz-holder-{{ forloop.counter0 }}">
-                        <p>Placeholder Quiz</p>
+                <div id="quiz-holder-{{ block.id }} succ-fail-{{ block.id }}">
                         <div class="card text-center">
-                          <div class="card-header" id="quiz-title-{{ forloop.counter0 }}">
+                          <div class="card-header succ-fail-{{ block.id }}" id="quiz-title-{{ block.id }}">
                               {{ block.value.title }}
                           </div>
-                          <div class="card-body">
-                            <p class="card-text" id="quiz-q-{{ forloop.counter0 }}"></p>
-                            <div class="inline-block">
-                                <label for="quiz-input-field-{{ forloop.counter0 }}">Answer&nbsp;</label><input id="quiz-input-field-{{ forloop.counter0 }}" type="text">
-                                <button class="btn btn-success" onclick="quizRunner({{ forloop.counter0 }})">Submit</button>
+                          <div class="card-body succ-fail-{{ block.id }}" id = quiz-body-{{ block.id }}>
+                            <p class="card-text" id="quiz-q-{{ block.id }}">{{ quiz_starts|get_item:block.id }}</p>
+                            <form class="form-group" id="quiz-btn-{{ block.id }}" onsubmit="return quizzes.quizRunner('{{ block.id }}');">
 
+                                <label for="quiz-input-field-{{ block.id }}">Answer&nbsp;</label><input id="quiz-input-field-{{ block.id }}" type="text">
+                                <br>
+                                <button class="btn btn-success " type="button" onclick="quizzes.quizRunner('{{ block.id }}')">Submit</button>
+
+                            </form>
+                            <div class="inline-block" id="quiz-btn-next-{{ block.id }}" style="display:none;">
+                                <button class="btn btn-primary " type="button" onclick="quizzes.nextCard('{{ block.id }}')"><span id="quiz-btn-nextspan-{{ block.id }}">Next!</span></button>
                             </div>
-
                           </div>
-                          <div class="card-footer text-muted" id="quiz-progress-{{ forloop.counter0 }}">
-                            Card x/all
+                          <div class="card-footer succ-fail-{{ block.id }}">
+                              Card <span id="quiz-progress-{{ block.id }}">1</span>/{{ quiz_lengths|get_item:block.id }}
                           </div>
                         </div>
                 </div>
@@ -70,6 +72,7 @@
                 </div>
             {% endif %}
             <hr>
+
 
         {% endfor %}
 
@@ -92,20 +95,85 @@
     <script src="{% mathjax %}"></script>
     <script lang="js">
         let quiz_data = {{ quiz_json|safe }};
-        var current_card = 0; // TODO FIX THIS WILL ONLY WORK WITH ONE
-        function quizRunner(counter) {
-
-            let input = document.getElementById("quiz-input-field-"+counter).value;
-            current_card+=1;
-            if (quiz_data[current_card]["cards"].length > current_card) {
-                document.getElementById("quiz-q-"+counter).innerHTML = quiz_data[current_card]["cards"][current_card];
-            } else {
-                current_card=0;
-                document.getElementById("quiz-q-"+counter).innerHTML = "Slut på kort";
+        class Quizzes {
+            constructor() {
+                this.quizzes = {};
             }
 
-            return false;
+            nextCard(counter) {
+                document.getElementById("quiz-btn-next-"+counter).style.display = "none";
+
+
+                let quiz = quiz_data[counter];
+                let cards = quiz["cards"];
+                document.getElementById("quiz-btn-"+counter).style.display = "initial";
+                for (const div of document.getElementsByClassName("succ-fail-"+counter)) {
+                        let divClasses = div.classList;
+                        divClasses.remove("failure-quiz");
+
+                        divClasses.remove("correct-quiz")
+                    }
+
+                if (this.quizzes[counter] in cards) {
+                    document.getElementById("quiz-q-"+counter).innerHTML = cards[this.quizzes[counter]]["q"];
+                } else {
+                    this.quizzes[counter]=0;
+                    document.getElementById("quiz-progress-"+counter).innerHTML = 1+this.quizzes[counter];
+
+                    return this.nextCard(counter);
+                }
+
+                if (!(this.quizzes[counter]+1 in cards)) {
+                    document.getElementById("quiz-progress-"+counter).innerHTML = 1+this.quizzes[counter];
+
+                }
+                return false
+            }
+
+            quizRunner(counter) {
+                if (!(counter in this.quizzes)) {
+                    this.quizzes[counter] = 0;
+                }
+                let quiz = quiz_data[counter];
+                let input = document.getElementById("quiz-input-field-"+counter).value;
+                let cards = quiz["cards"];
+
+                if (this.quizzes[counter] in cards) {
+                    let correct = input === cards[this.quizzes[counter]]["a"];
+
+                    for (const div of document.getElementsByClassName("succ-fail-"+counter)) {
+                        let divClasses = div.classList;
+                        if (correct) {
+                            divClasses.remove("failure-quiz");
+                            divClasses.add("correct-quiz")
+                        } else {
+                            divClasses.add("failure-quiz");
+                            divClasses.remove("correct-quiz")
+                        }
+                    }
+                    document.getElementById("quiz-btn-"+counter).style.display = "none";
+                    if (correct) {
+                        document.getElementById("quiz-q-"+counter).innerHTML = "You answered correctly!"
+                    } else {
+                        document.getElementById("quiz-q-"+counter).innerHTML = "You answered incorrectly("+'"'+input+'"'+") correct was " + '"' + cards[this.quizzes[counter]]["a"] + '"';
+                    }
+
+                    document.getElementById("quiz-btn-next-"+counter).style.display = "inline";
+
+                    this.quizzes[counter]+=1;
+                    if (!(this.quizzes[counter] in cards)) {
+                        document.getElementById("quiz-btn-nextspan-"+counter).innerHTML = "Slut på kort, starta om!";
+                    } else {
+                        document.getElementById("quiz-btn-nextspan-"+counter).innerHTML = "Next";
+                    }
+                }
+            return false
         }
+        }
+
+        let quizzes = new Quizzes();
+
+
     </script>
 {% endblock %}
 

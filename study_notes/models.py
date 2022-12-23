@@ -91,18 +91,27 @@ class NotesPage(Page):
         context = super().get_context(request)
         context.update(BASE_CONTEXT)
         quiz_json = {}
+        quiz_start = {}
+        quiz_length = {}
         for (i, b) in enumerate(self.body.blocks_by_name("quiz")):
             block = b.value
             print(block)
             inner = {"title": block["title"], "passing_score": block["passing_score"]}
             cards = {}
+            first_question = ""
             for (j, card) in enumerate(block["cards"]):
+                if not first_question:
+                    first_question = card.value["question"]
                 cards[str(j)] = {"q": card.value["question"], "a": card.value["answer"]}
             inner["cards"] = cards
 
-            quiz_json[str(i)] = inner
-        context["quiz_json"] = json.dumps(quiz_json)
-        context["quiz"] = quiz_json
+            quiz_json[b.id] = inner
+            quiz_start[b.id] = first_question
+            quiz_length[b.id] = len(block["cards"])
+
+        context["quiz_json"] = quiz_json
+        context["quiz_starts"] = quiz_start
+        context["quiz_lengths"] = quiz_length
         print(context["quiz_json"])
         return context
 
