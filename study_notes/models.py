@@ -23,10 +23,18 @@ class QuizCard(StructBlock):
     question = CharBlock(required=True)
     answer = CharBlock(required=True)
     score = IntegerBlock(required=False)
+
+class FlashCard(StructBlock):
+    question = CharBlock(required=True)
+
 class ManyQuizCards(StructBlock):
     title = CharBlock(max_length=200, required=False)
     cards = StreamBlock([("Card", QuizCard()), ], use_json_field=True)
     passing_score = IntegerBlock(required=False)
+
+class ManyFlashcards(StructBlock):
+    title = CharBlock(max_length=200, required=False)
+    cards = StreamBlock([("Card", FlashCard()), ], use_json_field=True)
 
 
 class NotePageTag(TaggedItemBase):
@@ -66,7 +74,8 @@ class NotesPage(Page):
         ('image', ImageChooserBlock()),
         ('code', CodeBlock(label="Code")),
         ('equation', MathBlock()),
-        ("quiz", ManyQuizCards())
+        ("quiz", ManyQuizCards()),
+        ("flashcards", ManyFlashcards())
     ], use_json_field=True)
 
 
@@ -102,17 +111,40 @@ class NotesPage(Page):
             for (j, card) in enumerate(block["cards"]):
                 if not first_question:
                     first_question = card.value["question"]
-                cards[str(j)] = {"q": card.value["question"], "a": card.value["answer"]}
+                cards[str(j)] = {"q": card.value["question"], "a": card.value["answer"], "score": card.value["score"]}
             inner["cards"] = cards
 
             quiz_json[b.id] = inner
             quiz_start[b.id] = first_question
             quiz_length[b.id] = len(block["cards"])
 
+
+
+        flashcards_json = {}
+        flashcards_start = {}
+        flashcards_length = {}
+        for (i, b) in enumerate(self.body.blocks_by_name("flashcards")):
+            block = b.value
+            print(block)
+            inner = {"title": block["title"]}
+            flashcards = {}
+            first_question = ""
+            for (j, card) in enumerate(block["cards"]):
+                if not first_question:
+                    first_question = card.value["question"]
+                flashcards[str(j)] = {"q": card.value["question"]}
+            inner["cards"] = flashcards
+
+            flashcards_json[b.id] = inner
+            flashcards_start[b.id] = first_question
+            flashcards_length[b.id] = len(block["cards"])
+
+        quiz_json.update(flashcards_json)
+        quiz_start.update(flashcards_start)
+        quiz_length.update(flashcards_length)
         context["quiz_json"] = quiz_json
         context["quiz_starts"] = quiz_start
         context["quiz_lengths"] = quiz_length
-        print(context["quiz_json"])
         return context
 
     def main_image(self):

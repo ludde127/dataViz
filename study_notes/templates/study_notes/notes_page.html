@@ -40,19 +40,23 @@
                 <div class="custom-image" style="padding: 2vw;">
                     {% image block.value height-800 %}
                 </div>
-            {% elif block.block_type == 'quiz' %}
+            {% elif block.block_type == "quiz" %}
                 <div id="quiz-holder-{{ block.id }} succ-fail-{{ block.id }}">
                         <div class="card text-center">
-                          <div class="card-header succ-fail-{{ block.id }}" id="quiz-title-{{ block.id }}">
-                              {{ block.value.title }}
+                          <div class="card-header succ-fail-{{ block.id }} " id="quiz-title-{{ block.id }}">
+                              <span style="float: left;margin-left:3em;">{{ block.value.title }}</span>
+                              <div style="float:right;">
+                                  <span class="badge rounded-pill bg-success">Score: <span id="quiz-score-{{ block.id }}">0</span></span>
+                                  <span class="badge rounded-pill bg-danger">Passing Score: {{ block.value.passing_score }}</span>
+                              </div>
+
                           </div>
                           <div class="card-body succ-fail-{{ block.id }}" id = quiz-body-{{ block.id }}>
                             <p class="card-text" id="quiz-q-{{ block.id }}">{{ quiz_starts|get_item:block.id }}</p>
-                            <form class="form-group" id="quiz-btn-{{ block.id }}" onsubmit="return quizzes.quizRunner('{{ block.id }}');">
 
-                                <label for="quiz-input-field-{{ block.id }}">Answer&nbsp;</label><input id="quiz-input-field-{{ block.id }}" type="text">
-                                <br>
-                                <button class="btn btn-success " type="button" onclick="quizzes.quizRunner('{{ block.id }}')">Submit</button>
+                            <form class="form-group" id="quiz-btn-{{ block.id }}" onsubmit="return quizzes.quizRunner('{{ block.id }}');">
+                                <label for="quiz-input-field-{{ block.id }}">Answer&nbsp;</label><input id="quiz-input-field-{{ block.id }}" type="text" >
+                                <button class="btn btn-success" style="margin-top: -1%;" type="button" onclick="quizzes.quizRunner('{{ block.id }}')">Submit</button>
 
                             </form>
                             <div class="inline-block" id="quiz-btn-next-{{ block.id }}" style="display:none;">
@@ -61,9 +65,12 @@
                           </div>
                           <div class="card-footer succ-fail-{{ block.id }}">
                               Card <span id="quiz-progress-{{ block.id }}">1</span>/{{ quiz_lengths|get_item:block.id }}
+
                           </div>
                         </div>
                 </div>
+            {% elif block.block_type == "flashcards" %}
+                <p>Flashcard placeholder</p>
             {% else %}
                 <div>
                     <section class="block-{{ block.block_type }}">
@@ -95,9 +102,22 @@
     <script src="{% mathjax %}"></script>
     <script lang="js">
         let quiz_data = {{ quiz_json|safe }};
+
+        function validateAnswer(input, cardElement) {
+            input = String(input).trim();
+            cardElement = String(cardElement).trim();
+            if (input === cardElement) {
+                return true
+            } else if (input.toLowerCase() === cardElement.toLowerCase()) {
+                return true
+            }
+            return false
+        }
+
         class Quizzes {
             constructor() {
                 this.quizzes = {};
+                this.scores = {};
             }
 
             nextCard(counter) {
@@ -117,7 +137,7 @@
                 if (this.quizzes[counter] in cards) {
                     document.getElementById("quiz-q-"+counter).innerHTML = cards[this.quizzes[counter]]["q"];
                 } else {
-                    this.quizzes[counter]=0;
+                    this.begin(counter);
                     document.getElementById("quiz-progress-"+counter).innerHTML = 1+this.quizzes[counter];
 
                     return this.nextCard(counter);
@@ -130,18 +150,28 @@
                 return false
             }
 
+            begin(counter) {
+                this.quizzes[counter] = 0;
+                this.scores[counter] = 0;
+            }
+
             quizRunner(counter) {
                 if (!(counter in this.quizzes)) {
-                    this.quizzes[counter] = 0;
+                    this.begin(counter);
                 }
                 let quiz = quiz_data[counter];
-                let input = document.getElementById("quiz-input-field-"+counter).value;
+                let input_element = document.getElementById("quiz-input-field-"+counter);
+                let input = undefined;
+                if (!(input_element === undefined)) {
+                    input = input_element.value;
+                }
                 let cards = quiz["cards"];
 
                 if (this.quizzes[counter] in cards) {
-                    let correct = input === cards[this.quizzes[counter]]["a"];
-
-                    for (const div of document.getElementsByClassName("succ-fail-"+counter)) {
+                    if (!(input === null)) {
+                        let card = cards[this.quizzes[counter]];
+                        let correct = validateAnswer(input, card["a"]);
+                        for (const div of document.getElementsByClassName("succ-fail-"+counter)) {
                         let divClasses = div.classList;
                         if (correct) {
                             divClasses.remove("failure-quiz");
@@ -150,18 +180,27 @@
                             divClasses.add("failure-quiz");
                             divClasses.remove("correct-quiz")
                         }
+                        }
+                        document.getElementById("quiz-btn-"+counter).style.display = "none";
+                        if (correct) {
+                            this.scores[counter]= this.scores[counter] + parseInt(card["score"]);
+                            document.getElementById("quiz-q-"+counter).innerHTML = "You answered correctly!";
+                        } else {
+                            document.getElementById("quiz-q-"+counter).innerHTML = "You answered incorrectly("+'"'+input+'"'+") correct was " + '"' + cards[this.quizzes[counter]]["a"] + '"';
+                        }
                     }
-                    document.getElementById("quiz-btn-"+counter).style.display = "none";
-                    if (correct) {
-                        document.getElementById("quiz-q-"+counter).innerHTML = "You answered correctly!"
-                    } else {
-                        document.getElementById("quiz-q-"+counter).innerHTML = "You answered incorrectly("+'"'+input+'"'+") correct was " + '"' + cards[this.quizzes[counter]]["a"] + '"';
-                    }
+
 
                     document.getElementById("quiz-btn-next-"+counter).style.display = "inline";
 
                     this.quizzes[counter]+=1;
+                    document.getElementById("quiz-score-"+counter).innerHTML = this.scores[counter];
                     if (!(this.quizzes[counter] in cards)) {
+                        let passed = this.scores[counter] >= quiz["passing_score"];
+                        if (passed) {
+                            let temp = document.getElementById("quiz-q-"+counter).innerText;
+                            document.getElementById("quiz-q-"+counter).innerHTML = temp + " | You Passed!";
+                        }
                         document.getElementById("quiz-btn-nextspan-"+counter).innerHTML = "Slut på kort, starta om!";
                     } else {
                         document.getElementById("quiz-btn-nextspan-"+counter).innerHTML = "Next";
