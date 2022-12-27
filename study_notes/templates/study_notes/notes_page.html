@@ -8,12 +8,12 @@
 {% block content %}
 
     <div class="text-container">
-        <h1>{{ page.title }}</h1><span style="margin-bottom: 2vh;" class="badge rounded-pill bg-secondary"><small>{{ page.date }}</small></span>
+        <h1>{{ page.title }}</h1>
 
         {% if page.tags.all.count %}
-        <div class="tags inline-block">
+        <div class="tags d-flex justify-content-start flex-wrap">
             {% for tag in page.tags.all %}
-                <a class="badge rounded-pill bg-info text-dark" style="font-size: 2vh;" href="{% slugurl 'tags' %}?tag={{ tag }}">{{ tag }}</a>
+                <a class="badge rounded-pill bg-info text-dark" style="font-size: 0.8em;margin: 1% 1% 1% 1%" href="{% slugurl 'tags' %}?tag={{ tag }}">{{ tag }}</a>
             {% endfor %}
         </div>
         <br>
@@ -32,7 +32,7 @@
             {% endif %}
         {% endwith %}
 
-        <div class="intro">{{ page.intro }}</div>
+        <p class="intro">{{ page.intro }}</p>
         {% for block in page.body %}
             {% if block.block_type == 'heading' %}
                 <h2>{{ block.value }}</h2>
@@ -70,7 +70,10 @@
                         </div>
                 </div>
             {% elif block.block_type == "flashcards" %}
-                <p>Flashcard placeholder</p>
+                <p>Flashcard placeholder, flashcards will be added later.
+                    Each user will be able to post flashcards to notes pages and other users will then be able to subscribe to said flashcards.
+                    The user will then hava an individual flashcard page where all the users own and subscribed cards are shown and practicable.
+                </p>
             {% else %}
                 <div>
                     <section class="block-{{ block.block_type }}">
@@ -89,6 +92,10 @@
                 <p>{{ item.caption }}</p>
             </div>
         {% endfor %}
+        <small class="text-muted">Edited: {{ page.date }}</small>
+        <br>
+        <small class="text-muted">By {{ page.owner }}</small>
+        <br>
         <br>
         <div class="text-center">
             <a href="{{ page.get_parent.url }}"><button type="button" class="btn btn-primary btn-lg">Return to all notes</button></a>

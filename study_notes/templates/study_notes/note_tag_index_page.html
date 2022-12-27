@@ -18,12 +18,12 @@
 
             {% for page in notepages %}
 
-            <li class="list-group-item d-flex justify-content-between align-items-start">
+            <li class="list-group-item d-flex justify-content-between align-items-start flex-wrap">
                 <div class="ms-2 me-auto">
                   <div class="fw-bold"><a href="{% pageurl page %}" style="color: black;margin-bottom: 10px;">{{ page.title }}</a></div>
                     <p>{{ page.specific.intro }}</p>
                 </div>
-            <span class="badge bg-primary rounded-pill"><small>Revised: {{ page.latest_revision_created_at }}</small></span>
+            <span class="badge bg-primary rounded-pill"><small>{{ page.latest_revision_created_at.date }}</small></span>
             </li>
 
             {% empty %}
