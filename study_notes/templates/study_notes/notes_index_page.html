@@ -6,20 +6,24 @@
 {% block body_class %}template-notesindexpage{% endblock %}
 
 {% block content %}
-    <h1>{{ page.title }}</h1>
+    <div class="text-container">
+        <h1>{{ page.title }}</h1>
 
-    <div class="intro">{{ page.intro|richtext }}</div>
+        <div class="intro">{{ page.intro|richtext }}</div>
 
-    {% for post in note_pages %}
-        {% with post=post.specific %}
-            <h2 ><a href="{% pageurl post %}" style="color:black;">{{ post.title }}</a></h2>
-            {% with post.main_image as main_image %}
-                {% if main_image %}{% image main_image fill-160x100 class="boxed-image" %}{% endif %}
+        {% for post in note_pages %}
+            {% with post=post.specific %}
+                <hr>
+                <h2 ><a href="{% pageurl post %}" style="color:black;">{{ post.title }}</a></h2>
+                {% with post.main_image as main_image %}
+                    {% if main_image %}{% image main_image fill-160x100 class="boxed-image" %}{% endif %}
+                {% endwith %}
+
+                {{ post.intro }}
+
             {% endwith %}
+        {% endfor %}
+    </div>
 
-            {{ post.intro }}
-
-        {% endwith %}
-    {% endfor %}
 
 {% endblock %}
