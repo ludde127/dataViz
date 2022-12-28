@@ -63,22 +63,12 @@ class NotesIndexPage(Page):
         context = super().get_context(request)
         context.update(BASE_CONTEXT)
 
-        user = request.user
         pages = self.get_children().live()
 
-        # Unauthenticated users can only see public pages
-        if not user.is_authenticated:
-            pages = pages.public()
-        # Superusers can implicitly view all pages. No further filtering required
-        elif not user.is_superuser:
-            # Get all page ids where the user's groups do NOT have access to
-            disallowed_ids = PageViewRestriction.objects.exclude(groups__id=user.groups.all()).values_list("NotePage",
-                                                                                                           flat=True)
-            # Exclude all pages with disallowed ids
-            pages = pages.exclude(id__in=disallowed_ids)
 
 
-        context['note_pages'] = pages.order_by('-first_published_at')
+
+        context['note_pages'] = filter_non_viewable(request.user, pages.order_by('-first_published_at'), "NotePage")
         return context
 
 
