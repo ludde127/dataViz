@@ -13,7 +13,8 @@ class UserForm(forms.Form):
 
         psw_match = self.data["password"] == self.data["confirm_password"]
         if not psw_match:
-            raise ValidationError("The passwords did not match each other.", code="invalid")
+            return False
+            #raise ValidationError("The passwords did not match each other.", code="invalid")
         return valid and psw_match
 
 

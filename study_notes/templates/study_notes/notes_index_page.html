@@ -14,7 +14,7 @@
         {% for post in note_pages %}
             {% with post=post.specific %}
                 <hr>
-                <h2 ><a href="{% pageurl post %}" style="color:black;">{{ post.title }}</a></h2>
+                <h2 ><a href="{% pageurl post %}" style="color:black;">{{ post.title }}{% include "icons/arrow-right.html" %}</a></h2>
                 {% with post.main_image as main_image %}
                     {% if main_image %}{% image main_image fill-160x100 class="boxed-image" %}{% endif %}
                 {% endwith %}

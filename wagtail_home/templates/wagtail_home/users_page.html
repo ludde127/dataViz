@@ -13,7 +13,7 @@
         {% for child in page.get_children %}
             <hr>
 
-            <a href="{% pageurl child %}" style="color: black;"><h3>{{ child.title }}{% include "icons/arrow-right.html" %}</h3></a>
+            <a href="{% pageurl child %}" style="color: black;"><h3>{{ child.owner }}{% include "icons/arrow-right.html" %}</h3></a>
 
             {% with child=child.specific %}
                 <p>{{ child.intro|richtext }}</p>

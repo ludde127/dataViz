@@ -1,6 +1,7 @@
 :root {
     --blue-border: 5px solid var(--blue);
-    --blue: rgb(10,3, 160)
+    --blue: rgb(10,3, 160);
+    --light-blue: rgba(0,142,255,0.7);
 }
 
 .content-container {
@@ -85,7 +86,29 @@ hr + p:first-letter {
 
 .intro:first-letter {font-size: 1.2em; border-left: var(--blue-border);padding-left: 10px;}
 
-h1 {text-decoration-line: underline;text-decoration-color: var(--blue);}
+h1 {
+    text-decoration-line: underline;text-decoration-color: var(--blue);
+}
+
+.text-container > h2 {
+    text-decoration-line: underline;text-decoration-color: var(--blue)
+}
+
+.text-container > h3 {
+    text-decoration-line: underline;text-decoration-color: var(--blue)
+}
+
+.text-container > h4 {
+    text-decoration-line: underline;text-decoration-color: var(--blue)
+}
+
 
 
 .block-paragraph > p:first-letter {border-left: var(--blue-border);padding-left: 10px;}
+
+.bi-arrow-right-square {margin-left: 10px;}
+
+.blue-border {
+    border-color: var(--light-blue);
+    border-width: 2px;
+}

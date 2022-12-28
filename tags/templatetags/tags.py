@@ -20,3 +20,8 @@ def get_comments(content, user: NormalUser):
 @register.filter
 def bool_to_int(boolean):
     return 1 if boolean else 0
+
+
+@register.simple_tag
+def path_to_breadcrumb_list(path: str):
+    return [p.capitalize() for p in path.split("/")[1:]]

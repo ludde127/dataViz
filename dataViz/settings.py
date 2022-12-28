@@ -201,6 +201,12 @@ WAGTAIL_CODE_BLOCK_LANGUAGES = (
 WAGTAIL_CODE_BLOCK_LINE_NUMBERS = True
 WAGTAIL_CODE_BLOCK_COPY_TO_CLIPBOARD = True
 WAGTAIL_CODE_BLOCK_THEME = 'okaidia'
+
+LOGIN_URL = "/users/login"
+WAGTAIL_FRONTEND_LOGIN_URL = LOGIN_URL
+PASSWORD_REQUIRED_TEMPLATE = 'wagtail_home/password_required.html'
+
+
 if IS_PRODUCTION:
     import sentry_sdk
     from sentry_sdk.integrations.django import DjangoIntegration
