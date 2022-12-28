@@ -3,6 +3,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 # Create your models here.
 from django.db.models import Q
+from wagtail.snippets.models import register_snippet
 
 
 class User(AbstractUser):
@@ -10,13 +11,14 @@ class User(AbstractUser):
     switch is annoying."""
     pass
 
+@register_snippet
 
 class NormalUser(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    profile_image = models.ImageField("Profile picture", width_field=128, height_field=128,
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=False)
+    profile_image = models.ImageField("Profile picture",
                                       null=True, default=None, blank=True)
     description = models.TextField("Description about me.", max_length=1000)
-    api_access_count = models.IntegerField("Amount of calls to the api", default=0)
+    api_access_count = models.IntegerField("Amount of calls to the api", default=0, editable=False)
 
     def __str__(self):
         return self.user.__str__()

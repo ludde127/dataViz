@@ -17,7 +17,7 @@
     <link rel="stylesheet" type="text/css" href="{% static 'stylesheet.css' %}">
     <link rel="icon" type="image/x-icon" href="{% static "favicon.ico" %}">
 </head>
-<body>
+<body class="{% block body_class %}{% endblock %}">
     {% include "navbar.html" %}
     {% bootstrap_messages %}
     <div class="container-fluid" style="width: 100%;">
