@@ -25,7 +25,7 @@
         </li>
         {% endif %}
       </ul>
-      <form class="" style="margin:auto;margin-right: 0;margin-left:1vw;">
+      <form class="" style="margin:auto;margin-right: 0;margin-left:1vw;" onsubmit="return searcher.search();">
          {% csrf_token %}
           <div class="row justify-content-center align-items-center">
               {% if not user.is_authenticated %}
@@ -50,7 +50,7 @@
               {% endif %}
 
               <div class="col-sm-auto" style="margin-right: 0;">
-                 <input class="form-control" type="search" placeholder="Search" style="max-width: 200px;width: 80%;" aria-label="Search">
+                 <input class="form-control" type="search" id="search-bar" placeholder="Search" style="max-width: 200px;width: 80%;" aria-label="Search">
               </div>
               <div class="col-sm-auto" style="margin-left: 0;">
                  <button class="btn btn-info" style="margin: auto;margin-top: 2%;margin-left: 0;float:left;" type="submit">Search</button>

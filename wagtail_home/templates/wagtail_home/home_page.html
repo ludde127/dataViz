@@ -10,7 +10,8 @@
         <br>
         <p>{{ page.body|richtext }}</p>
 
-        {% for child in page.get_children %}
+        {% for child in children %}
+            {% if child.title != "Tags" %}
             <hr>
 
             <a href="{% pageurl child %}" style="color: black;"><h3>{{ child.title }}{% include "icons/arrow-right.html" %}</h3></a>
@@ -19,7 +20,7 @@
                 <p>{{ child.intro|richtext }}</p>
             {% endwith %}
             <br>
-
+            {% endif %}
         {% endfor %}
     </div>
 {% endblock %}

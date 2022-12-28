@@ -7,7 +7,9 @@ from wagtail.core.models import Page
 from wagtail.core.fields import RichTextField
 from wagtail.admin.edit_handlers import FieldPanel
 
-def filter_non_viewable(user, qs, page_model_string):
+def filter_non_viewable(user, qs, page_model_string=""):
+    """Given a user and a queryset this filters all the objects not viewable by the user. If page_model_string is supplied
+    only matching models are given (I THINK)"""
     pages = qs.live()
 
     # Unauthenticated users can only see public pages
@@ -33,23 +35,27 @@ class HomePage(Page):
     def get_context(self, request):
         context = super().get_context(request)
         context.update(BASE_CONTEXT)
+        context["children"] = filter_non_viewable(request.user, self.get_children(), "")
         return context
 
 class UserPage(Page):
     intro = models.CharField(blank=True, max_length=250)
     body = RichTextField(blank=True)
 
+    user = models.OneToOneField(to="users.User", on_delete=models.SET_NULL, null=True, editable=True)
     subpage_types = []
     parent_page_type = ["wagtail_home.UsersPage"]
 
     content_panels = Page.content_panels + [
         FieldPanel('body', classname="full"),
+        FieldPanel('user', classname="full"),
     ]
 
     def get_context(self, request):
         context = super().get_context(request)
         context.update(BASE_CONTEXT)
         return context
+
 
 class UsersPage(Page):
     body = RichTextField(blank=True)
