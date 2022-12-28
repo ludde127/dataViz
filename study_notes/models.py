@@ -9,13 +9,17 @@ from wagtail.admin.panels import FieldPanel, InlinePanel, MultiFieldPanel
 from django.db import models
 from wagtail.search import index
 
+import users.models
 from dataViz.settings import BASE_CONTEXT
 from modelcluster.fields import ParentalKey, ParentalManyToManyField
 from modelcluster.contrib.taggit import ClusterTaggableManager
 from taggit.models import TaggedItemBase
 
 import json
-from wagtail.models import Page, Orderable
+from wagtail.models import Page, Orderable, PageViewRestriction
+
+from wagtail_home.models import filter_non_viewable
+
 
 # https://docs.wagtail.org/en/v4.1.1/getting_started/tutorial.html
 
@@ -41,13 +45,13 @@ class NotePageTag(TaggedItemBase):
     subpage_types = []
     parent_page_type = ["wagtail_home.HomePage"]
     content_object = ParentalKey(
-        "NotesPage", related_name="tagged_items", on_delete=models.CASCADE
+        "NotePage", related_name="tagged_items", on_delete=models.CASCADE
     )
 
 class NotesIndexPage(Page):
     #title = RichTextField(blank=False)
     intro = RichTextField(blank=True)
-    subpage_types = ["study_notes.NotesPage"]
+    subpage_types = ["study_notes.NotePage"]
     parent_page_type = ["wagtail_home.HomePage"]
     content_panels = Page.content_panels + [
         #FieldPanel('titel'),
@@ -59,12 +63,26 @@ class NotesIndexPage(Page):
         context = super().get_context(request)
         context.update(BASE_CONTEXT)
 
-        notepages = self.get_children().live().order_by('-first_published_at')
-        context['note_pages'] = notepages
+        user = request.user
+        pages = self.get_children().live()
+
+        # Unauthenticated users can only see public pages
+        if not user.is_authenticated:
+            pages = pages.public()
+        # Superusers can implicitly view all pages. No further filtering required
+        elif not user.is_superuser:
+            # Get all page ids where the user's groups do NOT have access to
+            disallowed_ids = PageViewRestriction.objects.exclude(groups__id=user.groups.all()).values_list("NotePage",
+                                                                                                           flat=True)
+            # Exclude all pages with disallowed ids
+            pages = pages.exclude(id__in=disallowed_ids)
+
+
+        context['note_pages'] = pages.order_by('-first_published_at')
         return context
 
 
-class NotesPage(Page):
+class NotePage(Page):
     date = models.DateField("Post date")
     intro = models.CharField(max_length=250)
     #body = RichTextField(blank=True)
@@ -160,8 +178,8 @@ class NotesPage(Page):
 
 class NotePageGalleryImage(Orderable):
     subpage_types = []
-    parent_page_type = ["study_notes.NotesPage"]
-    page = ParentalKey(NotesPage, on_delete=models.CASCADE, related_name='gallery_images')
+    parent_page_type = ["study_notes.NotePage"]
+    page = ParentalKey(NotePage, on_delete=models.CASCADE, related_name='gallery_images')
     image = models.ForeignKey(
         'wagtailimages.Image', on_delete=models.CASCADE, related_name='+'
     )
@@ -184,8 +202,9 @@ class NoteTagIndexPage(Page):
 
         tag = request.GET.get('tag')
         if tag:
-            notepages = NotesPage.objects.filter(tags__name=tag)
-            context['notepages'] = notepages
+            pages = NotePage.objects.live().filter(tags__name=tag)
+
+            context['notepages'] = filter_non_viewable(request.user, pages, "NotePage")
 
         # Update template context
         context.update(BASE_CONTEXT)
