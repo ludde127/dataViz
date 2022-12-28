@@ -38,6 +38,8 @@ class ManyFlashcards(StructBlock):
 
 
 class NotePageTag(TaggedItemBase):
+    subpage_types = []
+    parent_page_type = ["wagtail_home.HomePage"]
     content_object = ParentalKey(
         "NotesPage", related_name="tagged_items", on_delete=models.CASCADE
     )
@@ -45,7 +47,8 @@ class NotePageTag(TaggedItemBase):
 class NotesIndexPage(Page):
     #title = RichTextField(blank=False)
     intro = RichTextField(blank=True)
-
+    subpage_types = ["study_notes.NotesPage"]
+    parent_page_type = ["wagtail_home.HomePage"]
     content_panels = Page.content_panels + [
         #FieldPanel('titel'),
         FieldPanel('intro')
@@ -67,7 +70,8 @@ class NotesPage(Page):
     #body = RichTextField(blank=True)
     tags = ClusterTaggableManager(through=NotePageTag, blank=True)
     categories = ParentalManyToManyField('study_notes.NoteCategory', blank=True)
-
+    subpage_types = []
+    parent_page_type = ["study_notes.NotesIndexPage"]
     body = StreamField([
         ('heading', CharBlock(form_classname="title")),
         ('paragraph', RichTextBlock()),
@@ -155,6 +159,8 @@ class NotesPage(Page):
             return None
 
 class NotePageGalleryImage(Orderable):
+    subpage_types = []
+    parent_page_type = ["study_notes.NotesPage"]
     page = ParentalKey(NotesPage, on_delete=models.CASCADE, related_name='gallery_images')
     image = models.ForeignKey(
         'wagtailimages.Image', on_delete=models.CASCADE, related_name='+'
@@ -168,18 +174,22 @@ class NotePageGalleryImage(Orderable):
 
 
 class NoteTagIndexPage(Page):
+    subpage_types = []
+    parent_page_type = ["wagtail_home.HomePage"]
 
     def get_context(self, request):
+        context = super().get_context(request)
 
         # Filter by tag
+
         tag = request.GET.get('tag')
-        notepages = NotesPage.objects.filter(tags__name=tag)
+        if tag:
+            notepages = NotesPage.objects.filter(tags__name=tag)
+            context['notepages'] = notepages
 
         # Update template context
-        context = super().get_context(request)
         context.update(BASE_CONTEXT)
 
-        context['notepages'] = notepages
         return context
 
 from wagtail.snippets.models import register_snippet

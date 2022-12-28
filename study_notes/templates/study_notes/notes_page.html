@@ -8,7 +8,11 @@
 {% block content %}
 
     <div class="text-container">
-        <h1>{{ page.title }}</h1>
+        <h1>
+            <a href="{{ page.get_parent.url }}" style="text-decoration: none;margin-right: 10px;">{% include 'icons/return-left.html' %}</a>
+
+            {{ page.title }}
+        </h1>
 
         {% if page.tags.all.count %}
         <div class="tags d-flex justify-content-start flex-wrap">
@@ -42,7 +46,7 @@
                 </div>
             {% elif block.block_type == "quiz" %}
                 <div id="quiz-holder-{{ block.id }} succ-fail-{{ block.id }}">
-                        <div class="card text-center">
+                        <div class="card text-center blue-border">
                           <div class="card-header succ-fail-{{ block.id }} " id="quiz-title-{{ block.id }}">
                               <span style="float: left;margin-left:3em;">{{ block.value.title }}</span>
                               <div style="float:right;">
@@ -55,8 +59,9 @@
                             <p class="card-text" id="quiz-q-{{ block.id }}">{{ quiz_starts|get_item:block.id }}</p>
 
                             <form class="form-group" id="quiz-btn-{{ block.id }}" onsubmit="return quizzes.quizRunner('{{ block.id }}');">
-                                <label for="quiz-input-field-{{ block.id }}">Answer&nbsp;</label><input id="quiz-input-field-{{ block.id }}" type="text" >
-                                <button class="btn btn-success" style="margin-top: -1%;" type="button" onclick="quizzes.quizRunner('{{ block.id }}')">Submit</button>
+
+                                <label style="display:none;" for="quiz-input-field-{{ block.id }}">Answer&nbsp;</label><input id="quiz-input-field-{{ block.id }}" style="max-width:400px;" placeholder="Answer..." aria-label="Answer" type="text" >
+                                <button class="btn btn-success" style="" type="button" onclick="quizzes.quizRunner('{{ block.id }}')">Submit</button>
 
                             </form>
                             <div class="inline-block" id="quiz-btn-next-{{ block.id }}" style="display:none;">
