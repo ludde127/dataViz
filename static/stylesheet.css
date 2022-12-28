@@ -104,7 +104,7 @@ h1 {
 
 
 
-.block-paragraph > p:first-letter {border-left: var(--blue-border);padding-left: 10px;}
+.block-paragraph > p:first-child:first-letter {border-left: var(--blue-border);padding-left: 10px;}
 
 .bi-arrow-right-square {margin-left: 10px;}
 
