@@ -12,7 +12,6 @@ class User(AbstractUser):
     pass
 
 @register_snippet
-
 class NormalUser(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=False)
     profile_image = models.ImageField("Profile picture",

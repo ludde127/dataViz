@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% load wagtailcore_tags wagtailimages_tags %}
 {% load wagtailmath %}
@@ -75,10 +76,33 @@
                         </div>
                 </div>
             {% elif block.block_type == "flashcards" %}
-                <p>Flashcard placeholder, flashcards will be added later.
-                    Each user will be able to post flashcards to notes pages and other users will then be able to subscribe to said flashcards.
-                    The user will then hava an individual flashcard page where all the users own and subscribed cards are shown and practicable.
-                </p>
+                <div id="quiz-holder-{{ block.id }} succ-fail-{{ block.id }}">
+                        <div class="card text-center blue-border">
+                          <div class="card-header succ-fail-{{ block.id }} " id="quiz-title-{{ block.id }}">
+                              <span style="float: left;margin-left:3em;">{{ block.value.title }}</span>
+                              <div style="float:right;">
+                                  <span class="badge rounded-pill bg-success">Score: <span id="quiz-score-{{ block.id }}">0</span></span>
+                              </div>
+                          </div>
+                          <div class="card-body succ-fail-{{ block.id }}" id = quiz-body-{{ block.id }}>
+                            <p class="card-text" id="quiz-q-{{ block.id }}">{{ flash_starts|get_item:block.id }}</p>
+
+                            <form class="form-group" id="quiz-btn-{{ block.id }}" onsubmit="return flashcards.quizRunner('{{ block.id }}');">
+                                <button class="btn btn-success" style="" type="button" onclick="flashcards.quizRunner('{{ block.id }}')">Next</button>
+                            </form>
+                            <div class="btn-group btn-group-lg" id="quiz-btn-next-{{ block.id }}" style="display:none;">
+                                <button class="btn btn-danger btn-lg" type="button" onclick="flashcards.nextCard('{{ block.id }}', -1)">{% include "icons/thumbs-down.html" %}</button>
+                                <button class="btn btn-primary btn-lg" type="button" onclick="flashcards.nextCard('{{ block.id }}', 0)"><span id="quiz-btn-nextspan-{{ block.id }}">{% include "icons/fastforward-circle.html" %}</span><span id="quiz-btn-restartspan-{{ block.id }}">{% include "icons/restart-circle.html" %}</span></button>
+
+                                <button class="btn btn-success btn-lg" type="button" onclick="flashcards.nextCard('{{ block.id }}', 1)">{% include "icons/thumbs-up.html" %}</button>
+                            </div>
+                          </div>
+                          <div class="card-footer succ-fail-{{ block.id }}">
+                              Card <span id="quiz-progress-{{ block.id }}">1</span>/{{ flash_lengths|get_item:block.id }}
+
+                          </div>
+                        </div>
+                </div>
             {% else %}
                 <div>
                     <section class="block-{{ block.block_type }}">
@@ -112,119 +136,14 @@
 
 {% block custom_scripts %}
     <script src="{% mathjax %}"></script>
+    <script src="{% static 'js/quiz.js' %}" lang="js">
+    </script>
+    <script src="{% static 'js/flashcards.js' %}" lang="js">
+    </script>
     <script lang="js">
-        let quiz_data = {{ quiz_json|safe }};
 
-        function validateAnswer(input, cardElement) {
-            input = String(input).trim();
-            cardElement = String(cardElement).trim();
-            if (input === cardElement) {
-                return true
-            } else if (input.toLowerCase() === cardElement.toLowerCase()) {
-                return true
-            }
-            return false
-        }
-
-        class Quizzes {
-            constructor() {
-                this.quizzes = {};
-                this.scores = {};
-            }
-
-            nextCard(counter) {
-                document.getElementById("quiz-btn-next-"+counter).style.display = "none";
-
-
-                let quiz = quiz_data[counter];
-                let cards = quiz["cards"];
-                document.getElementById("quiz-btn-"+counter).style.display = "initial";
-                for (const div of document.getElementsByClassName("succ-fail-"+counter)) {
-                        let divClasses = div.classList;
-                        divClasses.remove("failure-quiz");
-
-                        divClasses.remove("correct-quiz")
-                    }
-
-                if (this.quizzes[counter] in cards) {
-                    document.getElementById("quiz-q-"+counter).innerHTML = cards[this.quizzes[counter]]["q"];
-                } else {
-                    this.begin(counter);
-                    document.getElementById("quiz-progress-"+counter).innerHTML = 1+this.quizzes[counter];
-
-                    return this.nextCard(counter);
-                }
-
-                if (!(this.quizzes[counter]+1 in cards)) {
-                    document.getElementById("quiz-progress-"+counter).innerHTML = 1+this.quizzes[counter];
-
-                }
-                return false
-            }
-
-            begin(counter) {
-                this.quizzes[counter] = 0;
-                this.scores[counter] = 0;
-            }
-
-            quizRunner(counter) {
-                if (!(counter in this.quizzes)) {
-                    this.begin(counter);
-                }
-                let quiz = quiz_data[counter];
-                let input_element = document.getElementById("quiz-input-field-"+counter);
-                let input = undefined;
-                if (!(input_element === undefined)) {
-                    input = input_element.value;
-                }
-                let cards = quiz["cards"];
-
-                if (this.quizzes[counter] in cards) {
-                    if (!(input === null)) {
-                        let card = cards[this.quizzes[counter]];
-                        let correct = validateAnswer(input, card["a"]);
-                        for (const div of document.getElementsByClassName("succ-fail-"+counter)) {
-                        let divClasses = div.classList;
-                        if (correct) {
-                            divClasses.remove("failure-quiz");
-                            divClasses.add("correct-quiz")
-                        } else {
-                            divClasses.add("failure-quiz");
-                            divClasses.remove("correct-quiz")
-                        }
-                        }
-                        document.getElementById("quiz-btn-"+counter).style.display = "none";
-                        if (correct) {
-                            this.scores[counter]= this.scores[counter] + parseInt(card["score"]);
-                            document.getElementById("quiz-q-"+counter).innerHTML = "You answered correctly!";
-                        } else {
-                            document.getElementById("quiz-q-"+counter).innerHTML = "You answered incorrectly("+'"'+input+'"'+") correct was " + '"' + cards[this.quizzes[counter]]["a"] + '"';
-                        }
-                    }
-
-
-                    document.getElementById("quiz-btn-next-"+counter).style.display = "inline";
-
-                    this.quizzes[counter]+=1;
-                    document.getElementById("quiz-score-"+counter).innerHTML = this.scores[counter];
-                    if (!(this.quizzes[counter] in cards)) {
-                        let passed = this.scores[counter] >= quiz["passing_score"];
-                        if (passed) {
-                            let temp = document.getElementById("quiz-q-"+counter).innerText;
-                            document.getElementById("quiz-q-"+counter).innerHTML = temp + " | You Passed!";
-                        }
-                        document.getElementById("quiz-btn-nextspan-"+counter).innerHTML = "Slut på kort, starta om!";
-                    } else {
-                        document.getElementById("quiz-btn-nextspan-"+counter).innerHTML = "Next";
-                    }
-                }
-            return false
-        }
-        }
-
-        let quizzes = new Quizzes();
-
-
+        let quizzes = new Quizzes({{ quiz_json|safe }});
+        let flashcards = new Flashcards({{ flash_json|safe }});
     </script>
 {% endblock %}
 

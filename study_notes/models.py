@@ -1,3 +1,4 @@
+from wagtail import hooks
 from wagtail.fields import RichTextField, StreamField
 from django import forms
 from wagtail.blocks import RichTextBlock, CharBlock, StructBlock, IntegerBlock, StreamBlock
@@ -8,6 +9,7 @@ from wagtailmath.blocks import MathBlock # Have to do this weird fix https://git
 from wagtail.admin.panels import FieldPanel, InlinePanel, MultiFieldPanel
 from django.db import models
 from wagtail.search import index
+from wagtail.snippets.models import register_snippet
 
 import users.models
 from dataViz.settings import BASE_CONTEXT
@@ -16,7 +18,7 @@ from modelcluster.contrib.taggit import ClusterTaggableManager
 from taggit.models import TaggedItemBase
 
 import json
-from wagtail.models import Page, Orderable, PageViewRestriction
+from wagtail.models import Page, Orderable
 
 from wagtail_home.models import filter_non_viewable
 
@@ -28,18 +30,18 @@ class QuizCard(StructBlock):
     answer = CharBlock(required=True)
     score = IntegerBlock(required=False)
 
-class FlashCard(StructBlock):
-    question = CharBlock(required=True)
-
 class ManyQuizCards(StructBlock):
     title = CharBlock(max_length=200, required=False)
     cards = StreamBlock([("Card", QuizCard()), ], use_json_field=True)
     passing_score = IntegerBlock(required=False)
 
+class FlashCard(StructBlock):
+    question = CharBlock(required=True, max_length=300)
+    answer = CharBlock(required=True)
+
 class ManyFlashcards(StructBlock):
     title = CharBlock(max_length=200, required=False)
     cards = StreamBlock([("Card", FlashCard()), ], use_json_field=True)
-
 
 class NotePageTag(TaggedItemBase):
     subpage_types = []
@@ -107,16 +109,13 @@ class NotePage(Page):
         InlinePanel('gallery_images', label="Gallery images"),
     ]
 
-    def get_context(self, request):
-        # Update context to include only published posts, ordered by reverse-chron
-        context = super().get_context(request)
-        context.update(BASE_CONTEXT)
+    def get_quiz(self):
         quiz_json = {}
         quiz_start = {}
         quiz_length = {}
         for (i, b) in enumerate(self.body.blocks_by_name("quiz")):
             block = b.value
-            print(block)
+            # print(block)
             inner = {"title": block["title"], "passing_score": block["passing_score"]}
             cards = {}
             first_question = ""
@@ -129,31 +128,45 @@ class NotePage(Page):
             quiz_json[b.id] = inner
             quiz_start[b.id] = first_question
             quiz_length[b.id] = len(block["cards"])
+        return quiz_json, quiz_start, quiz_length
 
-
-
+    def get_flashcards(self):
         flashcards_json = {}
         flashcards_start = {}
         flashcards_length = {}
         for (i, b) in enumerate(self.body.blocks_by_name("flashcards")):
             block = b.value
-            print(block)
+
+            # print(block)
             inner = {"title": block["title"]}
             flashcards = {}
             first_question = ""
             for (j, card) in enumerate(block["cards"]):
                 if not first_question:
                     first_question = card.value["question"]
-                flashcards[str(j)] = {"q": card.value["question"]}
+                flashcards[str(j)] = {"q": card.value["question"], "a": card.value["answer"], "id": card.id}
             inner["cards"] = flashcards
 
             flashcards_json[b.id] = inner
             flashcards_start[b.id] = first_question
             flashcards_length[b.id] = len(block["cards"])
+        return flashcards_json, flashcards_start, flashcards_length
 
-        quiz_json.update(flashcards_json)
-        quiz_start.update(flashcards_start)
-        quiz_length.update(flashcards_length)
+
+    def get_context(self, request):
+        # Update context to include only published posts, ordered by reverse-chron
+        context = super().get_context(request)
+        context.update(BASE_CONTEXT)
+
+        print(self.id)
+
+        quiz_json, quiz_start, quiz_length = self.get_quiz()
+        flashcards_json, flashcards_start, flashcards_length = self.get_flashcards()
+
+        context["flash_json"] = flashcards_json
+        context["flash_starts"] = flashcards_start
+        context["flash_lengths"] = flashcards_length
+
         context["quiz_json"] = quiz_json
         context["quiz_starts"] = quiz_start
         context["quiz_lengths"] = quiz_length
@@ -201,7 +214,6 @@ class NoteTagIndexPage(Page):
 
         return context
 
-from wagtail.snippets.models import register_snippet
 
 
 @register_snippet
@@ -223,4 +235,9 @@ class NoteCategory(models.Model):
     class Meta:
         verbose_name_plural = 'Note categories'
 
-
+def get_notepage_from_id(request, id):
+    resp = filter_non_viewable(request.user, NotePage.objects, "NotePage")
+    try:
+        return resp.get(id__exact=id)
+    except NotePage.DoesNotExist:
+        return None
