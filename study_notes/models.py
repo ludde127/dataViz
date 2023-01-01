@@ -1,4 +1,7 @@
+import datetime
+
 from wagtail import hooks
+from wagtail.api import APIField
 from wagtail.fields import RichTextField, StreamField
 from django import forms
 from wagtail.blocks import RichTextBlock, CharBlock, StructBlock, IntegerBlock, StreamBlock
@@ -24,6 +27,33 @@ from wagtail_home.models import filter_non_viewable
 
 
 # https://docs.wagtail.org/en/v4.1.1/getting_started/tutorial.html
+
+@register_snippet
+class FlashCardHistory(models.Model):
+    user = models.ForeignKey(to="users.User",on_delete=models.CASCADE, default=None)
+    flashcard_id = models.UUIDField("Id of flashcard")
+    last_shown = models.DateTimeField("Last shown to user", auto_now=True, editable=False)
+    times_shown = models.IntegerField("Amount of times shown to user", default=0)
+    score = models.FloatField("The score", default=0)
+
+    class Meta:
+        unique_together = ["user", "flashcard_id"]
+    def increment(self, score_change=0, save=True):
+        self.score += score_change
+        self.times_shown += 1
+        if save:
+            self.save()
+@register_snippet
+class FlashCardGroupReference(models.Model):
+    notepage_id = models.IntegerField() # Id of the notepage the flashcards are in
+    flashcards_id = models.UUIDField("Id of the flashcard group")
+    subscription = models.BooleanField(default=False)
+    flashcard_histories = models.ManyToManyField(FlashCardHistory)
+
+@register_snippet
+class UsersFlashcards(models.Model):
+    flashcard_groups = models.ManyToManyField(FlashCardGroupReference)
+    user = models.OneToOneField("users.User", on_delete=models.CASCADE)
 
 class QuizCard(StructBlock):
     question = CharBlock(required=True)
@@ -92,6 +122,9 @@ class NotePage(Page):
         ("flashcards", ManyFlashcards())
     ], use_json_field=True, collapsed=True)
 
+    api_fields = [
+        APIField("body"),
+    ]
 
     search_fields = Page.search_fields + [
         index.SearchField('intro'),
@@ -130,12 +163,20 @@ class NotePage(Page):
             quiz_length[b.id] = len(block["cards"])
         return quiz_json, quiz_start, quiz_length
 
-    def get_flashcards(self):
+    def get_flashcards(self, request):
         flashcards_json = {}
         flashcards_start = {}
         flashcards_length = {}
+        subscribed_cards = set()
         for (i, b) in enumerate(self.body.blocks_by_name("flashcards")):
             block = b.value
+            try:
+                # This could be used later.
+                reference = request.user.usersflashcards.flashcard_groups.get(flashcards_id=b.id, notepage_id=self.id, subscription=True)
+            except (UsersFlashcards.DoesNotExist, FlashCardGroupReference.DoesNotExist):
+                pass
+            else:
+                subscribed_cards.add(b.id)
 
             # print(block)
             inner = {"title": block["title"]}
@@ -150,7 +191,7 @@ class NotePage(Page):
             flashcards_json[b.id] = inner
             flashcards_start[b.id] = first_question
             flashcards_length[b.id] = len(block["cards"])
-        return flashcards_json, flashcards_start, flashcards_length
+        return flashcards_json, flashcards_start, flashcards_length, list(subscribed_cards)
 
 
     def get_context(self, request):
@@ -158,11 +199,11 @@ class NotePage(Page):
         context = super().get_context(request)
         context.update(BASE_CONTEXT)
 
-        print(self.id)
 
         quiz_json, quiz_start, quiz_length = self.get_quiz()
-        flashcards_json, flashcards_start, flashcards_length = self.get_flashcards()
-
+        flashcards_json, flashcards_start, flashcards_length, subscribed_cards = self.get_flashcards(request)
+        context["page_id"] = self.id
+        context["subscribed_cards"] = subscribed_cards
         context["flash_json"] = flashcards_json
         context["flash_starts"] = flashcards_start
         context["flash_lengths"] = flashcards_length

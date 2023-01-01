@@ -1,19 +1,62 @@
-import json
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseNotFound, HttpResponse, HttpResponseForbidden
+from .models import UsersFlashcards, NotePage, FlashCardGroupReference
+from .models import filter_non_viewable
 
-from django.http import HttpResponse, HttpResponseForbidden
-from django.shortcuts import render
-from study_notes.models import NotePage, get_notepage_from_id
-from wagtail_home.models import filter_non_viewable
+def get_notepage_or_404(request, id: str|int):
+    try:
+        page = filter_non_viewable(request.user, NotePage.objects, "notepage").get(id__exact=id)
+        assert page
+        return page
+    except NotePage.DoesNotExist:
+        # User is not allowed to visit this page (and thus its flashcards)...
+        return HttpResponseNotFound()
 
-# Create your views here.
-def get_flashcards(request, notepage_id: str):
-    page: NotePage = get_notepage_from_id(request, notepage_id)
-    if page is None:
-        return HttpResponseForbidden()
-    _json, start, length = page.get_flashcards()
-    combined = dict()
-    combined["quiz_json"] = _json
-    combined["quiz_starts"] = start
-    combined["quiz_lengths"] = length
+def toggle_subscription(request, subscribe=True):
+    if request.GET and request.user.is_authenticated:
+        # http://127.0.0.1:8000/api-v2/change/subscribe/?page=11&flashcards=47b3d79e-189a-4bd8-99b1-45e2d75106f9
+        page = request.GET.get("page")
+        flashcard_group = request.GET.get("flashcards")
 
-    return HttpResponse(json.dumps(combined), content_type='application/json')
+        get_notepage_or_404(request, page)
+        users_flashcards,created_new = UsersFlashcards.objects.get_or_create(user=request.user)
+        flashcards,created_new = users_flashcards.flashcard_groups.get_or_create(notepage_id=page, flashcards_id=flashcard_group)
+
+        if flashcards.subscription != subscribe: # False and True per example
+            flashcards.subscription = not flashcards.subscription
+        users_flashcards.flashcard_groups.add(flashcards)
+        flashcards.save()
+
+        users_flashcards.save()
+
+        return HttpResponse("Subscribed", status=200)
+
+    elif not request.user.is_authenticated:
+        return HttpResponseForbidden(status=500)
+
+    else:
+        return HttpResponseNotFound()
+def subscribe_to_flashcard_group(request):
+    return toggle_subscription(request, True)
+
+def unsubscribe_to_flashcard_group(request):
+    return toggle_subscription(request, False)
+def add_flashcard_interactions(request):
+    if request.GET and request.user.is_authenticated:
+        #http://127.0.0.1:8000/api-v2/change/flashcard-interaction/?page=11&flashcards=47b3d79e-189a-4bd8-99b1-45e2d75106f9&flashcard=fadcd3c1-4520-4a06-8c2d-538d794e9aaf&score=1
+        page = request.GET.get("page")
+        flashcard_group = request.GET.get("flashcards")
+        flashcard = request.GET.get("flashcard")
+        score = request.GET.get("score")
+        try:
+            assert str(score) in "-10" and str(score) != "-"# HAHAAHHA THIS FUNNY
+        except AssertionError:
+            return HttpResponseForbidden()
+
+        get_notepage_or_404(request, page)
+        users_flashcards = UsersFlashcards.objects.get_or_create(user=request.user)[0]
+        flashcards: FlashCardGroupReference = users_flashcards.flashcard_groups.get_or_create(
+            notepage_id= page, flashcards_id=flashcard_group)[0]
+        histories = flashcards.flashcard_histories.get_or_create(user= request.user, flashcard_id =flashcard)[0]
+        histories.increment(int(score))
+        return HttpResponse("Added interaction", status=200)

@@ -20,30 +20,6 @@ class NormalUser(models.Model):
                                       null=True, default=None, blank=True)
     description = models.TextField("Description about me.", max_length=1000)
     api_access_count = models.IntegerField("Amount of calls to the api", default=0, editable=False)
-    subscribed_flashcards = models.JSONField("Subscribed flashcards", max_length=10000, default=dict)
-
-    def parse_subscribed_flashcards(self):
-        return json.loads(self.subscribed_flashcards)
-
-    def __save_new_subscribed_flashcard_dictionary(self, new_dict: dict[str, set[str]]):
-        self.subscribed_flashcards = json.dumps(new_dict)
-        self.save()
-
-    def add_flashcard_subscription(self, notepage_id, flashcards_id):
-        already_present = self.parse_subscribed_flashcards()
-        if notepage_id in already_present:
-            already_present[notepage_id].add(flashcards_id)
-        else:
-            already_present[notepage_id] = {flashcards_id}
-
-        self.__save_new_subscribed_flashcard_dictionary(already_present)
-
-    def remove_flashcard_subscription(self, notepage_id, flashcards_id):
-        already_present = self.parse_subscribed_flashcards()
-        if notepage_id in already_present:
-            already_present[notepage_id].remove(flashcards_id)
-
-        self.__save_new_subscribed_flashcard_dictionary(already_present)
 
     def __str__(self):
         return self.user.__str__()

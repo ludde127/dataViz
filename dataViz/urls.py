@@ -35,7 +35,7 @@ urlpatterns = [
     path('admin/', admin_site.urls),
     path("users/", include("users.urls")),
     path("energy/", include("energy_utils.urls")),
-    path("api/notes/", include("study_notes.urls"))
+    path("api-v2/", include("study_notes.urls"))
 ]
 urlpatterns.extend(wagtail_urlpatterns)
 

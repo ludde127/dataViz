@@ -98,7 +98,14 @@
                           <div class="card-header succ-fail-{{ block.id }} " id="quiz-title-{{ block.id }}">
                               <span style="float: left;margin-left:3em;">{{ block.value.title }}</span>
                               <form class="form-group" id="quiz-subscribe-btn-{{ block.id }}" onsubmit="return flashcards.subscribeToggle('{{ block.id }}');">
-                                <button class="btn btn-success" style="" type="button" onclick="flashcards.subscribeToggle('{{ block.id }}')"><span id="quiz-subscribe-span-{{ block.id }}">|||Subscribe|||</span></button>
+                                <button class="btn btn-success" style="" type="button" onclick="flashcards.subscribeToggle('{{ block.id }}')">
+                                    <span id="quiz-subscribe-span-{{ block.id }}">
+                                        {% if block.id in subscribed_cards %}
+                                        Unsubscribe
+                                        {% else %}
+                                        Subscribe
+                                        {% endif %}
+                                    </span></button>
                             </form>
                               <div style="float:right;">
                                   <span class="badge rounded-pill bg-success">Score: <span id="quiz-score-{{ block.id }}">0</span></span>
@@ -163,7 +170,7 @@
     <script lang="js">
 
         let quizzes = new Quizzes({{ quiz_json|safe }});
-        let flashcards = new Flashcards({{ flash_json|safe }});
+        let flashcards = new Flashcards({{ flash_json|safe }}, {{ page_id|safe }}, {{ subscribed_cards|safe }});
     </script>
 {% endblock %}
 
