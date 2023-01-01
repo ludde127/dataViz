@@ -1,8 +1,9 @@
 class Flashcards {
-    constructor(flash_data) {
+    constructor(flash_data, subscribed_flashcards) {
         this.quiz_data = flash_data;
         this.quizzes = {};
         this.scores = {};
+        this.subscribed = subscribed_flashcards;
     }
     nextCard(counter, correct) {
 
@@ -75,4 +76,8 @@ class Flashcards {
         }
     return false
 }
+
+    subscribeToggle(counter) {
+
+    }
 }

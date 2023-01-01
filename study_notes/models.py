@@ -80,17 +80,17 @@ class NotePage(Page):
     #body = RichTextField(blank=True)
     tags = ClusterTaggableManager(through=NotePageTag, blank=True)
     categories = ParentalManyToManyField('study_notes.NoteCategory', blank=True)
-    subpage_types = []
-    parent_page_type = ["study_notes.NotesIndexPage"]
+    subpage_types = ["study_notes.NotePage",]
+    parent_page_type = ["study_notes.NotesIndexPage",]
     body = StreamField([
         ('heading', CharBlock(form_classname="title")),
-        ('paragraph', RichTextBlock()),
+        ('richtext', RichTextBlock()),
         ('image', ImageChooserBlock()),
         ('code', CodeBlock(label="Code")),
         ('equation', MathBlock()),
         ("quiz", ManyQuizCards()),
         ("flashcards", ManyFlashcards())
-    ], use_json_field=True)
+    ], use_json_field=True, collapsed=True)
 
 
     search_fields = Page.search_fields + [

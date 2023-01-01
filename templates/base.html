@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 {# Load the tag library #}
 {% load bootstrap5 %}
 
@@ -5,8 +6,6 @@
 {% bootstrap_css %}
 {% bootstrap_javascript %}
 {% load static %}
-<!DOCTYPE html>
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -20,7 +19,7 @@
 <body class="{% block body_class %}{% endblock %}">
     {% include "navbar.html" %}
     {% bootstrap_messages %}
-    <div class="container-fluid" style="width: 100%;">
+    <div style="width: 100%;">
     {% block content %}
 
     {% endblock %}

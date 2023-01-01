@@ -7,14 +7,31 @@
 {% block body_class %}template-blogpage{% endblock %}
 
 {% block content %}
+    {% with page.get_parent as parent %}
 
     <div class="text-container">
         <h1>
-            <a href="{{ page.get_parent.url }}" style="text-decoration: none;margin-right: 10px;">{% include 'icons/return-left.html' %}</a>
+            <a class="icon-in-header" aria-label="Go back" href="{% pageurl parent %}">{% include 'icons/return-left.html' %}</a>
 
             {{ page.title }}
-        </h1>
 
+            {% if request.user == page.owner %}
+                <a class="icon-in-header" style="color: black;" target="_blank" aria-label="Edit" href="/cms/pages/{{ page.id }}/edit">{% include 'icons/edit.html' %}</a>
+            {% endif %}
+        </h1>
+        <ul class="nav nav-tabs" style="font-size: 1.1em;">
+            <li class="nav-item">
+                <a class="nav-link" aria-current="page" href="{% pageurl parent %}" aria-disabled="true">{{ parent.title }}</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link disabled active" aria-current="page" href="#" aria-disabled="true">{{ page.title }}</a>
+            </li>
+            {% for child in page.get_children %}
+              <li class="nav-item">
+                <a class="nav-link" aria-current="page" href="{% pageurl child %}">{{ child.title }}</a>
+              </li>
+            {% endfor %}
+        </ul>
         {% if page.tags.all.count %}
         <div class="tags d-flex justify-content-start flex-wrap">
             {% for tag in page.tags.all %}
@@ -80,6 +97,9 @@
                         <div class="card text-center blue-border">
                           <div class="card-header succ-fail-{{ block.id }} " id="quiz-title-{{ block.id }}">
                               <span style="float: left;margin-left:3em;">{{ block.value.title }}</span>
+                              <form class="form-group" id="quiz-subscribe-btn-{{ block.id }}" onsubmit="return flashcards.subscribeToggle('{{ block.id }}');">
+                                <button class="btn btn-success" style="" type="button" onclick="flashcards.subscribeToggle('{{ block.id }}')"><span id="quiz-subscribe-span-{{ block.id }}">|||Subscribe|||</span></button>
+                            </form>
                               <div style="float:right;">
                                   <span class="badge rounded-pill bg-success">Score: <span id="quiz-score-{{ block.id }}">0</span></span>
                               </div>
@@ -127,11 +147,11 @@
         <br>
         <br>
         <div class="text-center">
-            <a href="{{ page.get_parent.url }}"><button type="button" class="btn btn-primary btn-lg">Return to all notes</button></a>
+            <a href="{% pageurl parent %}"><button type="button" class="btn btn-primary btn-lg">Go back to "{{ parent.title }}"</button></a>
         </div>
 
     </div>
-
+    {% endwith %}
 {% endblock %}
 
 {% block custom_scripts %}

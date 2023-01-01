@@ -17,8 +17,6 @@
 }
 .gradient-bg {  background: rgb(6,0,110);
                 background: linear-gradient(120deg, rgba(6,0,110,1) 0%, rgba(1,1,206,1) 35%, rgba(69,91,175,1) 52%, rgba(0,212,255,1) 100%);
-                border-top: 1px inset black;
-                border-bottom: 1px inset black;
 }
 
 .blue_left_border {border-left: 5px solid rgb(10,3, 160);padding-left: 10px;}
@@ -112,3 +110,5 @@ h1 {
     border-color: var(--light-blue);
     border-width: 2px;
 }
+
+.icon-in-header {text-decoration: none;margin-right: 10px;margin-left: 10px;}
