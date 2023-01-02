@@ -50,11 +50,6 @@ class FlashCardGroupReference(models.Model):
     subscription = models.BooleanField(default=False)
     flashcard_histories = models.ManyToManyField(FlashCardHistory)
 
-@register_snippet
-class UsersFlashcards(models.Model):
-    flashcard_groups = models.ManyToManyField(FlashCardGroupReference)
-    user = models.OneToOneField("users.User", on_delete=models.CASCADE)
-
 class QuizCard(StructBlock):
     question = CharBlock(required=True)
     answer = CharBlock(required=True)
@@ -76,6 +71,7 @@ class ManyFlashcards(StructBlock):
 class NotePageTag(TaggedItemBase):
     subpage_types = []
     parent_page_type = ["wagtail_home.HomePage"]
+
     content_object = ParentalKey(
         "NotePage", related_name="tagged_items", on_delete=models.CASCADE
     )
@@ -275,6 +271,41 @@ class NoteCategory(models.Model):
 
     class Meta:
         verbose_name_plural = 'Note categories'
+
+
+@register_snippet
+class UsersFlashcards(models.Model):
+    flashcard_groups = models.ManyToManyField(FlashCardGroupReference)
+    user = models.OneToOneField("users.User", on_delete=models.CASCADE)
+
+    def get_subscribed_flashcards(self):
+        """Create a flat list of all the cards."""
+        flashcard_list = list()
+        subscribed = [l for l in self.flashcard_groups.filter(subscription=True)]
+
+        notepages = set([l.notepage_id for l in subscribed])
+
+        flashcard_blocks_to_get_per_notepage: dict[str, set[str]] = dict()
+        for n_id in notepages:
+            flashcard_blocks_to_get_per_notepage[n_id] = set([str(l.flashcards_id) for l in subscribed if l.notepage_id == n_id])
+
+        for notepage_id in notepages:
+            to_render = [e for e in NotePage.objects.get(id__exact=notepage_id).body.blocks_by_name("flashcards")
+                         if str(e.id) in flashcard_blocks_to_get_per_notepage[notepage_id]]
+
+            print("RENDER LEN", len(to_render))
+            for b in to_render:
+                block = b.value
+                string_block_id = str(b.id)
+                # print(block)
+                for card in block["cards"]:
+
+                    flashcard_list.append({"q": card.value["question"], "a": card.value["answer"],
+                                          "id": card.id, "block_id": string_block_id, "notepage_id": notepage_id})
+
+        print(flashcard_list)
+        return flashcard_list
+
 
 def get_notepage_from_id(request, id):
     resp = filter_non_viewable(request.user, NotePage.objects, "NotePage")

@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% load custom_filters %}
+
+{% block content %}
+    <div class="text-container">
+    {% if are_there_cards %}
+    <div id="quiz-holder-user-subscribed-cards succ-fail-user-subscribed-cards">
+        <div class="card text-center blue-border">
+          <div class="card-header succ-fail-user-subscribed-cards " id="quiz-title-user-subscribed-cards">
+              <span style="float: left;margin-left:3em;">All subscribed cards</span>
+              <div style="float:right;">
+                  <span class="badge rounded-pill bg-success">Score: <span id="quiz-score-user-subscribed-cards">0</span></span>
+              </div>
+          </div>
+          <div class="card-body succ-fail-user-subscribed-cards" id = quiz-body-user-subscribed-cards>
+            <p class="card-text" id="quiz-q-user-subscribed-cards">{{ first_card_q }}</p>
+
+            <form class="form-group" id="quiz-btn-user-subscribed-cards" onsubmit="return flashcards.quizRunner();">
+                <button class="btn btn-success" style="" type="button" onclick="flashcards.quizRunner()">Next</button>
+            </form>
+            <div class="btn-group btn-group-lg" id="quiz-btn-next-user-subscribed-cards" style="display:none;">
+                <button class="btn btn-danger btn-lg" type="button" onclick="flashcards.nextCard(-1)">{% include "icons/thumbs-down.html" %}</button>
+                <button class="btn btn-primary btn-lg" type="button" onclick="flashcards.nextCard(0)"><span id="quiz-btn-nextspan-user-subscribed-cards">{% include "icons/fastforward-circle.html" %}</span><span id="quiz-btn-restartspan-user-subscribed-cards">{% include "icons/restart-circle.html" %}</span></button>
+
+                <button class="btn btn-success btn-lg" type="button" onclick="flashcards.nextCard(1)">{% include "icons/thumbs-up.html" %}</button>
+            </div>
+          </div>
+          <div class="card-footer succ-fail-user-subscribed-cards">
+              Card <span id="quiz-progress-user-subscribed-cards">1</span>/{{ amount_of_cards }}
+
+          </div>
+        </div>
+    </div>
+    {% else %}
+        <p>No cards found :C</p>
+    {% endif %}
+    </div>
+
+{% endblock %}
+
+{% block custom_scripts %}
+    <script src="{% static 'js/user_flashcards.js' %}" lang="js">
+    </script>
+    <script lang="js">
+        let flashcards = new UserFlashcards({{ flash_card_list|safe }});
+    </script>
+{% endblock %}
+

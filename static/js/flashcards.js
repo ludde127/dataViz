@@ -84,26 +84,28 @@ class Flashcards {
 }
 
     subscribeToggle(block_id) {
-        if (this.subscribed_cards.includes(block_id)) {
-            //Unsubscribe
-            // http://127.0.0.1:8000/api-v2/change/subscribe/?page=11&flashcards=47b3d79e-189a-4bd8-99b1-45e2d75106f9
-            fetch(`/api-v2/change/unsubscribe/?page=${this.page_id}&flashcards=${block_id}`).then(function (response) {
-                if (response.status == 200) {
-                    document.getElementById("quiz-subscribe-span-"+block_id).innerHTML = "Subscribe";
+        if (!(this.page_id === "None")) { // Am in user flashcards page
+            if (this.subscribed_cards.includes(block_id)) {
+                //Unsubscribe
+                // http://127.0.0.1:8000/api-v2/change/subscribe/?page=11&flashcards=47b3d79e-189a-4bd8-99b1-45e2d75106f9
+                fetch(`/api-v2/change/unsubscribe/?page=${this.page_id}&flashcards=${block_id}`).then(function (response) {
+                    if (response.status == 200) {
+                        document.getElementById("quiz-subscribe-span-" + block_id).innerHTML = "Subscribe";
+                    }
+                });
+                const index = this.subscribed_cards.indexOf(block_id);
+                if (index > -1) { // only splice array when item is found
+                    this.subscribed_cards.splice(index, 1); // 2nd parameter means remove one item only
                 }
-            });
-            const index = this.subscribed_cards.indexOf(block_id);
-            if (index > -1) { // only splice array when item is found
-              this.subscribed_cards.splice(index, 1); // 2nd parameter means remove one item only
-            }
 
-        } else {
-            fetch(`/api-v2/change/subscribe/?page=${this.page_id}&flashcards=${block_id}`).then(function (response) {
-                if (response.status == 200) {
-                    document.getElementById("quiz-subscribe-span-"+block_id).innerHTML = "Unsubscribe";
-                }
-            });
-            this.subscribed_cards.push(block_id);
+            } else {
+                fetch(`/api-v2/change/subscribe/?page=${this.page_id}&flashcards=${block_id}`).then(function (response) {
+                    if (response.status == 200) {
+                        document.getElementById("quiz-subscribe-span-" + block_id).innerHTML = "Unsubscribe";
+                    }
+                });
+                this.subscribed_cards.push(block_id);
+            }
         }
     }
 }

@@ -1,8 +1,11 @@
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseNotFound, HttpResponse, HttpResponseForbidden
+from django.shortcuts import render
+
+from dataViz.settings import BASE_CONTEXT
 from .models import UsersFlashcards, NotePage, FlashCardGroupReference
 from .models import filter_non_viewable
-
+from users.models import User
 def get_notepage_or_404(request, id: str|int):
     try:
         page = filter_non_viewable(request.user, NotePage.objects, "notepage").get(id__exact=id)
@@ -60,3 +63,20 @@ def add_flashcard_interactions(request):
         histories = flashcards.flashcard_histories.get_or_create(user= request.user, flashcard_id =flashcard)[0]
         histories.increment(int(score))
         return HttpResponse("Added interaction", status=200)
+
+
+def user_profile(request, user):
+    if user_object := User.objects.get(username__exact=user):
+        context = BASE_CONTEXT.copy()
+        flash_card_list = user_object.usersflashcards.\
+            get_subscribed_flashcards()
+        try:
+            context["flash_card_list"] = flash_card_list
+            context["first_card_q"] = flash_card_list[0]["q"]
+            context["amount_of_cards"] = len(flash_card_list)
+            context["are_there_cards"] = True
+
+        except IndexError:
+            context["are_there_cards"] = False
+        return render(request, "study_notes/user_profile.html", context=context)
+    return HttpResponseNotFound()
