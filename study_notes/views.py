@@ -8,7 +8,7 @@ from .models import filter_non_viewable
 from users.models import User
 def get_notepage_or_404(request, id):
     try:
-        page = filter_non_viewable(request.user, NotePage.objects, "notepage").get(id__exact=id)
+        page = filter_non_viewable(request.user, NotePage.objects).get(id__exact=id)
         assert page
         return page
     except NotePage.DoesNotExist:
@@ -65,13 +65,14 @@ def add_flashcard_interactions(request):
         json_data = {"id": histories.flashcard_id, "score": histories.score, "times_displayed": histories.times_shown, "weight": histories.weight()}
 
         return JsonResponse(data=json_data, status=200)
+    return HttpResponseForbidden()
 
-
+@login_required
 def user_profile(request, user):
     if user_object := User.objects.get(username__exact=user):
         context = BASE_CONTEXT.copy()
         context["are_there_cards"] = False
-
+        context["user"] = user
         try:
             flash_card_list = user_object.usersflashcards.\
                 get_subscribed_flashcards(request)
