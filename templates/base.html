@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 {# Load the tag library #}
 {% load bootstrap5 %}
 
@@ -5,8 +6,6 @@
 {% bootstrap_css %}
 {% bootstrap_javascript %}
 {% load static %}
-<!DOCTYPE html>
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -15,12 +14,12 @@
     <title>{{ title }}</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito">
     <link rel="stylesheet" type="text/css" href="{% static 'stylesheet.css' %}">
-    <link rel="icon" type="image/x-icon" href="{% static "favicon.ico" %}">
+    <link rel="icon" type="image/x-icon" href="{% static "website_logo/favicon.ico" %}">
 </head>
 <body class="{% block body_class %}{% endblock %}">
     {% include "navbar.html" %}
     {% bootstrap_messages %}
-    <div class="container-fluid" style="width: 100%;">
+    <div style="width: 100%;">
     {% block content %}
 
     {% endblock %}

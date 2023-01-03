@@ -1,3 +1,5 @@
+import json
+
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.contrib.auth.models import AbstractUser
@@ -12,7 +14,6 @@ class User(AbstractUser):
     pass
 
 @register_snippet
-
 class NormalUser(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=False)
     profile_image = models.ImageField("Profile picture",
