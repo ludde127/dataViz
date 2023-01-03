@@ -97,25 +97,25 @@
                         <div class="card text-center blue-border">
                           <div class="card-header succ-fail-{{ block.id }} " id="quiz-title-{{ block.id }}">
                               <span style="float: left;margin-left:3em;">{{ block.value.title }}</span>
-                              <form class="form-group" id="quiz-subscribe-btn-{{ block.id }}" onsubmit="return flashcards.subscribeToggle('{{ block.id }}');">
-                                <button class="btn btn-success" style="" type="button" onclick="flashcards.subscribeToggle('{{ block.id }}')">
+
+                              <div style="float:right;">
+                                  <button class="badge rounded-pill gradient-bg" id="quiz-subscribe-btn-{{ block.id }}" onclick="return flashcards.subscribeToggle('{{ block.id }}');">
                                     <span id="quiz-subscribe-span-{{ block.id }}">
                                         {% if block.id in subscribed_cards %}
                                         Unsubscribe
                                         {% else %}
                                         Subscribe
                                         {% endif %}
-                                    </span></button>
-                            </form>
-                              <div style="float:right;">
-                                  <span class="badge rounded-pill bg-success">Score: <span id="quiz-score-{{ block.id }}">0</span></span>
+                                    </span>
+                                  </button>
+                                  <span class="badge rounded-pill gradient-bg">Score: <span id="quiz-score-{{ block.id }}">0</span></span>
                               </div>
                           </div>
                           <div class="card-body succ-fail-{{ block.id }}" id = quiz-body-{{ block.id }}>
                             <p class="card-text" id="quiz-q-{{ block.id }}">{{ flash_starts|get_item:block.id }}</p>
 
                             <form class="form-group" id="quiz-btn-{{ block.id }}" onsubmit="return flashcards.quizRunner('{{ block.id }}');">
-                                <button class="btn btn-success" style="" type="button" onclick="flashcards.quizRunner('{{ block.id }}')">Next</button>
+                                <button class="btn gradient-bg-btn" style="" type="button" onclick="flashcards.quizRunner('{{ block.id }}')">Next</button>
                             </form>
                             <div class="btn-group btn-group-lg" id="quiz-btn-next-{{ block.id }}" style="display:none;">
                                 <button class="btn btn-danger btn-lg" type="button" onclick="flashcards.nextCard('{{ block.id }}', -1)">{% include "icons/thumbs-down.html" %}</button>

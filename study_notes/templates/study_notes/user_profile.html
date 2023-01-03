@@ -9,18 +9,18 @@
     <br>
     {% if are_there_cards %}
         <div id="quiz-holder-user-subscribed-cards succ-fail-user-subscribed-cards">
-            <div class="card text-center blue-border">
+            <div class="card text-center blue-border user-profile-cards">
               <div class="card-header succ-fail-user-subscribed-cards " id="quiz-title-user-subscribed-cards">
-                  <span style="float: left;margin-left:1em;">All your subscribed cards!</span>
+                  <span class="card-header-text">All your subscribed cards!</span>
                   <div style="float:right;">
-                      <span class="badge rounded-pill bg-success">Score: <span id="quiz-score-user-subscribed-cards">0</span></span>
+                      <span class="badge rounded-pill gradient-bg">Score: <span id="quiz-score-user-subscribed-cards">0</span></span>
                   </div>
               </div>
               <div class="card-body succ-fail-user-subscribed-cards" id = quiz-body-user-subscribed-cards>
                 <p class="card-text" id="quiz-q-user-subscribed-cards">{{ first_card_q }}</p>
 
                 <form class="form-group" id="quiz-btn-user-subscribed-cards" onsubmit="return flashcards.quizRunner();">
-                    <button class="btn btn-success" style="" type="button" onclick="flashcards.quizRunner()">Next</button>
+                    <button class="btn gradient-bg-btn" type="button" onclick="flashcards.quizRunner()">Next</button>
                 </form>
                 <div class="btn-group btn-group-lg" id="quiz-btn-next-user-subscribed-cards" style="display:none;">
                     <button class="btn btn-danger btn-lg" type="button" onclick="flashcards.nextCard(-1)">{% include "icons/thumbs-down.html" %}</button>
