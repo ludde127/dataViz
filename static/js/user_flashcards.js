@@ -124,7 +124,7 @@ class UserFlashcards {
 
         document.getElementById("quiz-btn-next-"+id_end).style.display = "inline";
         document.getElementById("quiz-btn-"+id_end).style.display = "none";
-        document.getElementById("quiz-q-"+id_end).innerHTML = "The answer is: " + '"' + card["a"] + '"';
+        document.getElementById("quiz-q-"+id_end).innerHTML = card["a"];
 
         this.current_index+=1;
 
