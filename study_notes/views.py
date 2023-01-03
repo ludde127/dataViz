@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseNotFound, HttpResponse, HttpResponseForbidden
+from django.http import HttpResponseNotFound, HttpResponse, HttpResponseForbidden, JsonResponse
 from django.shortcuts import render
 
 from dataViz.settings import BASE_CONTEXT
@@ -62,14 +62,16 @@ def add_flashcard_interactions(request):
             notepage_id= page, flashcards_id=flashcard_group)[0]
         histories = flashcards.flashcard_histories.get_or_create(user= request.user, flashcard_id =flashcard)[0]
         histories.increment(int(score))
-        return HttpResponse("Added interaction", status=200)
+        json_data = {"id": histories.flashcard_id, "score": histories.score, "times_displayed": histories.times_shown, "weight": histories.weight()}
+
+        return JsonResponse(data=json_data, status=200)
 
 
 def user_profile(request, user):
     if user_object := User.objects.get(username__exact=user):
         context = BASE_CONTEXT.copy()
         flash_card_list = user_object.usersflashcards.\
-            get_subscribed_flashcards()
+            get_subscribed_flashcards(request)
         try:
             context["flash_card_list"] = flash_card_list
             context["first_card_q"] = flash_card_list[0]["q"]

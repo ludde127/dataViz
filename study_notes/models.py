@@ -43,12 +43,17 @@ class FlashCardHistory(models.Model):
         self.times_shown += 1
         if save:
             self.save()
+
+    def weight(self):
+        return -self.score
+
 @register_snippet
 class FlashCardGroupReference(models.Model):
     notepage_id = models.IntegerField() # Id of the notepage the flashcards are in
     flashcards_id = models.UUIDField("Id of the flashcard group")
     subscription = models.BooleanField(default=False)
     flashcard_histories = models.ManyToManyField(FlashCardHistory)
+
 
 class QuizCard(StructBlock):
     question = CharBlock(required=True)
@@ -278,8 +283,17 @@ class UsersFlashcards(models.Model):
     flashcard_groups = models.ManyToManyField(FlashCardGroupReference)
     user = models.OneToOneField("users.User", on_delete=models.CASCADE)
 
-    def get_subscribed_flashcards(self):
-        """Create a flat list of all the cards."""
+    def get_subscribed_flashcards(self, request):
+
+        """Create a flat list of all the cards.
+
+        class FlashCardHistory(models.Model):
+            user = models.ForeignKey(to="users.User",on_delete=models.CASCADE, default=None)
+            flashcard_id = models.UUIDField("Id of flashcard")
+            last_shown = models.DateTimeField("Last shown to user", auto_now=True, editable=False)
+            times_shown = models.IntegerField("Amount of times shown to user", default=0)
+            score = models.FloatField("The score", default=0)
+        """
         flashcard_list = list()
         subscribed = [l for l in self.flashcard_groups.filter(subscription=True)]
 
@@ -299,9 +313,20 @@ class UsersFlashcards(models.Model):
                 string_block_id = str(b.id)
                 # print(block)
                 for card in block["cards"]:
+                    times_displayed = 0
+                    score = 0
+                    weight = 0
+                    try:
+                        history = FlashCardHistory.objects.get(user=request.user, flashcard_id__exact=card.id)
+                        score = history.score
+                        times_displayed = history.score
+                        weight = history.weight()
+                    except FlashCardHistory.DoesNotExist:
+                        print("Does not exist")
 
                     flashcard_list.append({"q": card.value["question"], "a": card.value["answer"],
-                                          "id": card.id, "block_id": string_block_id, "notepage_id": notepage_id})
+                                          "id": card.id, "block_id": string_block_id, "notepage_id": notepage_id,
+                                           "score": score, "times_displayed": times_displayed, "weight": weight})
 
         print(flashcard_list)
         return flashcard_list

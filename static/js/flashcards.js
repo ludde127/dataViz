@@ -1,3 +1,4 @@
+
 class Flashcards {
     constructor(flash_data, page_id, subscribed_cards) {
         this.quiz_data = flash_data;
