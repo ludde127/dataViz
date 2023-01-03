@@ -5,7 +5,7 @@
 
 {% block content %}
     <div class="text-container">
-    <h1 style="text-align: center;">{{ request.user|capfirst }}'s Profile</h1>
+    <h2 style="text-align: left;">{{ request.user|capfirst }}'s profile</h2>
     <br>
     {% if are_there_cards %}
         <div id="quiz-holder-user-subscribed-cards succ-fail-user-subscribed-cards">
