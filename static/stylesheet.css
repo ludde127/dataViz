@@ -138,3 +138,6 @@ h1 {
 
 .user-profile-cards {}
 .card-header-text {float: left;margin-left:1em;text-decoration-line: underline;}
+.card-text {max-width: 600px; text-align: center;display:block;
+    margin-left:auto;
+    margin-right:auto;}
