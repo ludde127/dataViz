@@ -71,7 +71,7 @@ class Flashcards {
 
             document.getElementById("quiz-btn-next-"+block_id).style.display = "inline";
             document.getElementById("quiz-btn-"+block_id).style.display = "none";
-            document.getElementById("quiz-q-"+block_id).innerHTML = "The answer is: " + '"' + cards[this.quizzes[block_id]]["a"] + '"';
+            document.getElementById("quiz-q-"+block_id).innerHTML = cards[this.quizzes[block_id]]["a"];
 
             this.quizzes[block_id]+=1;
             if (!(this.quizzes[block_id] in cards)) {
