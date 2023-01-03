@@ -173,7 +173,8 @@ class NotePage(Page):
             block = b.value
             try:
                 # This could be used later.
-                reference = request.user.usersflashcards.flashcard_groups.get(flashcards_id=b.id, notepage_id=self.id, subscription=True)
+                if request.user.is_authenticated:
+                    reference = request.user.usersflashcards.flashcard_groups.get(flashcards_id=b.id, notepage_id=self.id, subscription=True)
             except (UsersFlashcards.DoesNotExist, FlashCardGroupReference.DoesNotExist):
                 pass
             else:

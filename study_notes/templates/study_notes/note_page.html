@@ -99,6 +99,7 @@
                               <span style="float: left;margin-left:3em;">{{ block.value.title }}</span>
 
                               <div style="float:right;">
+                                {% if request.user.is_authenticated %}
                                   <button class="badge rounded-pill gradient-bg" id="quiz-subscribe-btn-{{ block.id }}" onclick="return flashcards.subscribeToggle('{{ block.id }}');">
                                     <span id="quiz-subscribe-span-{{ block.id }}">
                                         {% if block.id in subscribed_cards %}
@@ -108,6 +109,7 @@
                                         {% endif %}
                                     </span>
                                   </button>
+                                {% endif %}
                                   <span class="badge rounded-pill gradient-bg">Score: <span id="quiz-score-{{ block.id }}">0</span></span>
                               </div>
                           </div>
