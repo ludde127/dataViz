@@ -4,6 +4,8 @@
     --light-blue: rgba(0,142,255,0.7);
 }
 
+.logo-image {border-radius: 5px; width: 64px; height: 64px;}
+
 .content-container {
     width: 90%;
     border-left: 2px inset darkgray;
@@ -35,6 +37,8 @@ img {
     .left-offset-textbox {margin-left: 10px;}
     .text-container {margin-left: 5px; padding: 5px;width: 100%;}
     img {max-height: 50vh;}
+    .logo-image {width: 32px; height: 32px;}
+
 }
 
 @media screen and (max-width: 1500px) and (min-width: 1300px) {
@@ -112,3 +116,4 @@ h1 {
 }
 
 .icon-in-header {text-decoration: none;margin-right: 10px;margin-left: 10px;}
+
