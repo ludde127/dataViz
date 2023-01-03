@@ -27,7 +27,10 @@ class CardHolder {
         }
         this.past_card = result;
         this.past_cards.push(result);
-        if (this.past_cards.length > 5 || this.past_cards > this.card_id_to_card.length / 3) {
+
+        if (this.past_cards.length > 5 ||
+            this.past_cards.length > this.card_id_to_card.length - 2 ||
+            ((this.past_cards.length > this.card_id_to_card.length) / 4 && this.card_id_to_card > 10)) {
             this.past_cards.shift()
         }
         return result

@@ -48,6 +48,7 @@ def create_account(request):
                     std_user = User.objects.create_user(username=form.get("username"), email=form.get("email"), password=form.get("password"))
                     new_user = NormalUser.objects.create(user=std_user)
                     new_user.save()
+                    std_user.save()
                     messages.success(request, f"Successfully created user with username {std_user.username}")
                     login(request, new_user)
                     return HttpResponseRedirect(reverse("index"))

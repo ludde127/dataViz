@@ -7,7 +7,7 @@ from wagtail.core.models import Page
 from wagtail.core.fields import RichTextField
 from wagtail.admin.edit_handlers import FieldPanel
 
-def filter_non_viewable(user, qs, page_model_string=""):
+def filter_non_viewable(user, qs):
     """Given a user and a queryset this filters all the objects not viewable by the user. If page_model_string is supplied
     only matching models are given (I THINK)"""
     pages = qs.live()
@@ -18,11 +18,13 @@ def filter_non_viewable(user, qs, page_model_string=""):
     # Superusers can implicitly view all pages. No further filtering required
     elif not user.is_superuser:
         # Get all page ids where the user's groups do NOT have access to
-        disallowed_ids = PageViewRestriction.objects.exclude(groups__id=user.groups.all()).values_list(
-            page_model_string,
+        """disallowed_ids = PageViewRestriction.objects.exclude(groups__id=user.groups.all()).values_list(
+            "page",
             flat=True)
         # Exclude all pages with disallowed ids
         pages = pages.exclude(id__in=disallowed_ids)
+        print("PAGES", pages)"""
+        # TODO implement an actual way to limit this
     return pages
 
 class HomePage(Page):
@@ -35,7 +37,8 @@ class HomePage(Page):
     def get_context(self, request):
         context = super().get_context(request)
         context.update(BASE_CONTEXT)
-        context["children"] = filter_non_viewable(request.user, self.get_children(), "")
+        context["children"] = filter_non_viewable(request.user, self.get_children())
+        print(context["children"])
         return context
 
 class UserPage(Page):

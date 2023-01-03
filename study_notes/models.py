@@ -101,7 +101,7 @@ class NotesIndexPage(Page):
 
 
 
-        context['note_pages'] = filter_non_viewable(request.user, pages.order_by('-first_published_at'), "NotePage")
+        context['note_pages'] = filter_non_viewable(request.user, pages.order_by('-first_published_at'))
         return context
 
 
@@ -249,7 +249,7 @@ class NoteTagIndexPage(Page):
         if tag:
             pages = NotePage.objects.live().filter(tags__name=tag)
 
-            context['notepages'] = filter_non_viewable(request.user, pages, "NotePage")
+            context['notepages'] = filter_non_viewable(request.user, pages)
 
         # Update template context
         context.update(BASE_CONTEXT)
@@ -317,10 +317,11 @@ class UsersFlashcards(models.Model):
                     score = 0
                     weight = 0
                     try:
-                        history = FlashCardHistory.objects.get(user=request.user, flashcard_id__exact=card.id)
-                        score = history.score
-                        times_displayed = history.score
-                        weight = history.weight()
+                        if request.user.is_authenticated:
+                            history = FlashCardHistory.objects.get(user=request.user, flashcard_id__exact=card.id)
+                            score = history.score
+                            times_displayed = history.score
+                            weight = history.weight()
                     except FlashCardHistory.DoesNotExist:
                         print("Does not exist")
 
@@ -333,7 +334,7 @@ class UsersFlashcards(models.Model):
 
 
 def get_notepage_from_id(request, id):
-    resp = filter_non_viewable(request.user, NotePage.objects, "NotePage")
+    resp = filter_non_viewable(request.user, NotePage.objects)
     try:
         return resp.get(id__exact=id)
     except NotePage.DoesNotExist:
