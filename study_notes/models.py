@@ -115,7 +115,7 @@ class NotePage(Page):
     parent_page_type = ["study_notes.NotesIndexPage",]
     body = StreamField([
         ('heading', CharBlock(form_classname="title")),
-        ('richtext', RichTextBlock()),
+        ('paragraph', RichTextBlock()),
         ('image', ImageChooserBlock()),
         ('code', CodeBlock(label="Code")),
         ('equation', MathBlock()),
