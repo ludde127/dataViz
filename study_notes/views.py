@@ -6,7 +6,7 @@ from dataViz.settings import BASE_CONTEXT
 from .models import UsersFlashcards, NotePage, FlashCardGroupReference
 from .models import filter_non_viewable
 from users.models import User
-def get_notepage_or_404(request, id: str|int):
+def get_notepage_or_404(request, id):
     try:
         page = filter_non_viewable(request.user, NotePage.objects, "notepage").get(id__exact=id)
         assert page
