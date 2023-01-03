@@ -70,15 +70,20 @@ def add_flashcard_interactions(request):
 def user_profile(request, user):
     if user_object := User.objects.get(username__exact=user):
         context = BASE_CONTEXT.copy()
-        flash_card_list = user_object.usersflashcards.\
-            get_subscribed_flashcards(request)
-        try:
-            context["flash_card_list"] = flash_card_list
-            context["first_card_q"] = flash_card_list[0]["q"]
-            context["amount_of_cards"] = len(flash_card_list)
-            context["are_there_cards"] = True
+        context["are_there_cards"] = False
 
-        except IndexError:
-            context["are_there_cards"] = False
+        try:
+            flash_card_list = user_object.usersflashcards.\
+                get_subscribed_flashcards(request)
+            try:
+                context["flash_card_list"] = flash_card_list
+                context["first_card_q"] = flash_card_list[0]["q"]
+                context["amount_of_cards"] = len(flash_card_list)
+                context["are_there_cards"] = True
+
+            except IndexError:
+                pass
+        except UsersFlashcards.DoesNotExist:
+            pass
         return render(request, "study_notes/user_profile.html", context=context)
     return HttpResponseNotFound()
