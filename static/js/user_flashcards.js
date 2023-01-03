@@ -11,7 +11,7 @@ class CardHolder {
 
         this.past_card = card_array[0];
 
-        this.past_cards = [];
+        this.past_cards = [this.past_cards, ];
     }
 
     next_card() {
