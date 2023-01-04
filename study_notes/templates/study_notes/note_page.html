@@ -19,19 +19,6 @@
                 <a class="icon-in-header" style="color: black;" target="_blank" aria-label="Edit" href="/cms/pages/{{ page.id }}/edit">{% include 'icons/edit.html' %}</a>
             {% endif %}
         </h1>
-        <ul class="nav nav-tabs flex-nowrap" style="flex-grow:1;font-size: 1.1em;">
-            <li class="nav-item">
-                <a class="nav-link" aria-current="page" href="{% pageurl parent %}" aria-disabled="true">{{ parent.title }}</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link disabled active" aria-current="page" href="#" aria-disabled="true">{{ page.title }}</a>
-            </li>
-            {% for child in page.get_children %}
-              <li class="nav-item">
-                <a class="nav-link" aria-current="page" href="{% pageurl child %}">{{ child.title }}</a>
-              </li>
-            {% endfor %}
-        </ul>
         {% if page.tags.all.count %}
         <div class="tags d-flex justify-content-start flex-wrap">
             {% for tag in page.tags.all %}
@@ -55,6 +42,20 @@
         {% endwith %}
 
         <p class="intro">{{ page.intro }}</p>
+
+        {% if page.get_children %}
+        <hr>
+        <h3>Subpages</h3>
+        <ul class="child-list" style="font-size: 1.1em;">
+            {% for child in page.get_children %}
+              <li class="nav-item">
+                <a class="nav-link" aria-current="page" href="{% pageurl child %}">{{ child.title }}</a>
+              </li>
+            {% endfor %}
+        </ul>
+        <hr>
+        {% endif %}
+
         {% for block in page.body %}
             {% if block.block_type == 'heading' %}
                 <h2>{{ block.value }}</h2>
