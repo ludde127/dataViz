@@ -113,6 +113,9 @@ class NotePage(Page):
     categories = ParentalManyToManyField('study_notes.NoteCategory', blank=True)
     subpage_types = ["study_notes.NotePage",]
     parent_page_type = ["study_notes.NotesIndexPage",]
+
+    views = models.BigIntegerField(default=0, editable=False)
+
     body = StreamField([
         ('heading', CharBlock(form_classname="title")),
         ('richtext', RichTextBlock()),
@@ -140,7 +143,7 @@ class NotePage(Page):
         ], heading="Note information"),
         FieldPanel('intro'),
         FieldPanel('body'),
-        InlinePanel('gallery_images', label="Gallery images"),
+        InlinePanel('gallery_images', label="Gallery images")
     ]
 
     def get_quiz(self):
@@ -214,6 +217,8 @@ class NotePage(Page):
         context["quiz_starts"] = quiz_start
         context["quiz_lengths"] = quiz_length
         context["title"] = self.title
+        self.views += 1
+        self.save()
         return context
 
     def main_image(self):
