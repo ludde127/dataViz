@@ -1,6 +1,6 @@
 let id_end = "user-subscribed-cards";
 class CardHolder {
-    constructor(card_array) {
+    constructor(card_array, first_card) {
         // card_array holds array of these {"q": card.value["question"], "a": card.value["answer"],
         //      "id": card.id, "block_id": string_block_id, "notepage_id": notepage_id,
         //      "weight": weight, "times_displayed": times_displayed, "score": score}
@@ -9,9 +9,9 @@ class CardHolder {
             this.card_id_to_card[card["id"]] = card;
         }
 
-        this.past_card = card_array[0];
-
-        this.past_cards = [this.past_cards, ];
+        this.past_card = first_card;
+        this.past_cards = [first_card, ];
+        console.log(first_card)
     }
 
     next_card() {
@@ -19,14 +19,18 @@ class CardHolder {
         // If they have a high weight they shall be shown.
         let largest = -Infinity;
         let result = undefined;
+        let result_last_shown = Infinity;
+
+        // May have to instead sort two times as this may lock in a card with a rather low score.
         for (const card of Object.values(this.card_id_to_card)) {
-            if (card["weight"] > largest && !this.past_cards.includes(card)) {
+            if (card["weight"] > largest && !this.past_cards.includes(card["id"])) {
                 result = card;
                 largest = card["weight"];
+                result_last_shown = parseInt(card["last_displayed_float"]);
             }
         }
         this.past_card = result;
-        this.past_cards.push(result);
+        this.past_cards.push(result["id"]);
 
         if (this.past_cards.length > 5 ||
             this.past_cards.length > this.card_id_to_card.length - 2 ||
@@ -36,6 +40,7 @@ class CardHolder {
         return result
     }
 
+
     update_card(new_card_dict) {
         console.log(new_card_dict);
         let to_change = this.card_id_to_card[new_card_dict["id"]];
@@ -44,18 +49,19 @@ class CardHolder {
         to_change["weight"] = new_card_dict["weight"];
         to_change["score"] = new_card_dict["score"]
         to_change["times_displayed"] = new_card_dict["times_displayed"]
+        to_change["last_displayed_float"] = new_card_dict["last_displayed_float"]
 
         this.card_id_to_card[new_card_dict["id"]] = to_change; // This might be dumb to reassign but cant be bothered to find out.
     }
 }
 
 class UserFlashcards {
-    constructor(flash_card_list) {
+    constructor(flash_card_list, first_card) {
         this.flashcards = flash_card_list;
         this.scores = {};
         console.log(this.flashcards);
         console.log(typeof this.flashcards)
-        this.card_holder = new CardHolder(flash_card_list);
+        this.card_holder = new CardHolder(flash_card_list, first_card);
 
         this.current_index = 0;
     }
@@ -68,6 +74,7 @@ class UserFlashcards {
         this.scores[this.current_index-1] = correct;
 
         async function interactionChange(past_card) {
+            console.log(past_card);
             const response = await fetch(`/api-v2/change/flashcard-interaction/?page=${past_card["notepage_id"]}&flashcards=${past_card["block_id"]}&flashcard=${past_card["id"]}&score=${correct}`);
             return await response.json()
         }
