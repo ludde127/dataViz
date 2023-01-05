@@ -317,18 +317,21 @@ class UsersFlashcards(models.Model):
                     times_displayed = 0
                     score = 0
                     weight = 0
+                    last_displayed_float = 0
                     try:
                         if request.user.is_authenticated:
                             history = FlashCardHistory.objects.get(user=request.user, flashcard_id__exact=card.id)
                             score = history.score
                             times_displayed = history.score
                             weight = history.weight()
+                            last_displayed_float = history.last_shown.timestamp()
                     except FlashCardHistory.DoesNotExist:
                         print("Does not exist")
 
                     flashcard_list.append({"q": card.value["question"], "a": card.value["answer"],
                                           "id": card.id, "block_id": string_block_id, "notepage_id": notepage_id,
-                                           "score": score, "times_displayed": times_displayed, "weight": weight})
+                                           "score": score, "times_displayed": times_displayed, "weight": weight,
+                                           "last_displayed_float": last_displayed_float})
 
         print(flashcard_list)
         return flashcard_list

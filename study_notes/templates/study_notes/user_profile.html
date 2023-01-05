@@ -46,7 +46,7 @@
     <script src="{% static 'js/user_flashcards.js' %}" lang="js">
     </script>
     <script lang="js">
-        let flashcards = new UserFlashcards({{ flash_card_list|safe }});
+        let flashcards = new UserFlashcards({{ flash_card_list|safe }}, {{ first_card|safe }});
     </script>
 {% endblock %}
 

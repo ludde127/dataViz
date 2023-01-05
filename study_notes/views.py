@@ -1,3 +1,5 @@
+import random
+
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseNotFound, HttpResponse, HttpResponseForbidden, JsonResponse
 from django.shortcuts import render
@@ -62,7 +64,9 @@ def add_flashcard_interactions(request):
             notepage_id= page, flashcards_id=flashcard_group)[0]
         histories = flashcards.flashcard_histories.get_or_create(user= request.user, flashcard_id =flashcard)[0]
         histories.increment(int(score))
-        json_data = {"id": histories.flashcard_id, "score": histories.score, "times_displayed": histories.times_shown, "weight": histories.weight()}
+        json_data = {"id": histories.flashcard_id, "score": histories.score,
+                     "times_displayed": histories.times_shown, "weight": histories.weight(),
+                     "last_displayed_float": histories.last_shown.timestamp()}
 
         return JsonResponse(data=json_data, status=200)
     return HttpResponseForbidden()
@@ -78,7 +82,9 @@ def user_profile(request, user):
                 get_subscribed_flashcards(request)
             try:
                 context["flash_card_list"] = flash_card_list
-                context["first_card_q"] = flash_card_list[0]["q"]
+                first = flash_card_list[random.randint(0, len(flash_card_list)-1)]
+                context["first_card_q"] = first["q"]
+                context["first_card"] = first
                 context["amount_of_cards"] = len(flash_card_list)
                 context["are_there_cards"] = True
 
