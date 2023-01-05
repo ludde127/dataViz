@@ -14,13 +14,17 @@
         <li class="nav-item">
           <a class="nav-link" href="{% url 'energy_index' %}">Energy</a>
         </li>
+        {% if not request.user.is_authenticated %}
         <li class="nav-item">
           <a class="nav-link" href="{% url "login" %}" tabindex="-1" aria-disabled="true">Login</a>
+        {% endif %}
         </li>
         {% if request.user.is_staff %}
         <li class="nav-item">
             <a class="nav-link" href="/admin">Admin</a>
         </li>
+        {% endif %}
+        {% if request.user.is_active %}
         <li class="nav-item">
             <a class="nav-link" href="/cms">Wagtail-Admin</a>
         </li>
