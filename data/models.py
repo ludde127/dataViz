@@ -2,6 +2,7 @@ import datetime
 import os
 import uuid
 
+import pandas
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
@@ -147,6 +148,7 @@ class DataStorage(Permissions):
     def to_pandas(self, apply_operations=True):
         """Loads it and converts the index to datetime if it is indeed a time index."""
         df = pd.read_csv(self.file_path(), index_col=False, names=self.csv_column_names())
+
         if apply_operations:
             if self.index_column and self.index_column_values_are_time:
                 df[self.index_column] = pd.to_datetime(df[self.index_column], unit="s")

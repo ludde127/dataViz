@@ -131,7 +131,10 @@ class PlottingSetup(Permissions):
         return super().clean()
 
     def plottable(self, plot_last=10000):
-        dataframe = self.data.to_pandas(apply_operations=False)
+        try:
+            dataframe = self.data.to_pandas(apply_operations=False)
+        except FileNotFoundError:
+            return "No data."
         if len(dataframe.values) > plot_last:
             dataframe = dataframe.iloc[-plot_last:]
         dataframe = dataframe.set_index(self.index_column)

@@ -99,7 +99,7 @@ class NotesIndexPage(Page):
         pages = self.get_children().live()
 
 
-
+        context['title'] = "All Notes"
 
         context['note_pages'] = filter_non_viewable(request.user, pages.order_by('-first_published_at'))
         return context
@@ -213,6 +213,7 @@ class NotePage(Page):
         context["quiz_json"] = quiz_json
         context["quiz_starts"] = quiz_start
         context["quiz_lengths"] = quiz_length
+        context["title"] = self.title
         return context
 
     def main_image(self):
@@ -251,7 +252,7 @@ class NoteTagIndexPage(Page):
             pages = NotePage.objects.live().filter(tags__name=tag)
 
             context['notepages'] = filter_non_viewable(request.user, pages)
-
+        context["title"] = "Tag: "+tag
         # Update template context
         context.update(BASE_CONTEXT)
 

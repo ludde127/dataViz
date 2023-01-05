@@ -77,6 +77,7 @@ def user_profile(request, user):
         context = BASE_CONTEXT.copy()
         context["are_there_cards"] = False
         context["users_page"] = user
+        context["title"] = str(user) + "'s profile"
         try:
             flash_card_list = user_object.usersflashcards.\
                 get_subscribed_flashcards(request)

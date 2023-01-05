@@ -23,16 +23,17 @@
         {% endif %}
         <h3>Now only plotting last 10k datapoints by default.</h3>
         {% for plot in plots %}
-        <h2>{{ plot.name }}</h2>
-        {% if not shared %}
-        <div class="btn-group">
-            <a class="btn btn-secondary" href="{% url 'modify_plot' plot.id %}">Modify</a>
-            <a class="btn btn-primary" href="{% url 'plot_all_can_view' data_store.key %}">Share this! <small>All with this link can view</small></a>
-        </div>
-        {% endif %}
-        <div class="plot text-center" style="margin:auto;">
-            <canvas id="chart{{ forloop.counter0 }}"></canvas>
-        </div>
+            <h2>{{ plot.name }}</h2>
+            <p id="chart-p-{{ forloop.counter0 }}" style="text-decoration-line: underline;text-decoration-color: red"></p>
+            {% if not shared %}
+            <div class="btn-group">
+                <a class="btn btn-secondary" href="{% url 'modify_plot' plot.id %}">Modify</a>
+                <a class="btn btn-primary" href="{% url 'plot_all_can_view' data_store.key %}">Share this! <small>All with this link can view</small></a>
+            </div>
+            {% endif %}
+            <div class="plot text-center" style="margin:auto;">
+                <canvas id="chart{{ forloop.counter0 }}"></canvas>
+            </div>
 
         {% endfor %}
         {% if form %}
@@ -51,9 +52,14 @@
     <script>
             {# Todo, modify so that choosing timeframes is possible, should probably stream data as that happends. #}
             {% for plot in plots %}
-
-            const ctx{{ forloop.counter0 }} = document.getElementById('chart{{ forloop.counter0 }}');
-            const myChart{{ forloop.counter0 }} = new Chart(ctx{{ forloop.counter0 }}, {{ plot.plottable | safe }});
+                {% with plot.plottable as plt %}
+                    {% if plt != "No data." %}
+                        const ctx{{ forloop.counter0 }} = document.getElementById('chart{{ forloop.counter0 }}');
+                        const myChart{{ forloop.counter0 }} = new Chart(ctx{{ forloop.counter0 }}, {{ plt | safe }});
+                    {% else %}
+                        document.getElementById('chart-p-{{ forloop.counter0 }}').innerHTML = "No data present to plot";
+                    {% endif %}
+                {% endwith %}
             {% endfor %}
 
     </script>

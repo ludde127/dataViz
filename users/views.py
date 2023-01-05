@@ -50,7 +50,7 @@ def create_account(request):
                     new_user.save()
                     std_user.save()
                     messages.success(request, f"Successfully created user with username {std_user.username}")
-                    login(request, new_user)
+                    login(request, std_user)
                     return HttpResponseRedirect(reverse("index"))
             else:
                 messages.error(request, "Could not create account")
