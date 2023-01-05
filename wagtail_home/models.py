@@ -38,7 +38,8 @@ class HomePage(Page):
         context = super().get_context(request)
         context.update(BASE_CONTEXT)
         context["children"] = filter_non_viewable(request.user, self.get_children())
-        print(context["children"])
+        context["title"] = "Pages"
+
         return context
 
 class UserPage(Page):
