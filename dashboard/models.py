@@ -36,7 +36,7 @@ class Plot:
         self.plot_type = plot_type
         self.title_label = title_label
         self.df = dataframe
-
+        self.index_is_time = index_is_time
         num_columns = len(self.df.columns)
         if _background_colors is not None:
             self.background_colors = _background_colors
@@ -73,21 +73,33 @@ class Plot:
         head_dictionary["data"] = head_data
         head_dictionary["type"] = self.plot_type
 
-        head_dictionary["options"] = {"plugins": {
-            "title": {
-                "display": False,
-                "text": self.datastore.name if self.datastore.name else self.datastore.key,
-            }},
+        head_dictionary["options"] = {
+            "plugins": {
+                "title": {
+                    "display": False,
+                    "text": self.datastore.name if self.datastore.name else self.datastore.key,
+                }
+            },
             "scales": {
                 "xAxes": [{
                     "display": True,
                     "scaleLabel": {
                         "display": True,
                         "labelString": self.datastore.index_column
-                    }
-                }]
+                    },
+                }],
             },
         }
+        print(head_dictionary)
+
+        if self.index_is_time:
+            head_dictionary["options"]["scales"]["x"] = {"type": 'time',
+                                                            "time": {
+                                                                "unit": 'hour',
+                                                                "displayFormats": {
+                                                                    "hour": 'yyyy-MM-dd: HH'
+                                                                }
+                                                            }}
 
         return json.dumps(head_dictionary)
 
@@ -139,10 +151,14 @@ class PlottingSetup(Permissions):
             dataframe = dataframe.iloc[-plot_last:]
         dataframe = dataframe.set_index(self.index_column)
         if self.index_is_time:
-            dataframe.index = pd.to_datetime(dataframe.index, unit="s")
+            try:
+                dataframe.index = pd.to_datetime(dataframe.index, unit="s")
+            except ValueError:
+                dataframe.index = pd.to_datetime(dataframe.index, format='%Y-%m-%d %H:%M:%S.%f')
         for column in dataframe:
             if column not in self.columns_to_plot:
                 del dataframe[column]
+
         return Plot(
             self.data, self.plot_type,
             self.data.key, dataframe, round_index=self.round_index,

@@ -6,6 +6,7 @@ import pandas
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
+from django.http import QueryDict
 
 from dataViz.settings import DATA_FILES
 # Create your models here.
@@ -97,22 +98,22 @@ class DataStorage(Permissions):
     def get_by_key(key):
         return DataStorage.objects.get(key=key)
 
-    def __add_data(self, parsed, file_opening="a+"):
-        self.assert_json_format(parsed)
+    def __add_data(self, parsed: QueryDict, file_opening="a+"):
+        parsed = {k: v for (k, v) in list(parsed.lists())} # This turns it into the form i would expect -->
+        # {'a': ['2020-12-01'], 'b': ['10'], 'c': ['14']}
+        # OR {'a': ['2020-12-01', 'asda'], 'b': ['10', '2'], 'c': ['14', '3']} etc
 
-        is_multiple = isinstance(parsed[self.csv_column_names()[0]], list)
+        self.assert_json_format(parsed)
         try:
             with open(self.file_path(), file_opening) as f:
-                if not is_multiple:
-                    line = ",".join([str(parsed[key]) for key in self.csv_column_names()])
+                length = len(parsed[self.csv_names[0]])
+
+                lines = []
+                for i in range(length):
+                    line = ",".join([str(parsed[key][i]) for key in self.csv_column_names()])
                     self.rows += 1
-                    f.write(f"{line}\n")
-                else:
-                    length = len(parsed[self.csv_names[0]])
-                    for i in range(length):
-                        line = ",".join([str(parsed[key][i]) for key in self.csv_column_names()])
-                        self.rows += 1
-                        f.write(f"{line}\n")
+                    lines.append(line.strip()+"\n")
+                f.writelines(lines)
         except FileNotFoundError:
             import os
             os.makedirs(self.file_path().parent)
@@ -143,7 +144,8 @@ class DataStorage(Permissions):
                 data = f.readlines()
         self.owner.api_access_count += 1
         self.owner.save()
-        return "\n".join(data)
+        print(data)
+        return "".join(data)
 
     def to_pandas(self, apply_operations=True):
         """Loads it and converts the index to datetime if it is indeed a time index."""
@@ -152,6 +154,7 @@ class DataStorage(Permissions):
         if apply_operations:
             if self.index_column and self.index_column_values_are_time:
                 df[self.index_column] = pd.to_datetime(df[self.index_column], unit="s")
+                print(df[self.index_column])
             if self.index_column:
                 df = df.set_index(self.index_column)
         return df
@@ -197,7 +200,13 @@ class DataStorage(Permissions):
 
         def to_datetime_if_time_index(n, v):
             if n == self.index_column and self.index_column_values_are_time:
-                return n, float_timestamp_to_dt(int(float(v)))
+                try:
+                    timestamp = int(float(v))
+                except TypeError:
+                    #https://stackabuse.com/converting-strings-to-datetime-in-python/
+                    date_time_obj = datetime.datetime.strptime(str(v), '%Y-%m-%d %H:%M:%S.%f')
+                    timestamp = int(date_time_obj.timestamp())
+                return n, float_timestamp_to_dt(timestamp)
             return n, v
 
         return ", ".join([f"{n}: {v}" for n, v in
@@ -235,7 +244,7 @@ class DataStorage(Permissions):
 
         def placeholder(column:str):
             if column == index and t:
-                return "Time_either_unix_seconds_or_datetime"
+                return "Time_either_unix_seconds_or_datetime_OSI8601"
             elif column == index:
                 return "IndexValue"
             else:
