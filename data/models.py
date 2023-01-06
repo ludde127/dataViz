@@ -99,7 +99,10 @@ class DataStorage(Permissions):
         return DataStorage.objects.get(key=key)
 
     def __add_data(self, parsed: QueryDict, file_opening="a+"):
-        parsed = {k: v for (k, v) in list(parsed.lists())} # This turns it into the form i would expect -->
+        if isinstance(parsed, QueryDict):
+            parsed = {k: v for (k, v) in list(parsed.lists())} # This turns it into the form i would expect -->
+        elif isinstance(parsed, dict):
+            parsed = {k: list(v) for k, v in parsed.items()}
         # {'a': ['2020-12-01'], 'b': ['10'], 'c': ['14']}
         # OR {'a': ['2020-12-01', 'asda'], 'b': ['10', '2'], 'c': ['14', '3']} etc
 
