@@ -48,8 +48,6 @@ INSTALLED_APPS = [
     "crispy_bootstrap5",
     "dashboard",
     "data",
-    "content",
-    "blocks",
     "tags",
     #"reversion",
     "energy_utils",

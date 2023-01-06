@@ -39,16 +39,37 @@ def random_floats(names, amount=1):
             dictionary[name] = c
     return dictionary
 
+class HelperAPI:
+    def __init__(self, url, headers):
+        self.url = url
+        self.headers = headers
+
+    def get(self):
+        return requests.get(self.url, headers=self.headers)
+
+    def post(self, data: dict):
+        return requests.post(self.url, data=data, headers=self.headers)
+
+    def put(self, data: dict):
+        return requests.put(self.url, data=data, headers=self.headers)
+
+    def delete(self):
+        return requests.delete(self.url, headers=headers)
+
+    def nbr_of_rows(self):
+        return len(requests.get(url, headers=headers).text.split("\n"))
+
+helper = HelperAPI(url, headers)
 
 class Data(unittest.TestCase):
     names = ("a", "b", "c")
 
     def setUp(self) -> None:
-        requests.delete(url, headers=headers)
+        helper.delete()
 
     def one_random_request(self):
         d = random_dict(self.names)
-        resp = requests.post(url, json=d, headers=headers)
+        resp = helper.post(d)
         self.assertTrue(resp.status_code == 200, "response errored for json " + str(d))
         return d
 
@@ -57,29 +78,47 @@ class Data(unittest.TestCase):
             self.one_random_request()
 
     def test_get_status_code(self):
-        self.assertTrue(requests.get(url, headers=headers).status_code==200, "Get did not work for url " + url)
+        self.assertTrue(helper.get().status_code==200, "Get did not work for url " + url)
 
     def test_verify_post_change(self):
-        old = requests.get(url, headers=headers)
+        old = helper.get()
         change = self.one_random_request()
         as_csv_row = ",".join([str(change[c]) for c in ("a", "b", "c")])
-        new = requests.get(url, headers=headers)
+        new = helper.get()
         self.assertEqual(as_csv_row, str(new.text).split("\n")[-1])
         self.assertNotEqual(old.text, new.text)
         self.assertTrue(len(old.text) < len(new.text))
 
     def test_delete(self):
-        requests.delete(url, headers=headers)
-        self.assertEqual("", requests.get(url, headers=headers).text)
+        helper.delete()
+        self.assertEqual("", helper.get().text)
 
     def test_put(self):
         self.one_random_request()
         self.one_random_request()
         self.one_random_request()
+        helper.put(random_dict(self.names))
+        self.assertEqual(1, helper.nbr_of_rows())
 
-        requests.put(url, random_dict(self.names), headers=headers)
-        self.assertEqual(1, len(requests.get(url, headers=headers).text.split("\n")))
 
+class MoreDataTest(unittest.TestCase):
+    names = ("a", "b", "c")
+
+    def setUp(self) -> None:
+        helper.delete()
+
+    def test_add_time_multiple(self):
+        helper.delete()
+        helper.post({"a": ["2020-12-01", "2020-12-09", "2021-02-09"], "b": [10, 3, 19], "c": [14, 12, 18]})
+        print(helper.get().text)
+
+        self.assertEqual(3, helper.nbr_of_rows())
+
+    def test_add_time_one(self):
+        helper.delete()
+        helper.post({"a": "2020-12-01", "b": 10, "c": 14})
+
+        self.assertEqual(1, helper.nbr_of_rows())
 
 if __name__ == "__main__":
     unittest.main()
