@@ -69,7 +69,7 @@ class FlashCardHistory(models.Model):
         elif len(array) > 0:
             return -sum((e[1] for e in array))/len(array)
         else:
-            return 1 # No data stored so far.
+            return 10 # No data stored so far. This will weigh heavily
         #return -self.score/self.times_shown
 
 @register_snippet
