@@ -85,6 +85,10 @@ def user_profile(request, user):
                 context["flash_card_list"] = flash_card_list
                 first = flash_card_list[random.randint(0, len(flash_card_list)-1)]
                 context["first_card_q"] = first["q"]
+
+                copy = first.copy()
+                copy["a"] = str(copy["a"])
+                print(copy)
                 context["first_card"] = first
                 context["amount_of_cards"] = len(flash_card_list)
                 context["are_there_cards"] = True

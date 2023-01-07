@@ -67,6 +67,16 @@ class Data(unittest.TestCase):
     def setUp(self) -> None:
         helper.delete()
 
+    def basic_insertion_validation(self):
+        helper.delete()
+        datas = [random_dict(self.names) for i in range(100)]
+        for data in datas:
+            helper.post(data)
+        gotten = helper.get()
+        lines = gotten.text.split("\n")
+        for (i, got) in enumerate(lines):
+            listlike = ",".join([datas[i][col] for col in self.names])
+            self.assertEqual(listlike, got)
     def one_random_request(self):
         d = random_dict(self.names)
         resp = helper.post(d)

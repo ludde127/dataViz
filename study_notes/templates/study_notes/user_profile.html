@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load wagtailcore_tags %}
 {% load static %}
 
 {% load custom_filters %}
@@ -17,7 +18,7 @@
                   </div>
               </div>
               <div class="card-body succ-fail-user-subscribed-cards" id = quiz-body-user-subscribed-cards>
-                <p class="card-text" id="quiz-q-user-subscribed-cards">{{ first_card_q }}</p>
+                <div class="card-text" id="quiz-q-user-subscribed-cards">{{ first_card_q }}</div>
 
                 <form class="form-group" id="quiz-btn-user-subscribed-cards" onsubmit="return flashcards.quizRunner();">
                     <button class="btn gradient-bg-btn" type="button" onclick="flashcards.quizRunner()">Next</button>
