@@ -56,8 +56,19 @@ class FlashCardHistory(models.Model):
         if save:
             self.save()
 
+    def get_array(self):
+        array = self.time_score_array
+        if array is None:
+            array = list()
+        return array
+
     def weight(self):
-        return -self.score
+        array = self.get_array()
+        if len(array) > 3:
+            return -sum((e[1] for e in array[-3:]))/3
+        else:
+            return -sum((e[1] for e in array))/len(array)
+        #return -self.score/self.times_shown
 
 @register_snippet
 class FlashCardGroupReference(models.Model):
