@@ -66,8 +66,10 @@ class FlashCardHistory(models.Model):
         array = self.get_array()
         if len(array) > 3:
             return -sum((e[1] for e in array[-3:]))/3
-        else:
+        elif len(array) > 0:
             return -sum((e[1] for e in array))/len(array)
+        else:
+            return 1 # No data stored so far.
         #return -self.score/self.times_shown
 
 @register_snippet
