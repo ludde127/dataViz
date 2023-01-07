@@ -102,6 +102,7 @@ class DataStorage(Permissions):
         if isinstance(parsed, QueryDict):
             parsed = {k: v for (k, v) in list(parsed.lists())} # This turns it into the form i would expect -->
         elif isinstance(parsed, dict):
+
             parsed = {k: [v, ] for k, v in parsed.items()}
         # {'a': ['2020-12-01'], 'b': ['10'], 'c': ['14']}
         # OR {'a': ['2020-12-01', 'asda'], 'b': ['10', '2'], 'c': ['14', '3']} etc
@@ -109,7 +110,7 @@ class DataStorage(Permissions):
         self.assert_json_format(parsed)
         try:
             with open(self.file_path(), file_opening) as f:
-                length = len(parsed[self.csv_names[0]])
+                length = len(parsed[self.csv_column_names()[0]])
 
                 lines = []
                 for i in range(length):
