@@ -1,10 +1,11 @@
 import datetime
+import time
 
 from wagtail import hooks
 from wagtail.api import APIField
 from wagtail.fields import RichTextField, StreamField
 from django import forms
-from wagtail.blocks import RichTextBlock, CharBlock, StructBlock, IntegerBlock, StreamBlock
+from wagtail.blocks import RichTextBlock, CharBlock, StructBlock, IntegerBlock, StreamBlock, TextBlock
 from wagtail.images.blocks import ImageChooserBlock
 from wagtailcodeblock.blocks import CodeBlock
 from wagtailmath.blocks import MathBlock # Have to do this weird fix https://github.com/JamesRamm/wagtailmath/issues/7
@@ -19,6 +20,7 @@ from dataViz.settings import BASE_CONTEXT
 from modelcluster.fields import ParentalKey, ParentalManyToManyField
 from modelcluster.contrib.taggit import ClusterTaggableManager
 from taggit.models import TaggedItemBase
+from django.contrib.postgres.fields import ArrayField
 
 import json
 from wagtail.models import Page, Orderable
@@ -36,11 +38,21 @@ class FlashCardHistory(models.Model):
     times_shown = models.IntegerField("Amount of times shown to user", default=0)
     score = models.FloatField("The score", default=0)
 
+    time_score_array = ArrayField(ArrayField(models.FloatField(), size=2, null=True), null=True) # This is ment to store [(interaction_time, score), ...]
+
     class Meta:
         unique_together = ["user", "flashcard_id"]
     def increment(self, score_change=0, save=True):
         self.score += score_change
         self.times_shown += 1
+
+        array =  self.time_score_array
+        if array is None:
+            array = list()
+
+        array.append([time.time(), score_change])
+        self.time_score_array = array
+        print(self.time_score_array)
         if save:
             self.save()
 
@@ -66,8 +78,8 @@ class ManyQuizCards(StructBlock):
     passing_score = IntegerBlock(required=False)
 
 class FlashCard(StructBlock):
-    question = CharBlock(required=True, max_length=300)
-    answer = CharBlock(required=True)
+    question = RichTextBlock(required=True, max_length=300, features=['h3', 'h4', 'h5', 'bold', 'italic', 'ol', 'ul'])
+    answer = RichTextBlock(required=True, max_length=1000, features=['h3', 'h4', 'h5', 'bold', 'italic', 'ol', 'ul'])
 
 class ManyFlashcards(StructBlock):
     title = CharBlock(max_length=200, required=False)
@@ -190,7 +202,7 @@ class NotePage(Page):
             for (j, card) in enumerate(block["cards"]):
                 if not first_question:
                     first_question = card.value["question"]
-                flashcards[str(j)] = {"q": card.value["question"], "a": card.value["answer"], "id": card.id}
+                flashcards[str(j)] = {"q": str(card.value["question"]), "a": str(card.value["answer"]), "id": card.id}
             inner["cards"] = flashcards
 
             flashcards_json[b.id] = inner
@@ -334,7 +346,7 @@ class UsersFlashcards(models.Model):
                     except FlashCardHistory.DoesNotExist:
                         print("Does not exist")
 
-                    flashcard_list.append({"q": card.value["question"], "a": card.value["answer"],
+                    flashcard_list.append({"q": str(card.value["question"]), "a": str(card.value["answer"]),
                                           "id": card.id, "block_id": string_block_id, "notepage_id": notepage_id,
                                            "score": score, "times_displayed": times_displayed, "weight": weight,
                                            "last_displayed_float": last_displayed_float})

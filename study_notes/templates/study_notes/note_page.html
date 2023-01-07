@@ -115,7 +115,7 @@
                               </div>
                           </div>
                           <div class="card-body succ-fail-{{ block.id }}" id = quiz-body-{{ block.id }}>
-                            <p class="card-text" id="quiz-q-{{ block.id }}">{{ flash_starts|get_item:block.id }}</p>
+                            <div class="card-text" id="quiz-q-{{ block.id }}">{{ flash_starts|get_item:block.id }}</div>
 
                             <form class="form-group" id="quiz-btn-{{ block.id }}" onsubmit="return flashcards.quizRunner('{{ block.id }}');">
                                 <button class="btn gradient-bg-btn" style="" type="button" onclick="flashcards.quizRunner('{{ block.id }}')">Next</button>

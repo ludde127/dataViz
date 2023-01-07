@@ -101,7 +101,7 @@ class Flashcards {
 
             } else {
                 fetch(`/api-v2/change/subscribe/?page=${this.page_id}&flashcards=${block_id}`).then(function (response) {
-                    if (response.status == 200) {
+                    if (response.status === 200) {
                         document.getElementById("quiz-subscribe-span-" + block_id).innerHTML = "Unsubscribe";
                     }
                 });
