@@ -2,6 +2,7 @@ import datetime
 import time
 from pprint import pprint
 
+import numpy as np
 import pandas as pd
 from django.db import models
 from users.models import NormalUser
@@ -132,7 +133,10 @@ class TeslaTokens(models.Model):
         return any((state["response"]["charging_state"] == "Charging" for state in states))
 
     def seconds_until_expiry(self):
-        return self.expiry.timestamp() - datetime.datetime.now().timestamp()
+        if self.expiry is not None:
+            return self.expiry.timestamp() - datetime.datetime.now().timestamp()
+        else:
+            return np.Inf
 
     def has_expired(self):
         if self.expiry:
