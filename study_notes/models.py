@@ -50,11 +50,13 @@ class FlashCardHistory(models.Model):
         if array is None:
             array = list()
 
-        array.append([time.time(), score_change])
+        t = time.time()
+        array.append([t, score_change])
+
         self.time_score_array = array
-        print(self.time_score_array)
         if save:
             self.save()
+        return self
 
     def get_array(self) -> list:
         array = self.time_score_array
