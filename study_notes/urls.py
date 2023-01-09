@@ -12,5 +12,4 @@ urlpatterns = [
         path("change/subscribe/", views.subscribe_to_flashcard_group),
         path("change/unsubscribe/", views.unsubscribe_to_flashcard_group),
         path("change/flashcard-interaction/", views.add_flashcard_interactions),
-        path("users/<str:user>", views.user_profile, name="user_profile")
     ]

@@ -12,10 +12,10 @@ def get_notepage_or_404(request, id):
     try:
         page = filter_non_viewable(request.user, NotePage.objects).get(id__exact=id)
         assert page
-        return page
+        return False, page
     except NotePage.DoesNotExist:
         # User is not allowed to visit this page (and thus its flashcards)...
-        return HttpResponseNotFound()
+        return True, HttpResponseNotFound()
 
 def toggle_subscription(request, subscribe=True):
     if request.GET and request.user.is_authenticated:
@@ -23,7 +23,9 @@ def toggle_subscription(request, subscribe=True):
         page = request.GET.get("page")
         flashcard_group = request.GET.get("flashcards")
 
-        get_notepage_or_404(request, page)
+        err404, page_or_404 = get_notepage_or_404(request, page)
+        if err404:
+            return page_or_404
         users_flashcards,created_new = UsersFlashcards.objects.get_or_create(user=request.user)
         flashcards,created_new = users_flashcards.flashcard_groups.get_or_create(notepage_id=page, flashcards_id=flashcard_group)
 
@@ -58,18 +60,36 @@ def add_flashcard_interactions(request):
         except AssertionError:
             return HttpResponseForbidden()
 
-        get_notepage_or_404(request, page)
+        err404, page_or_404 = get_notepage_or_404(request, page)
+        if err404:
+            return page_or_404
         users_flashcards = UsersFlashcards.objects.get_or_create(user=request.user)[0]
         flashcards: FlashCardGroupReference = users_flashcards.flashcard_groups.get_or_create(
             notepage_id= page, flashcards_id=flashcard_group)[0]
         histories = flashcards.flashcard_histories.get_or_create(user= request.user, flashcard_id =flashcard)[0]
         histories.increment(int(score))
+        blocks = NotePage.get_flashcard_blocks(page, [flashcard_group, ])
+
+        print("DEBUGG")
+        print([str(v) for v in blocks], [str(b.id) for b in blocks])
+        print(list(filter(lambda b: str(b.id) == flashcard, blocks)))
         json_data = {"id": histories.flashcard_id, "score": histories.score,
                      "times_displayed": histories.times_shown, "weight": histories.weight(),
                      "last_displayed_float": histories.last_shown.timestamp()}
 
         return JsonResponse(data=json_data, status=200)
     return HttpResponseForbidden()
+
+@login_required
+def view_flashcards_info(request):
+    try:
+        users_flashcards = UsersFlashcards.objects.get(user=request.user)
+    except UsersFlashcards.DoesNotExist:
+        return HttpResponseNotFound("You have no flashcards")
+    context = BASE_CONTEXT.copy()
+    data = users_flashcards.get_subscribed_flashcards(request, True)
+    context["flashcards"] = data
+    return render(request, "study_notes/flashcard_info.html", context=context)
 
 @login_required
 def user_profile(request, user):
