@@ -1,4 +1,11 @@
+
 let id_end = "user-subscribed-cards";
+function shuffle(array) {
+    //https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
+    return array.map(value => ({ value, sort: Math.random() }))
+    .sort((a, b) => a.sort - b.sort)
+    .map(({ value }) => value)
+}
 class CardHolder {
     constructor(card_array, first_card) {
         // card_array holds array of these {"q": card.value["question"], "a": card.value["answer"],
@@ -14,42 +21,41 @@ class CardHolder {
         console.log(first_card)
     }
 
+
+
     next_card() {
         // Only doing O(n) linear search for lowest weight, because js.
         // If they have a high weight they shall be shown.
         let largest = -Infinity;
         let result = undefined;
-        let result_last_shown = Infinity;
 
         // May have to instead sort two times as this may lock in a card with a rather low score.
-        for (const card of Object.values(this.card_id_to_card)) {
-            if (card["weight"] > largest && !this.past_cards.includes(card["id"])) {
+        let list_of_cards = Object.values(this.card_id_to_card).sort(
+            (a, b) => a["last_displayed_float"] - b["last_displayed_float"]);
+        for (const card of list_of_cards) {
+            // I HAVE NO CLUE WHY I NEED TO CHECK THAT THIS CARD IS NOT EQUAL TO LAST, IT SHOULD BE LAST IN QUEUE.
+            // MAYBE THE ASYNC DO NOT HAVE TIME TO BE COMPLETED?
+            if (card["weight"] > largest && (!(card === this.past_card))) {
                 result = card;
                 largest = card["weight"];
-                result_last_shown = parseInt(card["last_displayed_float"]);
             }
         }
         this.past_card = result;
         this.past_cards.push(result["id"]);
 
-        if (this.past_cards.length > 5 ||
-            this.past_cards.length > this.card_id_to_card.length - 2 ||
-            ((this.past_cards.length > this.card_id_to_card.length) / 4 && this.card_id_to_card > 10)) {
-            this.past_cards.shift()
-        }
         return result
     }
 
 
     update_card(new_card_dict) {
         console.log("New card");
-        console.log(this.card_id_to_card[new_card_dict["id"]]);
-        console.log(new_card_dict);
+        console.log(this.card_id_to_card[new_card_dict["id"]]["last_displayed_float"]);
         this.card_id_to_card[new_card_dict["id"]]["weight"] = new_card_dict["weight"];
         this.card_id_to_card[new_card_dict["id"]]["score"] = new_card_dict["score"];
         this.card_id_to_card[new_card_dict["id"]]["times_displayed"] = new_card_dict["times_displayed"];
         this.card_id_to_card[new_card_dict["id"]]["last_displayed_float"] = new_card_dict["last_displayed_float"];
-        console.log(this.card_id_to_card[new_card_dict["id"]]);
+        console.log(this.card_id_to_card[new_card_dict["id"]]["last_displayed_float"]);
+
         console.log("Should not be same");
     }
 }
@@ -119,7 +125,7 @@ class UserFlashcards {
 
             }
         }
-        return summed
+        return Math.round(summed)
     }
 
     quizRunner() {
