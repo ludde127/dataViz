@@ -143,4 +143,5 @@ h1 {
     margin-right:auto;}
 
 
-.card-text > ul, ol > li {display: inline-block; padding:0;text-align: left;}
+.card-text > ol > li {display: inline-block; padding:0;text-align: left;}
+.card-text > ul > li {display: inline-block; padding:0;text-align: left;}

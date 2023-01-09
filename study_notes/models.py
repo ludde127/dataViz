@@ -56,7 +56,7 @@ class FlashCardHistory(models.Model):
         if save:
             self.save()
 
-    def get_array(self):
+    def get_array(self) -> list:
         array = self.time_score_array
         if array is None:
             array = list()
@@ -78,6 +78,15 @@ class FlashCardGroupReference(models.Model):
     flashcards_id = models.UUIDField("Id of the flashcard group")
     subscription = models.BooleanField(default=False)
     flashcard_histories = models.ManyToManyField(FlashCardHistory)
+
+    def to_dict(self):
+        dict_repr = {}
+        dict_repr["notepage_id"] = self.notepage_id
+
+        dict_repr["flashcards_id"] = self.flashcards_id
+
+        histories = list()
+        dict_repr["histories"] = histories
 
 
 class QuizCard(StructBlock):
@@ -170,6 +179,11 @@ class NotePage(Page):
         FieldPanel('body'),
         InlinePanel('gallery_images', label="Gallery images")
     ]
+
+    @staticmethod
+    def get_flashcard_blocks(page_id, block_ids):
+        return [e for e in NotePage.objects.get(id__exact=page_id).body.blocks_by_name("flashcards")
+                if str(e.id) in block_ids]
 
     def get_quiz(self):
         quiz_json = {}
@@ -315,7 +329,7 @@ class UsersFlashcards(models.Model):
     flashcard_groups = models.ManyToManyField(FlashCardGroupReference)
     user = models.OneToOneField("users.User", on_delete=models.CASCADE)
 
-    def get_subscribed_flashcards(self, request):
+    def get_subscribed_flashcards(self, request, have_full_array=False):
 
         """Create a flat list of all the cards.
 
@@ -336,8 +350,7 @@ class UsersFlashcards(models.Model):
             flashcard_blocks_to_get_per_notepage[n_id] = set([str(l.flashcards_id) for l in subscribed if l.notepage_id == n_id])
 
         for notepage_id in notepages:
-            to_render = [e for e in NotePage.objects.get(id__exact=notepage_id).body.blocks_by_name("flashcards")
-                         if str(e.id) in flashcard_blocks_to_get_per_notepage[notepage_id]]
+            to_render = NotePage.get_flashcard_blocks(notepage_id, flashcard_blocks_to_get_per_notepage[notepage_id])
 
             print("RENDER LEN", len(to_render))
             for b in to_render:
@@ -349,6 +362,8 @@ class UsersFlashcards(models.Model):
                     score = 0
                     weight = 0
                     last_displayed_float = 0
+                    if have_full_array:
+                        array = []
                     try:
                         if request.user.is_authenticated:
                             history = FlashCardHistory.objects.get(user=request.user, flashcard_id__exact=card.id)
@@ -356,13 +371,19 @@ class UsersFlashcards(models.Model):
                             times_displayed = history.score
                             weight = history.weight()
                             last_displayed_float = history.last_shown.timestamp()
+                            if have_full_array:
+                                array = history.get_array()
                     except FlashCardHistory.DoesNotExist:
                         print("Does not exist")
 
-                    flashcard_list.append({"q": str(card.value["question"]), "a": str(card.value["answer"]),
+                    entry = {"q": str(card.value["question"]), "a": str(card.value["answer"]),
                                           "id": card.id, "block_id": string_block_id, "notepage_id": notepage_id,
-                                           "score": score, "times_displayed": times_displayed, "weight": weight,
-                                           "last_displayed_float": last_displayed_float})
+                                          "score": score, "times_displayed": times_displayed, "weight": weight,
+                                          "last_displayed_float": last_displayed_float}
+                    if have_full_array:
+                        entry["array"] = array
+                    flashcard_list.append(entry)
+
 
         print(flashcard_list)
         return flashcard_list

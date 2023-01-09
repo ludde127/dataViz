@@ -42,16 +42,15 @@ class CardHolder {
 
 
     update_card(new_card_dict) {
+        console.log("New card");
+        console.log(this.card_id_to_card[new_card_dict["id"]]);
         console.log(new_card_dict);
-        let to_change = this.card_id_to_card[new_card_dict["id"]];
-        console.log(to_change);
-
-        to_change["weight"] = new_card_dict["weight"];
-        to_change["score"] = new_card_dict["score"]
-        to_change["times_displayed"] = new_card_dict["times_displayed"]
-        to_change["last_displayed_float"] = new_card_dict["last_displayed_float"]
-
-        this.card_id_to_card[new_card_dict["id"]] = to_change; // This might be dumb to reassign but cant be bothered to find out.
+        this.card_id_to_card[new_card_dict["id"]]["weight"] = new_card_dict["weight"];
+        this.card_id_to_card[new_card_dict["id"]]["score"] = new_card_dict["score"];
+        this.card_id_to_card[new_card_dict["id"]]["times_displayed"] = new_card_dict["times_displayed"];
+        this.card_id_to_card[new_card_dict["id"]]["last_displayed_float"] = new_card_dict["last_displayed_float"];
+        console.log(this.card_id_to_card[new_card_dict["id"]]);
+        console.log("Should not be same");
     }
 }
 
