@@ -75,6 +75,8 @@ class FlashCardHistory(models.Model):
             val = -sum((e[1] for e in array))/len(array)
         else:
             return val
+
+
         return val
         #return -60*val - self.last_shown.timestamp()
         #return -self.score/self.times_shown

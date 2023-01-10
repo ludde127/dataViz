@@ -32,10 +32,20 @@ class CardHolder {
         // May have to instead sort two times as this may lock in a card with a rather low score.
         let list_of_cards = Object.values(this.card_id_to_card).sort(
             (a, b) => a["last_displayed_float"] - b["last_displayed_float"]);
+
         for (const card of list_of_cards) {
             // I HAVE NO CLUE WHY I NEED TO CHECK THAT THIS CARD IS NOT EQUAL TO LAST, IT SHOULD BE LAST IN QUEUE.
             // MAYBE THE ASYNC DO NOT HAVE TIME TO BE COMPLETED?
-            if (card["weight"] > largest && (!(card === this.past_card))) {
+            let weight = card["weight"];
+
+            let seconds_since_shown = Date.now() / 1000 - card["last_displayed_float"];
+            console.log(seconds_since_shown);
+            if (seconds_since_shown < 500) {
+                weight = weight - (500-seconds_since_shown)/15; // To make it less likely for a card to show up all the time
+            }
+            console.log(weight);
+
+            if (weight > largest && (!(card === this.past_card))) {
                 result = card;
                 largest = card["weight"];
             }
