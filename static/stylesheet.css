@@ -145,3 +145,4 @@ h1 {
 
 .card-text > ol > li {display: inline-block; padding:0;text-align: left;}
 .card-text > ul > li {display: inline-block; padding:0;text-align: left;}
+.card-text > .richtext-image {width: 100%; height:auto; max-width: 800px; max-height: fit-content; align-self: center;text-align: center;margin:auto;padding:0;}
