@@ -68,12 +68,15 @@ class FlashCardHistory(models.Model):
 
     def weight(self):
         array = self.get_array()
+        val = 1e8 # No data stored so far. This will weigh heavily
         if len(array) > 3:
-            return -sum((e[1] for e in array[-3:]))/3
+            val = -sum((e[1] for e in array[-3:]))/3
         elif len(array) > 0:
-            return -sum((e[1] for e in array))/len(array)
+            val = -sum((e[1] for e in array))/len(array)
         else:
-            return 1e5 # No data stored so far. This will weigh heavily
+            return val
+        return val
+        #return -60*val - self.last_shown.timestamp()
         #return -self.score/self.times_shown
 
 @register_snippet
