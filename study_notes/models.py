@@ -26,6 +26,8 @@ import json
 from wagtail.models import Page, Orderable
 
 from wagtail_home.models import filter_non_viewable
+from wagtail.templatetags.wagtailcore_tags import richtext
+
 
 
 # https://docs.wagtail.org/en/v4.1.1/getting_started/tutorial.html
@@ -66,12 +68,15 @@ class FlashCardHistory(models.Model):
 
     def weight(self):
         array = self.get_array()
+        val = 1e8 # No data stored so far. This will weigh heavily
         if len(array) > 3:
-            return -sum((e[1] for e in array[-3:]))/3
+            val = -sum((e[1] for e in array[-3:]))/3
         elif len(array) > 0:
-            return -sum((e[1] for e in array))/len(array)
+            val = -sum((e[1] for e in array))/len(array)
         else:
-            return 1e5 # No data stored so far. This will weigh heavily
+            return val
+        return val
+        #return -60*val - self.last_shown.timestamp()
         #return -self.score/self.times_shown
 
 @register_snippet
@@ -102,8 +107,8 @@ class ManyQuizCards(StructBlock):
     passing_score = IntegerBlock(required=False)
 
 class FlashCard(StructBlock):
-    question = RichTextBlock(required=True, max_length=300, features=['h3', 'h4', 'h5', 'bold', 'italic', 'ol', 'ul'])
-    answer = RichTextBlock(required=True, max_length=1000, features=['h3', 'h4', 'h5', 'bold', 'italic', 'ol', 'ul'])
+    question = RichTextBlock(required=True, max_length=300)
+    answer = RichTextBlock(required=True, max_length=1000)
 
 class ManyFlashcards(StructBlock):
     title = CharBlock(max_length=200, required=False)
@@ -231,7 +236,7 @@ class NotePage(Page):
             for (j, card) in enumerate(block["cards"]):
                 if not first_question:
                     first_question = card.value["question"]
-                flashcards[str(j)] = {"q": str(card.value["question"]), "a": str(card.value["answer"]), "id": card.id}
+                flashcards[str(j)] = {"q": str(richtext(card.value["question"])), "a": str(richtext(card.value["answer"])), "id": card.id}
             inner["cards"] = flashcards
 
             flashcards_json[b.id] = inner
@@ -378,7 +383,7 @@ class UsersFlashcards(models.Model):
                     except FlashCardHistory.DoesNotExist:
                         print("Does not exist")
 
-                    entry = {"q": str(card.value["question"]), "a": str(card.value["answer"]),
+                    entry = {"q": str(richtext(card.value["question"])), "a": str(richtext(card.value["answer"])),
                                           "id": card.id, "block_id": string_block_id, "notepage_id": notepage_id,
                                           "score": score, "times_displayed": times_displayed, "weight": weight,
                                           "last_displayed_float": last_displayed_float}
