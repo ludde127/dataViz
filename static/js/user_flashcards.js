@@ -68,7 +68,9 @@ class UserFlashcards {
         console.log(typeof this.flashcards)
         this.card_holder = new CardHolder(flash_card_list, first_card);
 
+        this.current_index_unique = 0;
         this.current_index = 0;
+        this.cardsSeen = [first_card["id"],];
     }
     nextCard(correct) {
         let past_card = this.card_holder.past_card;
@@ -95,25 +97,24 @@ class UserFlashcards {
 
         document.getElementById("quiz-btn-"+id_end).style.display = "initial";
 
-        if (card) {
-            document.getElementById("quiz-q-"+id_end).innerHTML = card["q"];
-        } else {
-            this.begin();
-            document.getElementById("quiz-progress-"+id_end).innerHTML = 1+this.current_index;
-            document.getElementById("quiz-btn-nextspan-"+id_end).style.display = "inline";
-            document.getElementById("quiz-btn-restartspan-"+id_end).style.display = "none";
-            return this.nextCard();
-        }
+        document.getElementById("quiz-q-"+id_end).innerHTML = card["q"];
 
-        if (card) {
-            document.getElementById("quiz-progress-"+id_end).innerHTML = 1+this.current_index;
+
+        if (card && (!this.cardsSeen.includes(card["id"]))) {
+            this.current_index_unique += 1;
+            this.cardsSeen.push(card["id"])
 
         }
+        document.getElementById("quiz-progress-"+id_end).innerHTML =
+            this.current_index + ` | ${this.current_index_unique+1}`;
+
+
         return false
     }
 
     begin() {
         this.scores = {};
+        this.current_index_unique = 0;
         this.current_index = 0;
     }
 
