@@ -60,13 +60,13 @@ INSTALLED_APPS = [
     'wagtail.documents',
     'wagtail.images',
     'wagtail.search',
-    'wagtail.admin',
     'wagtail',
     'rest_framework',
     'wagtail.api.v2',
     'modelcluster',
     'taggit',
     'wagtail_home',
+    'wagtail.admin',
     'study_notes',
     'wagtailcodeblock',
     'wagtailmath',
@@ -206,6 +206,8 @@ LOGIN_URL = "/users/login"
 WAGTAIL_FRONTEND_LOGIN_URL = LOGIN_URL
 PASSWORD_REQUIRED_TEMPLATE = 'wagtail_home/password_required.html'
 
+
+APPEND_SLASH = True
 
 if IS_PRODUCTION:
     import sentry_sdk

@@ -1,0 +1,9 @@
+{% extends "wagtailadmin/base.html" %}
+{% load static %}
+
+
+{# https://docs.wagtail.org/en/stable/advanced_topics/customisation/admin_templates.html #}
+
+{% block branding_logo %}
+    <img src="{% static 'website_logo/android-chrome-192x192.png' %}" alt="DataNotes" width="80" />
+{% endblock %}

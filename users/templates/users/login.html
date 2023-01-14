@@ -6,7 +6,8 @@
             <div style="text-align: center;">
                 <h1>Login</h1>
                 <br>
-                <p>If you <strong>do not</strong> have an account you can create one <a href="{% url 'create_account' %}">here.</a> If you want to log out click <a href="{% url 'logout' %}">here.</a></p>
+                <p>If you <strong>do not</strong> have an account you can create one here: <a href="{% url 'create_account' %}"><span class="badge rounded-pill bg-warning">Create account</span></a>.</p>
+                <p>If you want to log out click here: <a href="{% url 'logout' %}"><span class="badge rounded-pill bg-danger">Logout</span></a>.</p>
 
             </div>
         </div>
@@ -14,7 +15,9 @@
             {% csrf_token %}
             {{ form|crispy }}
             <button type="submit" value="Submit" class="btn btn-primary">Login</button>
+            <br>
+            <br>
+            <p class="text-left">Don't you have an account? <a href="{% url 'create_account' %}">Create account</a></p>
         </form>
-
     </div>
 {% endblock %}
