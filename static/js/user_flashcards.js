@@ -18,7 +18,7 @@ class CardHolder {
 
         this.past_card = first_card;
         this.past_cards = [first_card, ];
-        console.log(first_card)
+        //console.log(first_card)
     }
 
 
@@ -39,11 +39,9 @@ class CardHolder {
             let weight = card["weight"];
 
             let seconds_since_shown = Date.now() / 1000 - card["last_displayed_float"];
-            console.log(seconds_since_shown);
             if (seconds_since_shown < 500) {
                 weight = weight - (500-seconds_since_shown)/15; // To make it less likely for a card to show up all the time
             }
-            console.log(weight);
 
             if (weight > largest && (!(card === this.past_card))) {
                 result = card;
@@ -58,15 +56,15 @@ class CardHolder {
 
 
     update_card(new_card_dict) {
-        console.log("New card");
-        console.log(this.card_id_to_card[new_card_dict["id"]]["last_displayed_float"]);
+        //console.log("New card");
+        //console.log(this.card_id_to_card[new_card_dict["id"]]["last_displayed_float"]);
         this.card_id_to_card[new_card_dict["id"]]["weight"] = new_card_dict["weight"];
         this.card_id_to_card[new_card_dict["id"]]["score"] = new_card_dict["score"];
         this.card_id_to_card[new_card_dict["id"]]["times_displayed"] = new_card_dict["times_displayed"];
         this.card_id_to_card[new_card_dict["id"]]["last_displayed_float"] = new_card_dict["last_displayed_float"];
-        console.log(this.card_id_to_card[new_card_dict["id"]]["last_displayed_float"]);
+        //console.log(this.card_id_to_card[new_card_dict["id"]]["last_displayed_float"]);
 
-        console.log("Should not be same");
+        //console.log("Should not be same");
     }
 }
 
@@ -91,14 +89,14 @@ class UserFlashcards {
         this.scores[this.current_index-1] = correct;
 
         async function interactionChange(past_card) {
-            console.log(past_card);
+            //console.log(past_card);
             const response = await fetch(`/api-v2/change/flashcard-interaction/?page=${past_card["notepage_id"]}&flashcards=${past_card["block_id"]}&flashcard=${past_card["id"]}&score=${correct}`);
             return await response.json()
         }
 
 
         interactionChange(past_card).then(json => {
-            console.log(json);
+            //console.log(json);
             this.card_holder.update_card(json);
         })
 

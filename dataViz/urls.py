@@ -25,11 +25,11 @@ from wagtail.documents import urls as wagtaildocs_urls
 wagtail_urlpatterns = [
     path('cms/', include(wagtailadmin_urls)),
     path('documents/', include(wagtaildocs_urls)),
-    path('pages/', include(wagtail_urls)),
+    path('', include(wagtail_urls)),
 ]
 
 urlpatterns = [
-    path('', include("dashboard.urls")),
+    path('dashboard/', include("dashboard.urls")),
     #path("social/", include("blocks.urls")),
     path("data/", include("data.urls")),
     path('admin/', admin_site.urls),

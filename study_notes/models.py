@@ -28,8 +28,6 @@ from wagtail.models import Page, Orderable
 from wagtail_home.models import filter_non_viewable
 from wagtail.templatetags.wagtailcore_tags import richtext
 
-
-
 # https://docs.wagtail.org/en/v4.1.1/getting_started/tutorial.html
 
 @register_snippet
@@ -174,8 +172,9 @@ class NotePage(Page):
     ]
 
     search_fields = Page.search_fields + [
-        index.SearchField('intro'),
-        index.SearchField('body'),
+        index.SearchField('intro', partial_match=True),
+        index.SearchField('body', partial_match=True),
+        index.SearchField('tags', partial_match=True)
     ]
 
     content_panels = Page.content_panels + [
