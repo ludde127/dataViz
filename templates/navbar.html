@@ -28,7 +28,7 @@
         </li>
         {% endif %}
       </ul>
-      <form class="" style="margin:auto;margin-right: 0;margin-left:1vw;" onsubmit="return searcher.search();">
+      <form class="" style="margin:auto;margin-right: 0;margin-left:1vw;" onsubmit="searcher.search(); return false;">
          {% csrf_token %}
           <div class="row justify-content-center align-items-center">
               {% if not user.is_authenticated %}
@@ -53,7 +53,7 @@
               {% endif %}
 
               <div class="col-sm-auto" style="margin-right: 0;">
-                 <input class="form-control" type="search" id="search-bar" placeholder="Search" style="max-width: 200px;width: 80%;" aria-label="Search">
+                 <input class="form-control" type="search" id="search-bar" placeholder="Search" oninput="searcher.search(); return false;" style="max-width: 200px;width: 80%;" aria-label="Search">
               </div>
               <div class="col-sm-auto" style="margin-left: 0;">
                  <button class="btn btn-info" style="margin: auto;margin-top: 2%;margin-left: 0;float:left;" type="submit">Search</button>
@@ -61,7 +61,16 @@
 
           </div>
      </form>
+
    </div>
+
   </div>
 </nav>
 {% include 'gradient-bar.html' %}
+<div id="search-results-div" style="width: 100%;display: none;visibility: hidden">
+    <div class="text-center search-div gradient-bg-transparent d-flex align-content-center ">
+        <ul class="search-ul navbar-nav" id="search-results" >
+            {# INSERT CHILDREN :D #}
+        </ul>
+    </div>
+</div>
