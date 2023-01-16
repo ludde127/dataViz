@@ -174,7 +174,9 @@ class NotePage(Page):
     search_fields = Page.search_fields + [
         index.SearchField('intro', partial_match=True),
         index.SearchField('body', partial_match=True),
-        index.SearchField('tags', partial_match=True)
+        index.RelatedFields('tags', [
+            index.SearchField('name', partial_match=True),
+        ]),
     ]
 
     content_panels = Page.content_panels + [

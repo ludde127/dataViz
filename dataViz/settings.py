@@ -208,7 +208,7 @@ PASSWORD_REQUIRED_TEMPLATE = 'wagtail_home/password_required.html'
 
 
 APPEND_SLASH = True
-
+WAGTAILADMIN_STATIC_FILE_VERSION_STRINGS = True
 if IS_PRODUCTION:
     import sentry_sdk
     from sentry_sdk.integrations.django import DjangoIntegration
