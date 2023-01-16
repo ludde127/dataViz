@@ -28,39 +28,34 @@
         </li>
         {% endif %}
       </ul>
-      <form class="" style="margin:auto;margin-right: 0;margin-left:1vw;" onsubmit="searcher.search(); return false;">
-         {% csrf_token %}
-          <div class="row justify-content-center align-items-center">
-              {% if not user.is_authenticated %}
+      <div class="row justify-content-center align-items-center">
+          {% if not user.is_authenticated %}
 
-              <div class="col-sm-auto">
-                    <a href="{% url 'login' %}" class="badge bg-warning" style="color:black;text-decoration: None;font-size:1rem;">Login</a>
-              </div>
-              {% else %}
-
-
-              <div class="col-sm-auto">
-                <div class="inline-block">
-                  <small style="margin-right: 0;padding-right: 0;">{{ user|capfirst }}</small>
-
-                  <a href="{% if not user.is_authenticated %}{% url 'login' %}{% else %}{% url 'user_profile' user %}{% endif %}" style="margin-left: 0;padding-left: 0;">
-                      <img class="img-responsive" src="{% if user.profile_image %}{{ user.profile_image }}{% else %}{% static 'default-user.svg' %}{% endif %}"
-                           alt="Profile picture" style="max-width: 64px; max-height: 64px;width: 4em;height: 4em;margin-left: 0;padding-left: 0;" >
-                  </a>
-                </div>
-              </div>
-
-              {% endif %}
-
-              <div class="col-sm-auto" style="margin-right: 0;">
-                 <input class="form-control" type="search" id="search-bar" placeholder="Search" oninput="searcher.search(); return false;" style="max-width: 200px;width: 80%;" aria-label="Search">
-              </div>
-              <div class="col-sm-auto" style="margin-left: 0;">
-                 <button class="btn btn-info" style="margin: auto;margin-top: 2%;margin-left: 0;float:left;" type="submit">Search</button>
-              </div>
-
+          <div class="col-sm-auto">
+                <a href="{% url 'login' %}" class="badge bg-warning" style="color:black;text-decoration: None;font-size:1rem;">Login</a>
           </div>
-     </form>
+          {% else %}
+
+
+          <div class="col-sm-auto">
+            <div class="inline-block">
+              <small style="margin-right: 0;padding-right: 0;">{{ user|capfirst }}</small>
+
+              <a href="{% if not user.is_authenticated %}{% url 'login' %}{% else %}{% url 'user_profile' user %}{% endif %}" style="margin-left: 0;padding-left: 0;">
+                  <img class="img-responsive" src="{% if user.profile_image %}{{ user.profile_image }}{% else %}{% static 'default-user.svg' %}{% endif %}"
+                       alt="Profile picture" style="max-width: 64px; max-height: 64px;width: 4em;height: 4em;margin-left: 0;padding-left: 0;" >
+              </a>
+            </div>
+          </div>
+
+          {% endif %}
+
+          <div class="col-sm-auto" style="margin-right: 0;">
+             <input class="form-control" type="search" id="search-bar" placeholder="Search" oninput="searcher.search(); return false;" style="max-width: 200px;width: 80%;" aria-label="Search">
+          </div>
+
+
+      </div>
 
    </div>
 
