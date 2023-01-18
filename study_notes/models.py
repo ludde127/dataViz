@@ -42,6 +42,7 @@ class FlashCardHistory(models.Model):
 
     class Meta:
         unique_together = ["user", "flashcard_id"]
+
     def increment(self, score_change=0, save=True):
         self.score += score_change
         self.times_shown += 1

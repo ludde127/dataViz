@@ -8,6 +8,7 @@ from dataViz.settings import BASE_CONTEXT
 from .models import UsersFlashcards, NotePage, FlashCardGroupReference
 from .models import filter_non_viewable
 from users.models import User
+
 def get_notepage_or_404(request, id):
     try:
         page = filter_non_viewable(request.user, NotePage.objects).get(id__exact=id)
@@ -48,6 +49,7 @@ def subscribe_to_flashcard_group(request):
 
 def unsubscribe_to_flashcard_group(request):
     return toggle_subscription(request, False)
+
 def add_flashcard_interactions(request):
     if request.GET and request.user.is_authenticated:
         #http://127.0.0.1:8000/api-v2/change/flashcard-interaction/?page=11&flashcards=47b3d79e-189a-4bd8-99b1-45e2d75106f9&flashcard=fadcd3c1-4520-4a06-8c2d-538d794e9aaf&score=1
