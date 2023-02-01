@@ -10,7 +10,11 @@ from django.core import serializers
 def search(request):
     if request.GET:
         query = request.GET.get("query", None)
-        result = list(NotePage.objects.live().search(query))
+        objects = NotePage.objects.live()
+        result = list(objects.search(query))
+        for auto in objects.autocomplete(query):
+            if auto not in result:
+                result.append(auto)
         Query.get(query).add_hit()
         return JsonResponse(data={"results": [{"title": res.title, "url": res.get_url()} for res in result]})
     return HttpResponseBadRequest()

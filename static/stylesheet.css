@@ -6,19 +6,28 @@
 
 .logo-image {border-radius: 5px; width: 64px; height: 64px;}
 
-.content-container {
-    width: 90%;
-    border-left: 2px inset darkgray;
-    margin: auto;
-    padding-left: 4%;
-    padding-right: 4%;
-    padding-top: 1%;
-    padding-bottom:1%;
-    margin-top: 2%;
-    margin-bottom: 2%;
+.gradient-padding-inner {
+    height: auto;
+    background-color: white;
+    width:auto;
+    margin: 1em;
+    border-radius: 1em;
 }
+
+
+.gradient-padding-outer {display: grid;
+    place-items: center;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
 .gradient-bg {  background: rgb(6,0,110);
                 background: linear-gradient(120deg, rgba(6,0,110,1) 0%, rgba(1,1,206,1) 35%, rgba(69,91,175,1) 52%, rgba(0,212,255,1) 100%);
+}
+
+.gradient-bg-only {  background: rgb(6,0,110);
+                     background: linear-gradient(120deg, rgba(6,0,110,0.8) 0%, rgba(1,1,206,0.8) 35%, rgba(69,91,175,0.8) 52%, rgba(0,212,255,0.8) 100%);
 }
 
 .gradient-bg-transparent {  background: rgba(6,0,110, 0.4);
@@ -67,6 +76,8 @@ img {
     .content-container {width: 80%;}
     .left-offset-textbox {margin-left: 10%;}
     img {max-height: 50vh;}
+    .stock-table {max-width: 800px;}
+
 
 
 }
@@ -161,13 +172,17 @@ h1 {
 
 .search-results a {color: black;text-decoration-line: none;}
 .block-paragraph > p:first-child:first-letter {border-left: var(--blue-border);padding-left: 10px;}
-
+.block-richtext:first-child:first-letter {border-left: var(--blue-border);padding-left: 10px;}
 .bi-arrow-right-square {margin-left: 10px;}
 
 .blue-border {
     border-color: var(--light-blue);
     border-width: 2px;
     border-radius: 1.5em;
+}
+
+.content-border {
+    border: 0.5vw inset var(--blue);
 }
 
 .icon-in-header {text-decoration: none;margin-right: 10px;margin-left: 10px;}
