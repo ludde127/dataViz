@@ -19,10 +19,12 @@
 <body class="{% block body_class %}{% endblock %}">
     {% include "navbar.html" %}
     {% bootstrap_messages %}
-    <div style="width: 100%;">
-    {% block content %}
+    <div>
 
-    {% endblock %}
+        <div >
+        {% block content %}
+        {% endblock %}
+        </div>
     </div>
 
     {% include "footer.html" %}

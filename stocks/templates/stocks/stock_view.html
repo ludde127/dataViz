@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load crispy_forms_filters %}
+
+{% block content %}
+    <div class="text-center">
+        <h1>Trades</h1>
+        <h3>Add trade</h3>
+        <form action="{% url 'stock_register' %}" method="POST" class="form form-inline">
+            {% csrf_token %}
+            {{ form }}
+            <button class="btn btn-primary">Submit</button>
+        </form>
+        <br>
+        <h3>Registered Trades</h3>
+        <div class="table-responsive stock-table custom-center">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Stock</th>
+                    <th scope="col">Buy/Sell</th>
+                    <th scope="col">By</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for trade in trades %}
+                    <tr>
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td>{{ trade.stock }}</td>
+                        <td><strong>{{ trade.is_buy_string }}</strong> {% if trade.is_buy %}🚀📈{% else %}📉{% endif %}</td>
+                        <td style="font-style: italic">{{ trade.owner.user.username }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+        </div>
+    </div>
+{% endblock %}
