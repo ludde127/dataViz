@@ -15,8 +15,8 @@
         <div class="table-responsive stock-table custom-center">
         <table class="table">
             <thead>
-                <tr>
-                    <th scope="col">#</th>
+                <tr>counter
+                    <th scope="col">Time</th>
                     <th scope="col">Stock</th>
                     <th scope="col">Buy/Sell</th>
                     <th scope="col">By</th>
@@ -25,7 +25,7 @@
             <tbody>
                 {% for trade in trades %}
                     <tr>
-                        <th scope="row">{{ forloop.counter }}</th>
+                        <th scope="row">{{ trade.time_added }}</th>
                         <td>{{ trade.stock }}</td>
                         <td><strong>{{ trade.is_buy_string }}</strong> {% if trade.is_buy %}🚀📈{% else %}📉{% endif %}</td>
                         <td style="font-style: italic">{{ trade.owner.user.username }}</td>
