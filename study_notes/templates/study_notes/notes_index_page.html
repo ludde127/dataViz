@@ -19,8 +19,9 @@
                     {% with post.main_image as main_image %}
                         {% if main_image %}{% image main_image fill-160x100 class="boxed-image" %}{% endif %}
                     {% endwith %}
-
-                    {{ post.intro }}
+                    <p>{% include 'shortcuts/notepage-tags.html' with tags=post.tags.all %}</p>
+                    <br>
+                    <p>{{ post.intro }}....</p>
 
             {% endwith %}
 

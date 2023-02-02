@@ -6,7 +6,12 @@
 
 {% block content %}
     <div class="text-container">
-    <h2 style="text-align: left;">{{ users_page|capfirst }}'s profile</h2>
+    <h2 style="text-align: left;">{{ users_page|capfirst }}'s profile
+    {% if request.user.is_authenticated %}
+        <span style="font-size: 0.7em;margin-left: 20px;text-decoration: none;">{% include 'shortcuts/logout-url.html' %}</span>
+    {% endif %}
+    </h2>
+
     <br>
     {% if are_there_cards %}
         <div id="quiz-holder-user-subscribed-cards succ-fail-user-subscribed-cards">

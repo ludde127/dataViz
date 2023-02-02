@@ -83,10 +83,6 @@ img {
     color: black;
 }
 
-.notepage-title-link :hover {
-    font-size: 2.2em;
-    color: black;
-}
 
 .vertical_horizontal_center {
     display: flex;
