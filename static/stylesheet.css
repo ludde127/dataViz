@@ -77,10 +77,12 @@ img {
     .left-offset-textbox {margin-left: 10%;}
     img {max-height: 50vh;}
     .stock-table {max-width: 800px;}
-
-
-
 }
+
+.notepage-title-link {
+    color: black;
+}
+
 
 .vertical_horizontal_center {
     display: flex;

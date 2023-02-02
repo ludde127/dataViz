@@ -6,11 +6,13 @@ class Flashcards {
         this.scores = {};
         this.page_id = page_id;
         this.subscribed_cards = subscribed_cards;
+
+        this.quizzes_done = 1;
     }
     nextCard(block_id, correct) {
         let past_card = this.quiz_data[block_id]["cards"][this.quizzes[block_id]-1]
         let quiz = this.quiz_data[block_id];
-
+        this.quizzes_done += 1;
         let cards = quiz["cards"];
 
         document.getElementById("quiz-btn-next-"+block_id).style.display = "none";
@@ -28,16 +30,20 @@ class Flashcards {
             document.getElementById("quiz-q-"+block_id).innerHTML = cards[this.quizzes[block_id]]["q"];
         } else {
             this.begin(block_id);
-            document.getElementById("quiz-progress-"+block_id).innerHTML = 1+this.quizzes[block_id];
             document.getElementById("quiz-btn-nextspan-"+block_id).style.display = "inline";
             document.getElementById("quiz-btn-restartspan-"+block_id).style.display = "none";
+            this.quizzes_done -=1; // Dont count extra
             return this.nextCard(block_id);
         }
 
-        if (!(this.quizzes[block_id]+1 in cards)) {
-            document.getElementById("quiz-progress-"+block_id).innerHTML = 1+this.quizzes[block_id];
+        let to_display = this.quizzes_done%(Object.keys(this.quiz_data[block_id]["cards"]).length+1)
+        if (to_display === 0) {
+            this.quizzes_done += 1;
+            to_display = this.quizzes_done%(Object.keys(this.quiz_data[block_id]["cards"]).length+1)
 
         }
+        document.getElementById("quiz-progress-"+block_id).innerHTML = to_display;
+
         return false
     }
 

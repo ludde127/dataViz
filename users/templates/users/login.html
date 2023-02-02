@@ -6,8 +6,8 @@
             <div style="text-align: center;">
                 <h1>Login</h1>
                 <br>
-                <p>If you <strong>do not</strong> have an account you can create one here: <a href="{% url 'create_account' %}"><span class="badge rounded-pill bg-warning">Create account</span></a>.</p>
-                <p>If you want to log out click here: <a href="{% url 'logout' %}"><span class="badge rounded-pill bg-danger">Logout</span></a>.</p>
+                <p>If you <strong>do not</strong> have an account you can create one here: {% include 'shortcuts/create-account-url.html' %}.</p>
+                <p>If you want to log out click here: {% include 'shortcuts/logout-url.html' %}.</p>
 
             </div>
         </div>

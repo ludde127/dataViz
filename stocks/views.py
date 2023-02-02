@@ -6,9 +6,8 @@ from dataViz.utils import context_render
 from .forms import Trade
 from .models import Trades
 
-@login_required
 def index(request):
-    trades = list(Trades.objects.all())
+    trades = list(Trades.objects.order_by("-time_added")[:25]) # A list with the latest trade furthest up. Shows 25 newest
     context = {"trades": trades, "form": Trade()}
     return context_render(request, "stocks/stock_view.html", context)
 

@@ -21,9 +21,7 @@
         </h1>
         {% if page.tags.all.count %}
         <div class="tags d-flex justify-content-start flex-wrap">
-            {% for tag in page.tags.all %}
-                <a class="badge rounded-pill bg-info text-dark" style="font-size: 0.8em;margin: 1% 1% 1% 1%" href="{% slugurl 'tags' %}?tag={{ tag }}">{{ tag }}</a>
-            {% endfor %}
+            {% include 'shortcuts/notepage-tags.html' with tags=page.tags.all %}
         </div>
         <br>
         {% endif %}
@@ -173,7 +171,7 @@
     <script lang="js">
 
         let quizzes = new Quizzes({{ quiz_json|safe }});
-        let flashcards = new Flashcards(ge.p, {{ page_id|safe }}, {{ subscribed_cards|safe }});
+        let flashcards = new Flashcards({{ flash_json|safe }}, {{ page_id|safe }}, {{ subscribed_cards|safe }});
     </script>
 {% endblock %}
 

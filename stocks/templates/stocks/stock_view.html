@@ -5,17 +5,21 @@
     <div class="text-center">
         <h1>Trades</h1>
         <h3>Add trade</h3>
-        <form action="{% url 'stock_register' %}" method="POST" class="form form-inline">
-            {% csrf_token %}
-            {{ form }}
-            <button class="btn btn-primary">Submit</button>
-        </form>
-        <br>
+        {% if request.user.is_authenticated %}
+            <form action="{% url 'stock_register' %}" method="POST" class="form form-inline">
+                {% csrf_token %}
+                {{ form }}
+                <button class="btn btn-primary">Submit</button>
+            </form>
+        {% else %}
+            <p>You have to be logged in to submit a trade. {% include 'shortcuts/login-url.html' %}</p>
+        {% endif %}
+        <hr>
         <h3>Registered Trades</h3>
         <div class="table-responsive stock-table custom-center">
         <table class="table">
             <thead>
-                <tr>counter
+                <tr>
                     <th scope="col">Time</th>
                     <th scope="col">Stock</th>
                     <th scope="col">Buy/Sell</th>
