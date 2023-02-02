@@ -173,7 +173,7 @@
     <script lang="js">
 
         let quizzes = new Quizzes({{ quiz_json|safe }});
-        let flashcards = new Flashcards(ge.p, {{ page_id|safe }}, {{ subscribed_cards|safe }});
+        let flashcards = new Flashcards({{ flash_json|safe }}, {{ page_id|safe }}, {{ subscribed_cards|safe }});
     </script>
 {% endblock %}
 

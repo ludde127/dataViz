@@ -14,7 +14,9 @@
             {% if child.title != "Tags" %}
             <hr>
 
-            <a href="{% pageurl child %}" style="color: black;"><h3>{{ child.title }}{% include "icons/arrow-right.html" %}</h3></a>
+            <a href="{% pageurl child %}" class="notepage-title-link">
+                <h3>{{ child.title }}{% include "icons/arrow-right.html" %}</h3>
+            </a>
 
             {% with child=child.specific %}
                 <p>{{ child.intro|richtext }}</p>
