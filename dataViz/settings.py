@@ -70,7 +70,8 @@ INSTALLED_APPS = [
     'study_notes',
     'wagtailcodeblock',
     'wagtailmath',
-    'stocks'
+    'stocks',
+    'time_booking'
 ]
 
 MIDDLEWARE = [
