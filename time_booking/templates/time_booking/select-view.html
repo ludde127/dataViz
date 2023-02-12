@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load crispy_forms_filters %}
+
+{% block content %}
+    <div class="container-fluid text-center">
+        <h1>Time Booking</h1>
+        <p>Select which to change or add new</p>
+
+        <br>
+        <hr>
+        <br>
+        <div class="card-deck" style="display: flex;flex-wrap: wrap;">
+        {% for ts in timeslots %}
+
+            <div class="card" style="min-width:300px;margin:auto;margin-top: 1em;">
+                <div class="card-body">
+                    <h3 class="card-title">{{ ts.name }}</h3>
+                    <p class="card-text">{{ ts.description }}</p>
+                    <a href="{{ ts.url }}"><button class="btn btn-primary">Check it out.</button></a>
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+        <hr>
+        <br>
+        {% if user.is_authenticated %}
+        <form class="form form-control" method="post" autocomplete="off" style="margin-top: 1em;">
+            <h3>Add new booking object</h3>
+
+            {% csrf_token %}
+            {{add_booking_form|crispy}}
+            <button class="btn btn-primary" type="submit">Submit</button>
+        </form>
+        {% else %}
+            <h4>Login to add a timeslot {% include 'shortcuts/login-url.html' %}</h4>
+            <br>
+            <form class="form form-control disabled" method="post" style="border-color: red;margin-top: 1em;">
+                <h3>Add new booking object</h3>
+
+
+                {% csrf_token %}
+                {{add_booking_form|crispy}}
+                <button class="btn btn-primary" type="submit" disabled="disabled">Submit</button>
+            </form>
+        {% endif %}
+    </div>
+{% endblock %}

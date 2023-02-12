@@ -37,7 +37,8 @@ urlpatterns = [
     path("energy/", include("energy_utils.urls")),
     path("api-v2/", include("study_notes.urls")),
     path("search/", include("wagtail_home.urls")),
-    path("stocks/", include("stocks.urls"))
+    path("stocks/", include("stocks.urls")),
+    path("time-booking/", include("time_booking.urls"))
 ]
 urlpatterns.extend(wagtail_urlpatterns)
 

@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load crispy_forms_filters %}
+
+{% block content %}
+<div class="container-fluid text-center">
+    <h1>{{ booking.name }}</h1>
+    <br>
+
+    <h3>Available Timeslots</h3>
+    {% if not user.is_authenticated %}
+
+        <label>
+            As you are not logged in you must write your name.
+            <input class="input-sm" type="text" id="user-string-selector">
+        </label>
+    {% endif %}
+    <ul>
+    {% csrf_token %}
+    {% for ts in timeslots %}
+
+        <li>
+            <strong>{{ ts.time_slot_start }}</strong> until <strong>{{ ts.time_slot_end }}</strong>
+            <button class="btn btn-sm btn-success" type="button" onclick="select({{ ts.id }});">Select</button>
+            {% if ts.acceptedtimeslot_set.all %}
+            <ol style="margin: auto;width: auto;">
+                <strong>Selected by:</strong>
+                {% for accepted in ts.acceptedtimeslot_set.all %}
+                <li style="font-style: italic;">{% if accepted.accepted_by  %} {{ accepted.accepted_by }}{% else %}{{ accepted.accepted_by_name }}{% endif %}</li>
+                {% endfor %}
+            </ol>
+            {% endif %}
+        </li>
+
+    {% endfor %}
+    </ul>
+
+    {% if user.is_authenticated and user.normaluser == booking.owner %}
+        <form class="form form-control" method="post" autocomplete="off" style="margin-top: 1em;">
+            <h3>Add bookable timeslot</h3>
+
+            {% csrf_token %}
+            {{add_timeslot_form|crispy}}
+            <button class="btn btn-primary" type="submit">Submit</button>
+        </form>
+    {% endif %}
+    <script>
+        async function post(url, json) {
+            return await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                },
+                body: JSON.stringify(json)
+            });
+}
+
+        function select(id) {
+            let elem = document.getElementById("user-string-selector");
+            let user_string = "";
+            if (elem !== null) {
+                user_string = elem.value;
+            }
+            post("add-selected/", {"time_slot_id": id, "user_string": user_string}).then(r => {
+                console.log(r.text());
+                window.location.replace(window.location.href);
+            });
+        }
+
+
+    </script>
+</div>
+{% endblock %}
