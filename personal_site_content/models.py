@@ -6,7 +6,7 @@ class TextSection(models.Model):
     title = models.CharField(max_length=100, verbose_name="Title of block")
     text = models.TextField("Text to display")
 
-    image = models.ImageField("A image to add to the content", null=True)
+    image = models.ImageField("A image to add to the content", null=True, blank=True)
 
     weight = models.IntegerField("A higher number will put the item higher up on the personal site.")
 
