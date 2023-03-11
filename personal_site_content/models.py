@@ -7,7 +7,7 @@ class TextSection(models.Model):
     text = models.TextField("Text to display")
 
     image = models.ImageField("A image to add to the content", null=True, blank=True)
-
+    image_alt = models.CharField(max_length=150, blank=True)
     weight = models.IntegerField("A higher number will put the item higher up on the personal site.")
 
     def __str__(self):
