@@ -7,22 +7,24 @@
         <p>Select which to change or add new</p>
 
         <br>
-        <hr>
-        <br>
-        <div class="card-deck" style="display: flex;flex-wrap: wrap;">
-        {% for ts in timeslots %}
+        {% if timeslots %}
+            <hr>
+            <br>
+            <div class="card-deck" style="display: flex;flex-wrap: wrap;">
+                {% for ts in timeslots %}
 
-            <div class="card" style="min-width:300px;margin:auto;margin-top: 1em;">
-                <div class="card-body">
-                    <h3 class="card-title">{{ ts.name }}</h3>
-                    <p class="card-text">{{ ts.description }}</p>
-                    <a href="{{ ts.url }}"><button class="btn btn-primary">Check it out.</button></a>
-                </div>
+                    <div class="card" style="min-width:300px;margin:auto;margin-top: 1em;">
+                        <div class="card-body">
+                            <h3 class="card-title">{{ ts.name }}</h3>
+                            <p class="card-text">{{ ts.description }}</p>
+                            <a href="{{ ts.url }}"><button class="btn btn-primary">Check it out.</button></a>
+                        </div>
+                    </div>
+                {% endfor %}
             </div>
-        {% endfor %}
-        </div>
-        <hr>
-        <br>
+            <hr>
+            <br>
+        {% endif %}
         {% if user.is_authenticated %}
         <form class="form form-control" method="post" autocomplete="off" style="margin-top: 1em;">
             <h3>Add new booking object</h3>

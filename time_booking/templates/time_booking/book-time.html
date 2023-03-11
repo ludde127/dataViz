@@ -14,25 +14,23 @@
             <input class="input-sm" type="text" id="user-string-selector">
         </label>
     {% endif %}
-    <ul>
     {% csrf_token %}
-    {% for ts in timeslots %}
+    <div class="text-center" style="width: auto;">
+        {% for ts in timeslots %}
 
-        <li>
             <strong>{{ ts.time_slot_start }}</strong> until <strong>{{ ts.time_slot_end }}</strong>
             <button class="btn btn-sm btn-success" type="button" onclick="select({{ ts.id }});">Select</button>
             {% if ts.acceptedtimeslot_set.all %}
-            <ol style="margin: auto;width: auto;">
+            <ul style="margin: auto;width: fit-content;" class="list-group">
                 <strong>Selected by:</strong>
                 {% for accepted in ts.acceptedtimeslot_set.all %}
-                <li style="font-style: italic;">{% if accepted.accepted_by  %} {{ accepted.accepted_by }}{% else %}{{ accepted.accepted_by_name }}{% endif %}</li>
+                <li class="list-group-item" style="font-style: italic;">{% if accepted.accepted_by  %} {{ accepted.accepted_by }}{% else %}{{ accepted.accepted_by_name }}{% endif %}</li>
                 {% endfor %}
-            </ol>
+            </ul>
             {% endif %}
-        </li>
 
-    {% endfor %}
-    </ul>
+        {% endfor %}
+    </div>
 
     {% if user.is_authenticated and user.normaluser == booking.owner %}
         <form class="form form-control" method="post" autocomplete="off" style="margin-top: 1em;">
