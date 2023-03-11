@@ -71,7 +71,8 @@ INSTALLED_APPS = [
     'wagtailcodeblock',
     'wagtailmath',
     'stocks',
-    'time_booking'
+    'time_booking',
+    'personal_site_content'
 ]
 
 MIDDLEWARE = [
