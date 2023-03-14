@@ -78,6 +78,11 @@
 {% block scripts %}
         <script lang="js" type="module">
             import Searcher from "/static/js/common/content_search.js";
-            let searcher = new Searcher(document.getElementById("nav-search-bar"));
+            let searcher = new Searcher(
+                document.getElementById("nav-search-bar"),
+                document.getElementById("search-results"),
+                document.getElementById("search-results-div")
+            );
+
         </script>
 {% endblock %}
