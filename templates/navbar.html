@@ -54,7 +54,9 @@
           {% endif %}
 
           <div class="col-sm-auto" style="margin-right: 0;">
-             <input class="form-control" type="search" id="search-bar" placeholder="Search" oninput="searcher.search(); return false;" style="max-width: 200px;width: 80%;" aria-label="Search">
+             <input class="form-control" type="search"
+                    id="nav-search-bar" placeholder="Search"
+                    style="max-width: 200px;width: 80%;" aria-label="Search">
           </div>
 
 
@@ -72,3 +74,15 @@
         </ul>
     </div>
 </div>
+
+{% block scripts %}
+        <script lang="js" type="module">
+            import Searcher from "/static/js/common/content_search.js";
+            let searcher = new Searcher(
+                document.getElementById("nav-search-bar"),
+                document.getElementById("search-results"),
+                document.getElementById("search-results-div")
+            );
+
+        </script>
+{% endblock %}
