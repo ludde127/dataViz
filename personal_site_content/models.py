@@ -2,7 +2,13 @@ from django.db import models
 
 # Create your models here.
 
+class Page(models.Model):
+    page_title = models.CharField(max_length=60, verbose_name="Title name of the webpage")
+
+
 class TextSection(models.Model):
+    for_page = models.ForeignKey(Page, on_delete=models.CASCADE)
+
     title = models.CharField(max_length=100, verbose_name="Title of block")
     text = models.TextField("Text to display")
 

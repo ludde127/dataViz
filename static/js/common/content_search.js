@@ -1,3 +1,13 @@
+function elementIsInputElement(element){
+    let tagName = element.tagName.toLowerCase();
+    if (tagName === 'textarea') return true;
+    if (tagName !== 'input') return false;
+    let type = element.getAttribute('type').toLowerCase(),
+        // if any of these input types is not supported by a browser, it will behave as input type text.
+        inputTypes = ['text', 'password', 'number', 'email', 'tel', 'url', 'search', 'date', 'datetime', 'datetime-local', 'time', 'month', 'week']
+    return inputTypes.indexOf(type) >= 0;
+}
+
 class Searcher {
     constructor(search_bar, search_results_element_list, search_results_div_element) {
         this.search_bar = search_bar;
@@ -42,7 +52,7 @@ class Searcher {
         })
 
         document.addEventListener("keypress", (event) => {
-            if (event.isComposing || event.keyCode === 229) {
+            if (event.isComposing || event.keyCode === 229 || (document.activeElement && elementIsInputElement(document.activeElement))) {
                 return;
             }
 
