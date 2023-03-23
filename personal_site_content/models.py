@@ -5,9 +5,13 @@ from django.db import models
 class Page(models.Model):
     page_title = models.CharField(max_length=60, verbose_name="Title name of the webpage")
 
+    @classmethod
+    def get_index_page_pk(cls):
+        page, created = cls.objects.get_or_create(page_title="Index")
+        return page.pk
 
 class TextSection(models.Model):
-    for_page = models.ForeignKey(Page, on_delete=models.CASCADE)
+    page = models.ForeignKey(Page, on_delete=models.CASCADE, default=Page.get_index_page_pk)
 
     title = models.CharField(max_length=100, verbose_name="Title of block")
     text = models.TextField("Text to display")

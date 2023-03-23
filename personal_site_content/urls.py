@@ -2,5 +2,6 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path("api/", views.text_sections, name="text_sections_api")
+    path("", views.text_sections, name="text_sections_api"),
+    path("/pages/", views.pages, name="pages_api")
 ]

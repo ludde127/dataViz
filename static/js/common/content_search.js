@@ -52,7 +52,8 @@ class Searcher {
         })
 
         document.addEventListener("keypress", (event) => {
-            if (event.isComposing || event.keyCode === 229 || (document.activeElement && elementIsInputElement(document.activeElement))) {
+            if (event.isComposing || event.keyCode === 229
+                || (document.activeElement && elementIsInputElement(document.activeElement))) {
                 return;
             }
 
