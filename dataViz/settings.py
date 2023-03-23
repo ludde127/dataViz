@@ -199,7 +199,9 @@ WAGTAIL_CODE_BLOCK_LANGUAGES = (
     ('yaml', 'YAML'),
     ('scala', 'Scala'),
     ('rust', 'Rust'),
-    ('cpp', 'C++')
+    ('cpp', 'C++'),
+    ('haskell', 'Haskell'),
+    ('java', 'Java')
 )
 WAGTAIL_CODE_BLOCK_LINE_NUMBERS = True
 WAGTAIL_CODE_BLOCK_COPY_TO_CLIPBOARD = True
