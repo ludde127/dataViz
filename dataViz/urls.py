@@ -39,7 +39,7 @@ urlpatterns = [
     path("search/", include("wagtail_home.urls")),
     path("stocks/", include("stocks.urls")),
     path("time-booking/", include("time_booking.urls")),
-    path("personal-site/api", include("personal_site_content.urls"))
+    path("personal-site/api/", include("personal_site_content.urls"))
 ]
 urlpatterns.extend(wagtail_urlpatterns)
 
