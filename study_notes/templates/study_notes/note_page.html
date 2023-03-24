@@ -10,23 +10,29 @@
     {% with page.get_parent as parent %}
 
     <div class="text-container">
-        <h1>
-            <a class="icon-in-header" aria-label="Go back" href="{% pageurl parent %}">{% include 'icons/return-left.html' %}</a>
 
-            {{ page.title }}
+        <div class="page-start">
+            <h1>
+                <a class="icon-in-header" aria-label="Go back" href="{% pageurl parent %}">{% include 'icons/return-left.html' %}</a>
 
-            {% if request.user == page.owner %}
-                <a class="icon-in-header" style="color: black;" target="_blank" aria-label="Edit" href="/cms/pages/{{ page.id }}/edit">{% include 'icons/edit.html' %}</a>
+                {{ page.title }}
+
+                {% if request.user == page.owner %}
+                    <a class="icon-in-header" style="color: black;" target="_blank" aria-label="Edit" href="/cms/pages/{{ page.id }}/edit">{% include 'icons/edit.html' %}</a>
+                {% endif %}
+             </h1>
+            {% if page.tags.all.count %}
+            <div class="tags d-flex justify-content-center flex-wrap">
+                {% include 'shortcuts/notepage-tags.html' with tags=page.tags.all %}
+            </div>
+            <br>
             {% endif %}
-        </h1>
-        {% if page.tags.all.count %}
-        <div class="tags d-flex justify-content-start flex-wrap">
-            {% include 'shortcuts/notepage-tags.html' with tags=page.tags.all %}
-        </div>
-        <br>
-        {% endif %}
+
+         <p class="intro">{{ page.intro }}</p>
+
+
         {% with categories=page.categories.all %}
-            {% if categories %}
+              {% if categories %}
                 <h3>Posted in:</h3>
                 <ul>
                     {% for category in categories %}
@@ -39,22 +45,20 @@
             {% endif %}
         {% endwith %}
 
-        <p class="intro">{{ page.intro }}</p>
 
         {% if page.get_children %}
         <hr>
-        <h3>Subpages</h3>
-        <ul class="child-list" style="font-size: 1.1em;">
+        <h2>Subpages</h2>
             {% for child in page.get_children %}
-              <li class="nav-item">
-                <a class="nav-link" aria-current="page" href="{% pageurl child %}">{{ child.title }}</a>
-              </li>
+                <a style="color: black" aria-current="page" href="{% pageurl child %}"><h4>{{ child.title }}</h4></a>
             {% endfor %}
-        </ul>
         <hr>
         {% endif %}
 
-        {% for block in page.body %}
+        </div>
+
+        <div class="richtext-stream">
+            {% for block in page.body %}
             {% if block.block_type == 'heading' %}
                 <h2>{{ block.value }}</h2>
             {% elif block.block_type == 'image' %}
@@ -141,14 +145,17 @@
             <hr>
 
 
-        {% endfor %}
+            {% endfor %}
 
-        {% for item in page.gallery_images.all %}
-            <div style="float: left; margin: 10px">
-                {% image item.image fill-320x240 %}
-                <p>{{ item.caption }}</p>
-            </div>
-        {% endfor %}
+            {% for item in page.gallery_images.all %}
+                <div style="float: left; margin: 10px">
+                    {% image item.image fill-320x240 %}
+                    <p>{{ item.caption }}</p>
+                </div>
+            {% endfor %}
+        </div>
+
+
         <small class="text-muted">Edited: {{ page.date }}</small>
         <br>
         <small class="text-muted">By {{ page.owner }}</small>
