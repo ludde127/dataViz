@@ -7,14 +7,17 @@
 
 {% block content %}
     <div class="text-container">
-        <h1>{{ page.title }}</h1>
+        <div class="page-start">
+           <h1>{{ page.title }}</h1>
 
-        <div class="intro">{{ page.intro|richtext }}</div>
+            <div class="intro">{{ page.intro|richtext }}</div>
+        </div>
+
 
         {% for post in note_pages %}
 
             {% with post=post.specific %}
-                <div class="notepage-description">
+                <div class="page-description">
                     <hr>
                     <h2 ><a href="{% pageurl post %}" class="notepage-title-link">{{ post.title }}{% include "icons/arrow-right.html" %}</a></h2>
                     {% with post.main_image as main_image %}
