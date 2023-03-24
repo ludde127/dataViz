@@ -30,7 +30,7 @@ hr {width: 90%;margin:auto;}
 
 .richtext-stream a {font-weight: bold;color:black;text-decoration: deepskyblue underline}
 .richtext-stream li {width: 90%; margin:auto;}
-
+.child-list {margin-left: 15%;}
 
 .gradient-padding-inner {
     height: auto;

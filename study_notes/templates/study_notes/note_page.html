@@ -29,35 +29,23 @@
             {% endif %}
 
          <p class="intro">{{ page.intro }}</p>
-
-
-        {% with categories=page.categories.all %}
-              {% if categories %}
-                <h3>Posted in:</h3>
-                <ul>
-                    {% for category in categories %}
-                        <li style="display: inline">
-                            {% image category.icon fill-32x32 style="vertical-align: middle" %}
-                            {{ category.name }}
-                        </li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-        {% endwith %}
-
-
-        {% if page.get_children %}
-        <hr>
-        <h2>Subpages</h2>
-            {% for child in page.get_children %}
-                <a style="color: black" aria-current="page" href="{% pageurl child %}"><h4>{{ child.title }}</h4></a>
-            {% endfor %}
-        <hr>
-        {% endif %}
-
         </div>
 
+
+
         <div class="richtext-stream">
+            {% if page.get_children %}
+                <hr>
+                <h2>Subpages</h2>
+                <ul class="child-list" style="font-size: 1.1em;">
+                    {% for child in page.get_children %}
+                      <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="{% pageurl child %}">{{ child.title }}</a>
+                      </li>
+                    {% endfor %}
+                </ul>
+                <hr>
+            {% endif %}
             {% for block in page.body %}
             {% if block.block_type == 'heading' %}
                 <h2>{{ block.value }}</h2>
