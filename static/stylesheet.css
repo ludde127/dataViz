@@ -32,6 +32,8 @@ hr {width: 90%;margin:auto;}
 .richtext-stream li {width: 90%; margin:auto;}
 .child-list {margin-left: 15%;}
 
+.block-richtext h2 + p {text-align: center;}
+
 .gradient-padding-inner {
     height: auto;
     background-color: white;
