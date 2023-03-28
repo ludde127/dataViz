@@ -149,7 +149,7 @@ class NotesIndexPage(Page):
 
 class NotePage(Page):
     date = models.DateField("Post date")
-    intro = models.CharField(max_length=250)
+    intro = models.CharField(max_length=250, blank=True)
     #body = RichTextField(blank=True)
     tags = ClusterTaggableManager(through=NotePageTag, blank=True)
     categories = ParentalManyToManyField('study_notes.NoteCategory', blank=True)
@@ -216,6 +216,17 @@ class NotePage(Page):
             quiz_start[b.id] = first_question
             quiz_length[b.id] = len(block["cards"])
         return quiz_json, quiz_start, quiz_length
+
+    @property
+    def default_seo_search_description(self):
+        return f"{self.title.capitalize()}. {self.intro}"
+
+    @property
+    def meta_description(self):
+        return self.search_description if self.search_description else self.default_seo_search_description
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
 
     def get_flashcards(self, request):
         flashcards_json = {}
