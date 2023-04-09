@@ -4,11 +4,15 @@ from django.db import models
 
 class Page(models.Model):
     page_title = models.CharField(max_length=60, verbose_name="Title name of the webpage")
+    intro = models.TextField("Intro text", max_length=350, default="")
 
     @classmethod
     def get_index_page_pk(cls):
         page, created = cls.objects.get_or_create(page_title="Index")
         return page.pk
+
+    def __str__(self):
+        return self.page_title
 
 class TextSection(models.Model):
     page = models.ForeignKey(Page, on_delete=models.CASCADE, default=Page.get_index_page_pk)

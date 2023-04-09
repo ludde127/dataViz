@@ -5,7 +5,7 @@
 {% load wagtailmath %}
 {% load custom_filters %}
 {% block body_class %}template-blogpage{% endblock %}
-
+{% block meta_description %}{{ page.meta_description }}{% endblock %}
 {% block content %}
     {% with page.get_parent as parent %}
 
