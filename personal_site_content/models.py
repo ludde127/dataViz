@@ -4,6 +4,7 @@ from django.db import models
 
 class Page(models.Model):
     page_title = models.CharField(max_length=60, verbose_name="Title name of the webpage")
+    browser_title = models.CharField(max_length=50, verbose_name="Title name of the webpage in browser")
     intro = models.TextField("Intro text", max_length=350, default="", blank=True)
     seo_description = models.CharField(max_length=250, verbose_name="SEO meta description", blank=True, default="")
 
