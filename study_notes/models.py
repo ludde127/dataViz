@@ -108,8 +108,8 @@ class ManyQuizCards(StructBlock):
     passing_score = IntegerBlock(required=False)
 
 class FlashCard(StructBlock):
-    question = RichTextBlock(required=True, max_length=300)
-    answer = RichTextBlock(required=True, max_length=1000)
+    question = RichTextBlock(required=True, max_length=600)
+    answer = RichTextBlock(required=True, max_length=5000)
 
 class ManyFlashcards(StructBlock):
     title = CharBlock(max_length=200, required=False)
