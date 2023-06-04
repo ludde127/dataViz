@@ -44,6 +44,7 @@ class CardHolder {
             }
             weight -= card["times_displayed"]
             if (!(card === this.past_card) && card["times_displayed"] === 0) {
+                result = card;
                 break
             } else if (weight > largest && (!(card === this.past_card))) {
                 result = card;
