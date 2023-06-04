@@ -390,7 +390,7 @@ class UsersFlashcards(models.Model):
                         if request.user.is_authenticated:
                             history = FlashCardHistory.objects.get(user=request.user, flashcard_id__exact=card.id)
                             score = history.score
-                            times_displayed = history.score
+                            times_displayed = history.times_shown
                             weight = history.weight()
                             last_displayed_float = history.last_shown.timestamp()
                             if have_full_array:

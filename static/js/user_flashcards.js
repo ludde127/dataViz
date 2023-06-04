@@ -39,11 +39,13 @@ class CardHolder {
             let weight = card["weight"];
 
             let seconds_since_shown = Date.now() / 1000 - card["last_displayed_float"];
-            if (seconds_since_shown < 500) {
-                weight = weight - (500-seconds_since_shown)/15; // To make it less likely for a card to show up all the time
+            if (seconds_since_shown < 60*60) {
+                weight = weight - (60*60-seconds_since_shown)/15; // To make it less likely for a card to show up all the time
             }
-
-            if (weight > largest && (!(card === this.past_card))) {
+            weight -= card["times_displayed"]
+            if (!(card === this.past_card) && card["times_displayed"] === 0) {
+                break
+            } else if (weight > largest && (!(card === this.past_card))) {
                 result = card;
                 largest = card["weight"];
             }
