@@ -1,3 +1,5 @@
+import datetime
+
 from users.models import NormalUser, Permissions
 from . import register
 
@@ -25,3 +27,7 @@ def bool_to_int(boolean):
 @register.simple_tag
 def path_to_breadcrumb_list(path: str):
     return [p.capitalize() for p in path.split("/")[1:]]
+
+@register.filter
+def timestamp_to_datetime(timestamp):
+    return datetime.datetime.fromtimestamp(timestamp)

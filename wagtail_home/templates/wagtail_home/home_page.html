@@ -13,20 +13,29 @@
 
 
         {% for child in children %}
-            <div class="page-description">
-                {% if child.title != "Tags" %}
-                <hr>
 
-                <a href="{% pageurl child %}" class="notepage-title-link">
-                    <h3>{{ child.title }}{% include "icons/arrow-right.html" %}</h3>
-                </a>
+            {% if child.title != "Tags" %}
 
-                {% with child=child.specific %}
-                    <p>{{ child.intro|richtext }}</p>
-                {% endwith %}
-                <br>
-                {% endif %}
+            <div class="col" onclick="navigate('{% pageurl child %}')">
+                <div class="card border-dark mb-3 card-hover-effect">
+                    <div class="card-header">
+                         <h3 class="text-center">
+                             {{ child.title }}
+                         </h3>
+                     </div>
+                    <div class="card-body">
+                         <div class="card-text page-description">
+                             {% with child=child.specific %}
+                                <p>{{ child.intro|richtext }}</p>
+                             {% endwith %}
+                        </div>
+                    </div>
+                    <div class="card-footer text-center">
+                        {% include 'shortcuts/notepage-tags.html' with tags=post.tags.all %}
+                    </div>
+                </div>
             </div>
+            {% endif %}
         {% endfor %}
     </div>
 {% endblock %}

@@ -79,8 +79,8 @@ hr {width: 90%;margin:auto;}
 img {
     height: auto;
     box-sizing: border-box;
-    max-width: 85vw;
-    max-height: 40vh;
+    max-width: 90%;
+    max-height: 45%;
     width: auto;
     border-radius: 10px;
     margin-left: 3vw;
@@ -97,7 +97,7 @@ img {
     .richtext-stream li {width: 98%; margin:auto;}
 
     .text-container {width:100%;padding: 15px;}
-    img {max-height: 50vh;}
+    img {max-height: 45%;}
     .logo-image {width: 32px; height: 32px;}
     .page-start {width: 90%; margin-bottom: 3vh;}
 
@@ -106,7 +106,7 @@ img {
 @media screen and (max-width: 1500px) and (min-width: 1300px) {
     .content-container {width: 80%;}
     .left-offset-textbox {margin-left: 10%;}
-    img {max-height: 50vh;}
+    img {max-height: 45%;}
     .stock-table {max-width: 800px;}
 }
 
@@ -220,6 +220,8 @@ hr + p:first-letter {
 
 .icon-in-header {text-decoration: none;margin-right: 10px;margin-left: 10px;}
 
+.small-icon {width: 4.5vw; height: auto;}
+
 .user-profile-cards {}
 .card-header-text {float: left;margin-left:1em;text-decoration-line: underline;}
 .card-text {max-width: 600px; text-align: center;display:block;
@@ -244,4 +246,25 @@ hr + p:first-letter {
 .page-description {
     animation: comeFromBottom 1s forwards;
     text-align: center;
+}
+
+.card-hover-effect:hover {
+    box-shadow: 10px 10px lightslategray;
+}
+
+.warning {color: #db4f37}
+
+.link-unstyled, .link-unstyled:link, .link-unstyled:hover {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+article {
+    max-width: 600px;
+    margin: auto;
+}
+
+.flashcard-div {
+    margin-top: 2vh;
+    margin-bottom: 2vh;
 }

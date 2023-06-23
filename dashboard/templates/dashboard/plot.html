@@ -13,13 +13,16 @@
 
             <h3>A short python example to post data.</h3>
             <hr>
-            <pre style="width: 98%;margin:auto;"><code>
+            <br>
+            <code>
                 url = "https://llindholm.com/data/access/<strong>{{ data_store.key }}</strong>"
                 <br>
                 resp = requests.post(url, json={{data_store.example_entry}},\
                 <br>
                 headers={'Authorization': 'TOK:SECRET_API_TOKEN'}).text
-            </code></pre>
+            </code>
+            <br>
+            <br>
         {% endif %}
         <h3>Now only plotting last 10k datapoints by default.</h3>
         {% for plot in plots %}

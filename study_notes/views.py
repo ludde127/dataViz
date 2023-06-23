@@ -1,5 +1,6 @@
 import random
 
+import django.db.utils
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseNotFound, HttpResponse, HttpResponseForbidden, JsonResponse
 from django.shortcuts import render
@@ -90,10 +91,17 @@ def view_flashcards_info(request):
 
 @login_required
 def user_profile(request, user):
-    if user_object := User.objects.get_or_create(username__exact=user)[0]:
+    try:
+        user_object = User.objects.get_or_create(username__exact=user)[0]
+    except django.db.utils.IntegrityError:
+        user_object = None
+
+    if user_object:
         context = BASE_CONTEXT.copy()
+        context["current_user_id"] = request.user.id
         context["are_there_cards"] = False
-        context["users_page"] = user
+        context["users_page"] = user_object
+        context["users_id"] = user_object.id
         context["title"] = str(user) + "'s profile"
         try:
             flash_card_list = user_object.usersflashcards.\

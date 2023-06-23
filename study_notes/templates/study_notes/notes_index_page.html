@@ -14,25 +14,34 @@
             <div class="intro">{{ page.intro|richtext }}</div>
         </div>
 
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3">
+            {% for post in note_pages %}
+                {% with post=post.specific %}
+                    <div class="col">
+                        <a class="link-unstyled" href='{% pageurl post %}'>
 
-        {% for post in note_pages %}
-
-            {% with post=post.specific %}
-                <div class="page-description">
-                    <hr>
-                    <h2 ><a href="{% pageurl post %}" class="notepage-title-link">{{ post.title }}{% include "icons/arrow-right.html" %}</a></h2>
-                    {% with post.main_image as main_image %}
-                        {% if main_image %}{% image main_image fill-160x100 class="boxed-image" %}{% endif %}
-                    {% endwith %}
-                    <p>{% include 'shortcuts/notepage-tags.html' with tags=post.tags.all %}</p>
-                    <br>
-                    <p>{{ post.intro }}....</p>
-                </div>
-
-            {% endwith %}
-
-        {% endfor %}
+                        <div class="card border-dark mb-3 card-hover-effect">
+                            <div class="card-header">
+                                 <h3 class="text-center">
+                                     {{ post.title }}
+                                 </h3>
+                             </div>
+                            <div class="card-body">
+                                 <div class="card-text page-description">
+                                    {% with post.main_image as main_image %}
+                                        {% if main_image %}{% image main_image fill-160x100 class="boxed-image" %}{% endif %}
+                                    {% endwith %}
+                                    <p>{{ post.intro }}....</p>
+                                </div>
+                            </div>
+                            <div class="card-footer text-center">
+                                {% include 'shortcuts/notepage-tags.html' with tags=post.tags.all %}
+                            </div>
+                        </div>
+                        </a>
+                    </div>
+                {% endwith %}
+            {% endfor %}
+        </div>
     </div>
-
-
 {% endblock %}
