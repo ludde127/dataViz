@@ -6,18 +6,16 @@
 
 {% block content %}
     <div class="text-container">
-    <h2 style="text-align: left;">{{ users_page|capfirst }}'s profile
-    {% if request.user.is_authenticated %}
-        <span style="font-size: 0.7em;margin-left: 20px;text-decoration: none;">{% include 'shortcuts/logout-url.html' %}</span>
-    {% endif %}
-    </h2>
+        <div class="text-center" style="text-decoration: none;margin-top:4vh;">
+            <span class="h2">{{ users_page|capfirst }}</span><span class="h3">'s profile</span>
+        </div>
 
     <br>
     {% if are_there_cards %}
         <div id="quiz-holder-user-subscribed-cards succ-fail-user-subscribed-cards">
             <div class="card text-center blue-border user-profile-cards">
               <div class="card-header succ-fail-user-subscribed-cards " id="quiz-title-user-subscribed-cards">
-                  <span class="card-header-text">All your subscribed cards!</span>
+                  <span class="card-header-text">All {{ users_page|capfirst }}'s subscribed cards!</span>
                   <div style="float:right;">
                       <span class="badge rounded-pill gradient-bg">Score: <span id="quiz-score-user-subscribed-cards">0</span></span>
                   </div>
@@ -44,10 +42,15 @@
         </div>
 
         <br>
-
-        <a href="{% url 'view_flashcard_stats' %}"><h4>View subscribed flashcards, and your scores.</h4></a>
+        {% if users_id == current_user_id %}
+            <div class="text-center">
+                <a class="link-unstyled" href="{% url 'view_flashcard_stats' %}">
+                    <button class="btn btn-lg btn-info">Flashcard Collection</button>
+                </a>
+            </div>
+        {% endif %}
     {% else %}
-        <p>No cards found :C</p>
+        <p class="text-center warning">No cards found :C</p>
     {% endif %}
     </div>
 

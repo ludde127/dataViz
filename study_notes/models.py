@@ -351,17 +351,23 @@ class UsersFlashcards(models.Model):
     flashcard_groups = models.ManyToManyField(FlashCardGroupReference)
     user = models.OneToOneField("users.User", on_delete=models.CASCADE)
 
-    def get_subscribed_flashcards(self, request, have_full_array=False):
 
+    def get_subscribed_flashcards(self, request, have_full_array=False):
+        if request.user.is_authenticated:
+            return self.get_users_flashcards(request.user, have_full_array=have_full_array)
+        return []
+
+
+    def get_users_flashcards(self, user, have_full_array=False):
         """Create a flat list of all the cards.
 
-        class FlashCardHistory(models.Model):
-            user = models.ForeignKey(to="users.User",on_delete=models.CASCADE, default=None)
-            flashcard_id = models.UUIDField("Id of flashcard")
-            last_shown = models.DateTimeField("Last shown to user", auto_now=True, editable=False)
-            times_shown = models.IntegerField("Amount of times shown to user", default=0)
-            score = models.FloatField("The score", default=0)
-        """
+                class FlashCardHistory(models.Model):
+                    user = models.ForeignKey(to="users.User",on_delete=models.CASCADE, default=None)
+                    flashcard_id = models.UUIDField("Id of flashcard")
+                    last_shown = models.DateTimeField("Last shown to user", auto_now=True, editable=False)
+                    times_shown = models.IntegerField("Amount of times shown to user", default=0)
+                    score = models.FloatField("The score", default=0)
+                """
         flashcard_list = list()
         subscribed = [l for l in self.flashcard_groups.filter(subscription=True)]
 
@@ -369,16 +375,15 @@ class UsersFlashcards(models.Model):
 
         flashcard_blocks_to_get_per_notepage: dict[str, set[str]] = dict()
         for n_id in notepages:
-            flashcard_blocks_to_get_per_notepage[n_id] = set([str(l.flashcards_id) for l in subscribed if l.notepage_id == n_id])
+            flashcard_blocks_to_get_per_notepage[n_id] = set(
+                [str(l.flashcards_id) for l in subscribed if l.notepage_id == n_id])
 
         for notepage_id in notepages:
             to_render = NotePage.get_flashcard_blocks(notepage_id, flashcard_blocks_to_get_per_notepage[notepage_id])
 
-            print("RENDER LEN", len(to_render))
             for b in to_render:
                 block = b.value
                 string_block_id = str(b.id)
-                # print(block)
                 for card in block["cards"]:
                     times_displayed = 0
                     score = 0
@@ -387,8 +392,8 @@ class UsersFlashcards(models.Model):
                     if have_full_array:
                         array = []
                     try:
-                        if request.user.is_authenticated:
-                            history = FlashCardHistory.objects.get(user=request.user, flashcard_id__exact=card.id)
+                        if user:
+                            history = FlashCardHistory.objects.get(user=user, flashcard_id__exact=card.id)
                             score = history.score
                             times_displayed = history.times_shown
                             weight = history.weight()
@@ -399,15 +404,13 @@ class UsersFlashcards(models.Model):
                         print("Does not exist")
 
                     entry = {"q": str(richtext(card.value["question"])), "a": str(richtext(card.value["answer"])),
-                                          "id": card.id, "block_id": string_block_id, "notepage_id": notepage_id,
-                                          "score": score, "times_displayed": times_displayed, "weight": weight,
-                                          "last_displayed_float": last_displayed_float}
+                             "id": card.id, "block_id": string_block_id, "notepage_id": notepage_id,
+                             "score": score, "times_displayed": times_displayed, "weight": weight,
+                             "last_displayed_float": last_displayed_float}
                     if have_full_array:
                         entry["array"] = array
                     flashcard_list.append(entry)
 
-
-        print(flashcard_list)
         return flashcard_list
 
 

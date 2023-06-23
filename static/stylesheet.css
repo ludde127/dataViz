@@ -220,6 +220,8 @@ hr + p:first-letter {
 
 .icon-in-header {text-decoration: none;margin-right: 10px;margin-left: 10px;}
 
+.small-icon {width: 4.5vw; height: auto;}
+
 .user-profile-cards {}
 .card-header-text {float: left;margin-left:1em;text-decoration-line: underline;}
 .card-text {max-width: 600px; text-align: center;display:block;
@@ -262,3 +264,7 @@ article {
     margin: auto;
 }
 
+.flashcard-div {
+    margin-top: 2vh;
+    margin-bottom: 2vh;
+}

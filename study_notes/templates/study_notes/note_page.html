@@ -84,25 +84,27 @@
                         </div>
                 </div>
             {% elif block.block_type == "flashcards" %}
-                <div id="quiz-holder-{{ block.id }} succ-fail-{{ block.id }}">
+                <div class="flashcard-div" id="quiz-holder-{{ block.id }} succ-fail-{{ block.id }}">
                         <div class="card text-center blue-border">
-                          <div class="card-header succ-fail-{{ block.id }} " id="quiz-title-{{ block.id }}">
-                              <span style="float: left;margin-left:3em;">{{ block.value.title }}</span>
+                          <div class="card-header succ-fail-{{ block.id }}" id="quiz-title-{{ block.id }}">
+                            <span style="font-size: x-large;margin-right: 3vw;">{{ block.value.title }}</span>
 
-                              <div style="float:right;">
-                                {% if request.user.is_authenticated %}
-                                  <button class="badge rounded-pill gradient-bg" id="quiz-subscribe-btn-{{ block.id }}" onclick="return flashcards.subscribeToggle('{{ block.id }}');">
-                                    <span id="quiz-subscribe-span-{{ block.id }}">
-                                        {% if block.id in subscribed_cards %}
-                                        Unsubscribe
-                                        {% else %}
-                                        Subscribe
-                                        {% endif %}
-                                    </span>
-                                  </button>
-                                {% endif %}
-                                  <span class="badge rounded-pill gradient-bg">Score: <span id="quiz-score-{{ block.id }}">0</span></span>
-                              </div>
+
+                            {% if request.user.is_authenticated %}
+                              <button class="badge rounded-pill gradient-bg" id="quiz-subscribe-btn-{{ block.id }}" onclick="return flashcards.subscribeToggle('{{ block.id }}');">
+                                <span id="quiz-subscribe-span-{{ block.id }}">
+                                    {% if block.id in subscribed_cards %}
+                                    Unsubscribe
+                                    {% else %}
+                                    Subscribe
+                                    {% endif %}
+                                </span>
+                              </button>
+                            {% endif %}
+                              <span class="badge rounded-pill gradient-bg">Score: <span id="quiz-score-{{ block.id }}">0</span></span>
+                            <a class="link-unstyled" href="{% url 'user_profile' user %}">
+                               <img class="small-icon" src="{% static 'flashcards-logo.png' %}" alt="Flashcards" title="View all flashcards">
+                            </a>
                           </div>
                           <div class="card-body succ-fail-{{ block.id }}" id = quiz-body-{{ block.id }}>
                             <div class="card-text" id="quiz-q-{{ block.id }}">{{ flash_starts|get_item:block.id }}</div>
