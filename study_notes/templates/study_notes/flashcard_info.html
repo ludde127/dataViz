@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load tags %}
 {% load custom_filters %}
 
 {% block content %}
@@ -19,8 +20,34 @@
                     </div>
 
                     <div class="card-footer">
-                        <p style="float:left;">Score: {{ flashcard|get_item:'score' }}</p>
-                        <p style="float:right;">Sorting weight: {{ flashcard|get_item:'weight' }}</p>
+                        <div class="d-flex justify-content-between">
+                            <p style="float:left;">Score: {{ flashcard|get_item:'score' }}</p>
+                            <button class="btn btn-info" style="margin:0;" onclick="toggleShow('flashcard-stats-{{ forloop.counter0 }}')">Show stats</button>
+                            <p style="float:right;">Sorting weight: {{ flashcard|get_item:'weight' }}</p>
+                        </div>
+                        <div style="display: none;" id="flashcard-stats-{{ forloop.counter0 }}">
+                            <hr style="margin-top: 2vh;">
+                            <h4 class="text-center" style="margin-top: 2vh;">Scores</h4>
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <td>#</td>
+                                        <td>Time</td>
+                                        <td>Points</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for i in flashcard|get_item:'array' %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td>{{ i.0|timestamp_to_datetime }}</td>
+                                            <td>{{ i.1 }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+
+                        </div>
                     </div>
                 </div>
             </div>
