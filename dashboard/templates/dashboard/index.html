@@ -30,18 +30,29 @@
                 </div>
             {% endfor %}
         {% endif %}
-        <div class="text-center">
+        <div>
             {% if request.user.is_authenticated %}
-            <h1>Add a datastore</h1>
-            <form method="post" action="{% url 'index' %}">
-                {% csrf_token %}
-                {{ form|crispy }}
-                <button class="btn btn-primary" type="submit" value="Submit">Submit</button>
-            </form>
+                <div class="text-center">
+                    <h1>Add a datastore</h1>
+                    <form method="post" action="{% url 'index' %}">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        <button class="btn btn-primary" type="submit" value="Submit">Submit</button>
+                    </form>
+                </div>
             {% else %}
-                <h1>Welcome!</h1>
-                <p>Please <a href="{% url 'login' %}">login</a> to enable creation of datastores which is an quick and easy way to store and plot
-                sensor data and many other sources with simple POST requests.</p>
+                <hr>
+                <br>
+                <h3 class="mx-auto text-center">Welcome!</h3>
+                <article>
+                    <p>Please {% include 'shortcuts/login-url.html' %} to enable creation of datastores
+                        which is a quick and easy way to store and plot data simple POST requests.</p>
+                    <p>An example is <code>resp = requests.post(url,
+                        json={'a': 'SomeValue', 'time': 'Time_either_unix_seconds_or_datetime_OSI8601'},
+                        headers={'Authorization': 'TOK:SECRET_API_TOKEN'}).text</code>
+                    Which would send up SomeValue to the datastore at url.
+                    </p>
+                </article>
             {% endif %}
         </div>
     </div>

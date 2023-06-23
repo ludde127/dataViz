@@ -2,22 +2,29 @@
 {% load custom_filters %}
 
 {% block content %}
-    <div class="text-container">
-        <h1>Flashcard data</h1>
+    <div class="container">
+        <h1 class="text-center" style="margin-bottom: 5vh;">Flashcard data</h1>
+        <div class="row row-cols-1 row-cols-lg-2">
         {% for flashcard in flashcards %}
-            <h3>Question: {{ flashcard|get_item:'q' }}</h3>
-            <p>Answer: {{ flashcard|get_item:'a' }}</p>
+            <div class="col">
+                <div class="card border-info mb-3">
+                    <div class="card-header">
+                        <h3>{{ flashcard|get_item:'q' }}</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-text">
 
-            <p>Score: {{ flashcard|get_item:'score' }}</p>
-            <p>Sorting weight: {{ flashcard|get_item:'weight' }}</p>
-            <h4>Scores</h4>
-            <ol>
-            {% for i in flashcard|get_item:'array' %}
-                <li>Timestamp: {{ i.0 }}, Score: {{ i.1 }}</li>
-            {% endfor %}
-            </ol>
-            <br>
+                            <p>{{ flashcard|get_item:'a' }}</p>
+                        </div>
+                    </div>
+
+                    <div class="card-footer">
+                        <p style="float:left;">Score: {{ flashcard|get_item:'score' }}</p>
+                        <p style="float:right;">Sorting weight: {{ flashcard|get_item:'weight' }}</p>
+                    </div>
+                </div>
+            </div>
         {% endfor %}
-        <br>
+        </div>
     </div>
 {% endblock %}

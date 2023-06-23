@@ -17,7 +17,9 @@
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3">
             {% for post in note_pages %}
                 {% with post=post.specific %}
-                    <div class="col" onclick="navigate('{% pageurl post %}')">
+                    <div class="col">
+                        <a class="link-unstyled" href='{% pageurl post %}'>
+
                         <div class="card border-dark mb-3 card-hover-effect">
                             <div class="card-header">
                                  <h3 class="text-center">
@@ -36,6 +38,7 @@
                                 {% include 'shortcuts/notepage-tags.html' with tags=post.tags.all %}
                             </div>
                         </div>
+                        </a>
                     </div>
                 {% endwith %}
             {% endfor %}
