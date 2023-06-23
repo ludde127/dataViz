@@ -245,3 +245,7 @@ hr + p:first-letter {
     animation: comeFromBottom 1s forwards;
     text-align: center;
 }
+
+.card-hover-effect:hover {
+    box-shadow: 10px 10px lightslategray;
+}
