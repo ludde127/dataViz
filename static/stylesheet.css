@@ -1,9 +1,30 @@
+/* Works on Firefox */
+* {
+  scrollbar-width: auto;
+  scrollbar-color: white black;
+}
+
+/* Works on Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  width: 1vw;
+
+}
+
+*::-webkit-scrollbar-track {
+  background: linear-gradient(120deg, rgba(6,0,110,0.3) 0%, rgba(1,1,206,0.3) 35%, rgba(69,91,175,0.3) 52%, rgba(0,212,255,0.3) 100%);
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: rgb(80, 80, 80);
+  border-radius: 20px;
+}
+
+
 :root {
     --blue-border: 5px solid var(--blue);
     --blue: rgb(10,3, 160);
     --light-blue: rgba(0,142,255,0.7);
 }
-
 
 
 body {
@@ -12,16 +33,20 @@ body {
 
 }
 
-hr {width: 90%;margin:auto;}
-
 .block-richtext {display: block;}
 
 .page-start {
-    width: 60%;
-    margin: auto;
     text-align: center;
+    margin: auto;
+    margin-top: 0;
     margin-bottom: 3%;
-    margin-top: 2%;
+    border-bottom-left-radius: 3em;
+    border-bottom-right-radius: 3em;
+    background-color: whitesmoke;
+    padding: 1em;
+    border: 1px solid rgb(100, 100, 100);
+    border-top: none;
+
 }
 .intro {font-size: 1.3em;}
 .logo-image {border-radius: 5px; width: 64px; height: 64px;}
@@ -80,7 +105,7 @@ img {
     height: auto;
     box-sizing: border-box;
     max-width: 90%;
-    max-height: 45%;
+    max-height: 65vh;
     width: auto;
     border-radius: 10px;
     margin-left: 3vw;
@@ -96,18 +121,19 @@ img {
     .left-offset-textbox {margin-left: 10px;}
     .richtext-stream li {width: 98%; margin:auto;}
 
+    .page-start {width: 100%}
     .text-container {width:100%;padding: 15px;}
-    img {max-height: 45%;}
+    img {max-height: 65vh;}
     .logo-image {width: 32px; height: 32px;}
-    .page-start {width: 90%; margin-bottom: 3vh;}
 
 }
 
 @media screen and (max-width: 1500px) and (min-width: 1300px) {
     .content-container {width: 80%;}
     .left-offset-textbox {margin-left: 10%;}
-    img {max-height: 45%;}
+    img {max-height: 65vh;}
     .stock-table {max-width: 800px;}
+    .page-start {width: 80%;}
 }
 
 .notepage-title-link {
@@ -152,7 +178,15 @@ strong {text-decoration: underline;}
 button[type="submit"] {width: 100%; margin:auto; margin-top: 1vh;}
 
 .emp {font-style: italic;text-decoration: underline black;}
-.tags {padding: 0.5vw;}
+.tags {
+    padding: 0.5vw;
+    width: fit-content;
+    min-width: 15vw;
+    margin:auto;
+    border-bottom: 3px dotted black;
+    padding-bottom: 1vh;
+    margin-bottom: 1.5vh;
+}
 
 .correct-quiz {background: rgb(0,179,57);
                background: linear-gradient(120deg, rgba(0,179,57,1) 0%, rgba(25,180,24,1) 35%, rgba(123,245,109,1) 52%, rgba(0,255,166,1) 100%);
@@ -163,11 +197,6 @@ text-shadow: rgb(0, 0, 0) 2px 0px 0px, rgb(0, 0, 0) 1.75517px 0.958851px 0px, rg
     background: linear-gradient(120deg, rgba(129,11,0,1) 0%, rgba(159,48,8,1) 35%, rgba(175,95,69,1) 52%, rgba(255,188,0,1) 100%);
                    color: white;
 text-shadow: rgb(0, 0, 0) 2px 0px 0px, rgb(0, 0, 0) 1.75517px 0.958851px 0px, rgb(0, 0, 0) 1.0806px 1.68294px 0px, rgb(0, 0, 0) 0.141474px 1.99499px 0px, rgb(0, 0, 0) -0.832294px 1.81859px 0px, rgb(0, 0, 0) -1.60229px 1.19694px 0px, rgb(0, 0, 0) -1.97998px 0.28224px 0px, rgb(0, 0, 0) -1.87291px -0.701566px 0px, rgb(0, 0, 0) -1.30729px -1.5136px 0px, rgb(0, 0, 0) -0.421592px -1.95506px 0px, rgb(0, 0, 0) 0.567324px -1.91785px 0px, rgb(0, 0, 0) 1.41734px -1.41108px 0px, rgb(0, 0, 0) 1.92034px -0.558831px 0px;
-}
-
-hr + p:first-letter {
-    border-left: var(--blue-border);
-    padding-left: 10px;
 }
 
 
@@ -268,3 +297,26 @@ article {
     margin-top: 2vh;
     margin-bottom: 2vh;
 }
+
+hr {
+    border: none;
+    border-top: 3px double #333;
+    color: #333;
+    overflow: visible;
+    text-align: center;
+    height: 5px;
+    margin-top:2vh;
+    margin-bottom: 3vh;
+}
+
+hr:after {
+    background: #fff;
+    content: '📚';
+    padding: 0 4px;
+    position: relative;
+    top: -13px;
+}
+
+a .btn:hover {border: 2px solid black;}
+
+ .badge:hover {border: 1px solid black;}

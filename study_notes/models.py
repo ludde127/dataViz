@@ -1,28 +1,23 @@
-import datetime
 import time
-
-from wagtail import hooks
 from wagtail.api import APIField
 from wagtail.fields import RichTextField, StreamField
 from django import forms
 from wagtail.blocks import RichTextBlock, CharBlock, StructBlock, IntegerBlock, StreamBlock, TextBlock
 from wagtail.images.blocks import ImageChooserBlock
 from wagtailcodeblock.blocks import CodeBlock
-from wagtailmath.blocks import MathBlock # Have to do this weird fix https://github.com/JamesRamm/wagtailmath/issues/7
+from wagtail_home.customizations.widgets.math_jax import MathBlock
 
 from wagtail.admin.panels import FieldPanel, InlinePanel, MultiFieldPanel
 from django.db import models
 from wagtail.search import index
 from wagtail.snippets.models import register_snippet
 
-import users.models
 from dataViz.settings import BASE_CONTEXT
 from modelcluster.fields import ParentalKey, ParentalManyToManyField
 from modelcluster.contrib.taggit import ClusterTaggableManager
 from taggit.models import TaggedItemBase
 from django.contrib.postgres.fields import ArrayField
 
-import json
 from wagtail.models import Page, Orderable
 
 from wagtail_home.models import filter_non_viewable
@@ -173,10 +168,10 @@ class NotePage(Page):
     ]
 
     search_fields = Page.search_fields + [
-        index.SearchField('intro', partial_match=True),
-        index.SearchField('body', partial_match=True),
+        index.AutocompleteField('intro'),
+        index.AutocompleteField('body'),
         index.RelatedFields('tags', [
-            index.SearchField('name', partial_match=True),
+            index.AutocompleteField('name'),
         ]),
     ]
 

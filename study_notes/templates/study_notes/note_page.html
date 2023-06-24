@@ -2,50 +2,41 @@
 {% load static %}
 
 {% load wagtailcore_tags wagtailimages_tags %}
-{% load wagtailmath %}
+{% load tags %}
 {% load custom_filters %}
 {% block body_class %}template-blogpage{% endblock %}
 {% block meta_description %}{{ page.meta_description }}{% endblock %}
 {% block content %}
     {% with page.get_parent as parent %}
+    <div class="page-start">
+        <h1>
+            <a class="icon-in-header" aria-label="Go back" href="{% pageurl parent %}">{% include 'icons/return-left.html' %}</a>
 
-    <div class="text-container">
+            {{ page.title }}
 
-        <div class="page-start">
-            <h1>
-                <a class="icon-in-header" aria-label="Go back" href="{% pageurl parent %}">{% include 'icons/return-left.html' %}</a>
-
-                {{ page.title }}
-
-                {% if request.user == page.owner %}
-                    <a class="icon-in-header" style="color: black;" target="_blank" aria-label="Edit" href="/cms/pages/{{ page.id }}/edit">{% include 'icons/edit.html' %}</a>
-                {% endif %}
-             </h1>
-            {% if page.tags.all.count %}
-            <div class="tags d-flex justify-content-center flex-wrap">
-                {% include 'shortcuts/notepage-tags.html' with tags=page.tags.all %}
-            </div>
-            <br>
+            {% if request.user == page.owner %}
+                <a class="icon-in-header" style="color: black;" target="_blank" aria-label="Edit" href="/cms/pages/{{ page.id }}/edit">{% include 'icons/edit.html' %}</a>
             {% endif %}
-
-         <p class="intro">{{ page.intro }}</p>
+         </h1>
+        {% if page.tags.all.count %}
+        <div class="tags d-flex justify-content-center flex-wrap">
+            {% include 'shortcuts/notepage-tags.html' with tags=page.tags.all %}
         </div>
+        {% endif %}
 
+        <p class="intro">{{ page.intro }}</p>
 
+        {% if page.get_children %}
+            <div class="d-flex justify-content-center flex-wrap" style="border-radius: 1em; border: 0px solid black;width: fit-content;margin:auto;padding: 10px;padding-top:3px;margin-top:0px;">
+                {% for child in page.get_children %}
+                    <a class="link-unstyled" style="padding: 5px;" aria-current="page" href="{% pageurl child %}"><button class="btn btn-sm gradient-bg-transparent" style="font-size: 1.1em;">{{ child.title }}</button></a>
+                {% endfor %}
+            </div>
 
+        {% endif %}
+    </div>
+    <div class="text-container">
         <div class="richtext-stream">
-            {% if page.get_children %}
-                <hr>
-                <h2>Subpages</h2>
-                <ul class="child-list" style="font-size: 1.1em;">
-                    {% for child in page.get_children %}
-                      <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="{% pageurl child %}">{{ child.title }}</a>
-                      </li>
-                    {% endfor %}
-                </ul>
-                <hr>
-            {% endif %}
             {% for block in page.body %}
             {% if block.block_type == 'heading' %}
                 <h2>{{ block.value }}</h2>
@@ -54,7 +45,7 @@
                     {% image block.value height-800 %}
                 </div>
             {% elif block.block_type == "quiz" %}
-                <div id="quiz-holder-{{ block.id }} succ-fail-{{ block.id }}">
+                <div class="flashcard-div" id="quiz-holder-{{ block.id }} succ-fail-{{ block.id }}">
                         <div class="card text-center blue-border">
                           <div class="card-header succ-fail-{{ block.id }} " id="quiz-title-{{ block.id }}">
                               <span style="float: left;margin-left:3em;">{{ block.value.title }}</span>
