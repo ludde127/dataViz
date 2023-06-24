@@ -45,7 +45,7 @@
                 <br>
                 <h3 class="mx-auto text-center">Welcome!</h3>
                 <article>
-                    <p>Please {% include 'shortcuts/login-url.html' %} to enable creation of datastores
+                    <p>Please {% include 'shortcuts/login-url.html'  with next=request.get_full_path %} to enable creation of datastores
                         which is a quick and easy way to store and plot data simple POST requests.</p>
                     <p>An example is <code>resp = requests.post(url,
                         json={'a': 'SomeValue', 'time': 'Time_either_unix_seconds_or_datetime_OSI8601'},

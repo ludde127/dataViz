@@ -37,7 +37,7 @@ def logout_view(request):
         messages.success(request, "You have been logged out.")
     else:
         messages.error(request, "You are not logged in")
-    return HttpResponseRedirect(reverse("login"))
+    return redirect_to_next(request)
 
 
 def create_account(request):
@@ -57,7 +57,7 @@ def create_account(request):
                     std_user.save()
                     messages.success(request, f"Successfully created user with username {std_user.username}")
                     login(request, std_user)
-                    return HttpResponseRedirect(reverse("index"))
+                    return redirect_to_next(request)
             else:
                 messages.error(request, "Could not create account")
 

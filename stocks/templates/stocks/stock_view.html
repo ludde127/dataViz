@@ -12,7 +12,7 @@
                 <button class="btn btn-primary">Submit</button>
             </form>
         {% else %}
-            <p>You have to be logged in to submit a trade. {% include 'shortcuts/login-url.html' %}</p>
+            <p>You have to be logged in to submit a trade. {% include 'shortcuts/login-url.html'  with next=request.get_full_path %}</p>
         {% endif %}
         <hr>
         <h3>Registered Trades</h3>

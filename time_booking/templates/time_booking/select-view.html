@@ -34,7 +34,7 @@
             <button class="btn btn-primary" type="submit">Submit</button>
         </form>
         {% else %}
-            <h4>Login to add a timeslot {% include 'shortcuts/login-url.html' %}</h4>
+            <h4>Login to add a timeslot {% include 'shortcuts/login-url.html'  with next=request.get_full_path %}</h4>
             <br>
             <form class="form form-control disabled" method="post" style="border-color: red;margin-top: 1em;">
                 <h3>Add new booking object</h3>
