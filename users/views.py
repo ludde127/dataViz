@@ -2,12 +2,17 @@ from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth import authenticate, logout, login
+from django.shortcuts import resolve_url, redirect
 
 from dataViz.utils import context_render
 from users.forms import UserForm, LoginForm
 from users.models import NormalUser, User
 # Create your views here.
 
+def redirect_to_next(request):
+    if request.GET.get("next"):
+        return redirect(resolve_url(request.GET["next"]))
+    return redirect("index")
 
 def login_view(request):
     if request.method == "POST":
@@ -19,9 +24,10 @@ def login_view(request):
                 # Authenticated
                 login(request, user)
                 messages.success(request, "You are logged in.")
-                return HttpResponseRedirect(reverse("index"))
+                return redirect_to_next(request)
             else:
                 messages.error(request, "Incorrect credentials.")
+
     return context_render(request, 'users/login.html', context={"form": LoginForm()})
 
 

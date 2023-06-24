@@ -1,9 +1,30 @@
+/* Works on Firefox */
+* {
+  scrollbar-width: auto;
+  scrollbar-color: white black;
+}
+
+/* Works on Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  width: 1vw;
+
+}
+
+*::-webkit-scrollbar-track {
+  background: linear-gradient(120deg, rgba(6,0,110,0.3) 0%, rgba(1,1,206,0.3) 35%, rgba(69,91,175,0.3) 52%, rgba(0,212,255,0.3) 100%);
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: rgb(80, 80, 80);
+  border-radius: 20px;
+}
+
+
 :root {
     --blue-border: 5px solid var(--blue);
     --blue: rgb(10,3, 160);
     --light-blue: rgba(0,142,255,0.7);
 }
-
 
 
 body {
@@ -80,7 +101,7 @@ img {
     height: auto;
     box-sizing: border-box;
     max-width: 90%;
-    max-height: 45%;
+    max-height: 65vh;
     width: auto;
     border-radius: 10px;
     margin-left: 3vw;
@@ -97,7 +118,7 @@ img {
     .richtext-stream li {width: 98%; margin:auto;}
 
     .text-container {width:100%;padding: 15px;}
-    img {max-height: 45%;}
+    img {max-height: 65vh;}
     .logo-image {width: 32px; height: 32px;}
     .page-start {width: 90%; margin-bottom: 3vh;}
 
@@ -106,7 +127,7 @@ img {
 @media screen and (max-width: 1500px) and (min-width: 1300px) {
     .content-container {width: 80%;}
     .left-offset-textbox {margin-left: 10%;}
-    img {max-height: 45%;}
+    img {max-height: 65vh;}
     .stock-table {max-width: 800px;}
 }
 
