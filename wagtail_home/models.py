@@ -3,9 +3,9 @@ from django.db import models
 from wagtail.models import PageViewRestriction
 
 from dataViz.settings import BASE_CONTEXT
-from wagtail.core.models import Page
-from wagtail.core.fields import RichTextField
-from wagtail.admin.edit_handlers import FieldPanel
+from wagtail.models import Page
+from wagtail.fields import RichTextField
+from wagtail.admin.panels import FieldPanel
 
 def filter_non_viewable(user, qs):
     """Given a user and a queryset this filters all the objects not viewable by the user. If page_model_string is supplied

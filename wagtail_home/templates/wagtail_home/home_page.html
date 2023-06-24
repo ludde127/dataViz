@@ -15,8 +15,8 @@
         {% for child in children %}
 
             {% if child.title != "Tags" %}
-
-            <div class="col" onclick="navigate('{% pageurl child %}')">
+            <a class="link-unstyled" href='{% pageurl child %}'>
+            <div class="col">
                 <div class="card border-dark mb-3 card-hover-effect">
                     <div class="card-header">
                          <h3 class="text-center">
@@ -37,5 +37,6 @@
             </div>
             {% endif %}
         {% endfor %}
+        </a>
     </div>
 {% endblock %}

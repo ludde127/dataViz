@@ -2,7 +2,7 @@
 {% load static %}
 
 {% load wagtailcore_tags wagtailimages_tags %}
-{% load wagtailmath %}
+{% load tags %}
 {% load custom_filters %}
 {% block body_class %}template-blogpage{% endblock %}
 {% block meta_description %}{{ page.meta_description }}{% endblock %}
@@ -54,7 +54,7 @@
                     {% image block.value height-800 %}
                 </div>
             {% elif block.block_type == "quiz" %}
-                <div id="quiz-holder-{{ block.id }} succ-fail-{{ block.id }}">
+                <div class="flashcard-div" id="quiz-holder-{{ block.id }} succ-fail-{{ block.id }}">
                         <div class="card text-center blue-border">
                           <div class="card-header succ-fail-{{ block.id }} " id="quiz-title-{{ block.id }}">
                               <span style="float: left;margin-left:3em;">{{ block.value.title }}</span>

@@ -69,7 +69,6 @@ INSTALLED_APPS = [
     'wagtail.admin',
     'study_notes',
     'wagtailcodeblock',
-    'wagtailmath',
     'stocks',
     'time_booking',
     'personal_site_content'
