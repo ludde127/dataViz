@@ -89,7 +89,7 @@ class Searcher {
                 let index = 0;
                 for (const result of Object.values(results["results"])) {
                     html += `<li class="nav-item search-results" id="search-result-item-${index}"><a href=${result["url"]}>${result["title"]}</a>
-                                <hr style='margin-top: 3px;margin-bottom: 2px;color: black;'></li>`
+                                </li>`
                     this.search_results.push({url: result["url"], title: result["title"]});
                     index++;
                 }

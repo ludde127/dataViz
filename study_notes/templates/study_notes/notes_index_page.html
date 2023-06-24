@@ -7,13 +7,13 @@
 {% block meta_description %}{{ page.meta_description }}{% endblock %}
 
 {% block content %}
+
+    <div class="page-start">
+       <h1>{{ page.title }}</h1>
+
+        <div class="intro">{{ page.intro|richtext }}</div>
+    </div>
     <div class="text-container">
-        <div class="page-start">
-           <h1>{{ page.title }}</h1>
-
-            <div class="intro">{{ page.intro|richtext }}</div>
-        </div>
-
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3">
             {% for post in note_pages %}
                 {% with post=post.specific %}
