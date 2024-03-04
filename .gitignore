@@ -1,4 +1,8 @@
 /secret/
+
 /DEVELOPMENT_STORAGE/
-migrations/
+
 __pycache__/
+
+/**/migrations/*.py
+!/**/migrations/__init__.py
