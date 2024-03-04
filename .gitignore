@@ -1,3 +1,4 @@
 /secret/
 /DEVELOPMENT_STORAGE/
-/time_booking/migrations/
+migrations/
+__pycache__/

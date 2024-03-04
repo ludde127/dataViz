@@ -16,7 +16,7 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 from django.utils import timezone
 
-from secret.secret import POSTGRES__PASS, DJANGO_SECRET_KEY, IS_PRODUCTION
+from secret.secret import POSTGRES__PASS, DJANGO_SECRET_KEY, IS_PRODUCTION, POSTGRES__PORT
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -49,7 +49,7 @@ INSTALLED_APPS = [
     "dashboard",
     "data",
     "tags",
-    #"reversion",
+    # "reversion",
     "energy_utils",
     'wagtail.contrib.forms',
     'wagtail.contrib.redirects',
@@ -93,8 +93,7 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates']
-        ,
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -120,7 +119,7 @@ DATABASES = {
         "USER": 'postgres',
         "PASSWORD": POSTGRES__PASS,
         "HOST": "localhost",
-        "PORT": ""
+        "PORT": POSTGRES__PORT
     }
 }
 
