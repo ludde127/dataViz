@@ -45,8 +45,15 @@
               <small style="margin-right: 0;padding-right: 0;">{{ user|capfirst }}</small>
 
               <a href="{% url 'user_profile' user %}" style="margin-left: 0;padding-left: 0;" class="link-unstyled">
-                  <img class="img-responsive" src="{% if user.profile_image %}{{ user.profile_image }}{% else %}{% static 'default-user.svg' %}{% endif %}"
-                       alt="Profile picture" style="max-width: 64px; max-height: 64px;width: 4em;height: 4em;margin-left: 0;padding-left: 0;" >
+                  {% if user.profile_image %}
+                  <img
+                    class="img-responsive"
+                    src="{{ user.profile_image }}"
+                    alt="Profile picture"
+                    style="max-width: 64px; max-height: 64px;width: 4em;height: 4em;margin-left: 0;padding-left: 0;" />
+                  {% else %}
+                    <i data-lucide="user-round"></i>
+                  {% endif %}
               </a>
                 {% include 'shortcuts/logout-url.html' with next=request.get_full_path %}
             </div>

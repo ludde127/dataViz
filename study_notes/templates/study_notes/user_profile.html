@@ -36,7 +36,6 @@
               </div>
               <div class="card-footer succ-fail-user-subscribed-cards">
                   Card: <span id="quiz-progress-user-subscribed-cards">1 | 1</span>/({{ amount_of_cards }} unique)
-
               </div>
             </div>
         </div>
@@ -53,14 +52,14 @@
         <p class="text-center warning">No cards found :C</p>
     {% endif %}
     </div>
-
 {% endblock %}
 
 {% block custom_scripts %}
-    <script src="{% static 'js/user_flashcards.js' %}" lang="js">
-    </script>
-    <script lang="js">
-        let flashcards = new UserFlashcards({{ flash_card_list|safe }}, {{ first_card|safe }});
-    </script>
+    {% if are_there_cards %}
+        <script src="{% static 'js/user_flashcards.js' %}" lang="js">
+        </script>
+        <script lang="js">
+            let flashcards = new UserFlashcards({{ flash_card_list|safe }}, {{ first_card|safe }});
+        </script>
+    {% endif %}
 {% endblock %}
-
