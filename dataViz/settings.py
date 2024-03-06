@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     "crispy_forms",
+    "crispy_bootstrap5",
     "dashboard",
     "data",
     "tags",
@@ -184,6 +185,9 @@ BASE_CONTEXT = {"email": "ludvig@llindholm.com",
 DATA_FILES = BASE_DIR.joinpath("DEVELOPMENT_STORAGE")
 WAGTAIL_SITE_NAME = 'DataViz'
 WAGTAILADMIN_BASE_URL = "llindholm.com/cms"
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 WAGTAIL_CODE_BLOCK_LANGUAGES = (
     ('bash', 'Bash/Shell'),
