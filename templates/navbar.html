@@ -1,6 +1,6 @@
 {% load static %}
 
-<header class="supports-backdrop-blur:bg-background/60 sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur">
+<header class="supports-backdrop-blur:bg-base-100/60 sticky top-0 z-50 w-full bg-base-100/95 backdrop-blur">
   <div class="container navbar">
     <div class="flex-1 gap-2">
       <div class="avatar">
@@ -8,7 +8,7 @@
           <a class="" href="/"><img src="{% static 'website_logo/android-chrome-192x192.png' %}" alt="Utils logo" /></a>
         </div>
       </div>
-      <a class="btn btn-ghost text-xl">{{ brand_name }}</a>
+      <a class="btn btn-ghost text-xl hidden lg:inline-flex">{{ brand_name }}</a>
       <ul class="menu menu-horizontal">
         <li>
           <a href="/">Pages</a>
