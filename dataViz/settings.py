@@ -38,14 +38,12 @@ ALLOWED_HOSTS = ["localhost", "127.0.0.1", "llindholm.com"]
 INSTALLED_APPS = [
     'dataViz.apps.AdminConfig',
     'users',
-    'bootstrap5',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     "crispy_forms",
-    "crispy_bootstrap5",
     "dashboard",
     "data",
     "tags",
@@ -87,8 +85,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'dataViz.urls'
-CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
-CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 TEMPLATES = [
     {
