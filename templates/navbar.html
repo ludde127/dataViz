@@ -1,95 +1,52 @@
 {% load static %}
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <div class="container-fluid">
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <a class="navbar-brand" href="/"><img class="logo-image" src="{% static 'website_logo/android-chrome-192x192.png' %}" alt="Utils logo"></a>
 
-    <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link" href="/">Pages</a>
+<header class="supports-backdrop-blur:bg-background/60 sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur">
+  <div class="container navbar">
+    <div class="flex-1 gap-2">
+      <div class="avatar">
+        <div class="w-12 mask mask-squircle">
+          <a class="" href="/"><img src="{% static 'website_logo/android-chrome-192x192.png' %}" alt="Utils logo" /></a>
+        </div>
+      </div>
+      <a class="btn btn-ghost text-xl">{{ brand_name }}</a>
+      <ul class="menu menu-horizontal">
+        <li>
+          <a href="/">Pages</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'index' %}">Dashboard</a>
+        <li>
+          <a href="{% url 'index' %}">Dashboard</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'energy_index' %}">Energy</a>
+        <li>
+          <a href="{% url 'energy_index' %}">Energy</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'stock_index' %}">Stock</a>
+        <li>
+          <a href="{% url 'stock_index' %}">Stock</a>
         </li>
         {% if request.user.is_staff %}
-        <li class="nav-item">
-            <a class="nav-link" href="/admin">Admin</a>
-        </li>
+          <li>
+            <a href="/admin">Admin</a>
+          </li>
         {% endif %}
         {% if request.user.is_active %}
-        <li class="nav-item">
-            <a class="nav-link" href="/cms">Wagtail-Admin</a>
-        </li>
+          <li>
+            <a href="/cms">Wagtail-Admin</a>
+          </li>
         {% endif %}
       </ul>
-      <div class="row justify-content-center align-items-center">
-          {% if not user.is_authenticated %}
-
-          <div class="col-sm-auto">
-                <a href="{% url 'login' %}" class="badge bg-warning" style="color:black;text-decoration: None;font-size:1rem;">Login</a>
-          </div>
-          {% else %}
-
-
-          <div class="col-sm-auto">
-            <div class="inline-block">
-              <small style="margin-right: 0;padding-right: 0;">{{ user|capfirst }}</small>
-
-              <a href="{% url 'user_profile' user %}" style="margin-left: 0;padding-left: 0;" class="link-unstyled">
-                  {% if user.profile_image %}
-                  <img
-                    class="img-responsive"
-                    src="{{ user.profile_image }}"
-                    alt="Profile picture"
-                    style="max-width: 64px; max-height: 64px;width: 4em;height: 4em;margin-left: 0;padding-left: 0;" />
-                  {% else %}
-                    <i data-lucide="user-round"></i>
-                  {% endif %}
-              </a>
-                {% include 'shortcuts/logout-url.html' with next=request.get_full_path %}
-            </div>
-          </div>
-          {% endif %}
-
-          <div class="col-sm-auto" style="margin-right: 0;">
-             <input class="form-control" type="search"
-                    id="nav-search-bar" placeholder="Search"
-                    style="max-width: 200px;width: 80%;" aria-label="Search">
-          </div>
-
-
-      </div>
-
-   </div>
-
-  </div>
-</nav>
-{% include 'gradient-bar.html' %}
-<div id="search-results-div" style="width: 100%;display: none;visibility: hidden">
-    <div class="text-center search-div gradient-bg-transparent d-flex align-content-center ">
-        <ul class="search-ul navbar-nav" id="search-results" >
-            {# INSERT CHILDREN :D #}
-        </ul>
     </div>
+
+    <div class="flex-none gap-2">
+      {% include 'theme-picker.html' %}
+      {% include 'components/search-bar.html' %}
+      {% include 'components/user-button.html' %}
+    </div>
+  </div>
+</header>
+
+<div id="search-results-div" style="width: 100%;display: none;visibility: hidden">
+  <div class="text-center search-div gradient-bg-transparent d-flex align-content-center">
+    <ul class="search-ul navbar-nav" id="search-results">
+      {# INSERT CHILDREN :D #}
+    </ul>
+  </div>
 </div>
-
-{% block scripts %}
-        <script lang="js" type="module">
-            import Searcher from "/static/js/common/content_search.js";
-            let searcher = new Searcher(
-                document.getElementById("nav-search-bar"),
-                document.getElementById("search-results"),
-                document.getElementById("search-results-div")
-            );
-
-        </script>
-{% endblock %}

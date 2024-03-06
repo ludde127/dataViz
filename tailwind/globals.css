@@ -1,0 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.text-no-wrap {
+  text-wrap: nowrap;
+}

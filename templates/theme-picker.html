@@ -1,0 +1,13 @@
+<div class="dropdown">
+  <div tabindex="0" role="button" class="btn m-1">
+    Theme
+    <i data-lucide="chevron-down" class="h-4 w-4"></i>
+  </div>
+  <ul tabindex="0" class="dropdown-content bg-base-300 text-base-content rounded-box top-px h-auto max-h-64 w-56 overflow-y-auto shadow-2xl mt-16">
+    {% for theme in themes %}
+      <li>
+        <input type="radio" name="theme-dropdown" class="theme-controller btn btn-sm btn-block btn-ghost justify-start" aria-label="{{ theme|capfirst }}" data-theme="{{ theme }}" value="{{ theme }}" />
+      </li>
+    {% endfor %}
+  </ul>
+</div>

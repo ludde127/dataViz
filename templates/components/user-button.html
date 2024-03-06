@@ -1,0 +1,31 @@
+{% if not user.is_authenticated %}
+  <div class="col-sm-auto">
+        <a href="{% url 'login' %}" class="badge bg-warning" style="color:black;text-decoration: None;font-size:1rem;">Login</a>
+  </div>
+{% else %}
+  <div class="dropdown dropdown-end">
+    <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
+      {% if request.user.avatar %}
+        <div class="avatar rounded-full w-10">
+          <img alt="{{user}} profile picture" src="{{user.profile_image}}" />
+        </div>
+      {% else %}
+        <div class="avatar placeholder rounded-full w-10">
+          <div class="bg-neutral text-neutral-content">
+            <span class="text-xl">{{ user|capfirst|slice:"1" }}</span>
+          </div>
+        </div> 
+      {% endif %}
+    </div>
+    <ul tabindex="0" class="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52">
+      <li>
+        <a href="{% url 'user_profile' user %}" class="justify-between">
+          Profile
+        </a>
+      </li>
+      <li>
+        {% include 'shortcuts/logout-url.html' with next=request.get_full_path %}
+      </li>
+    </ul>
+  </div>
+{% endif %}

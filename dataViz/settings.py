@@ -179,7 +179,11 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 BASE_CONTEXT = {"email": "ludvig@llindholm.com",
                 "time": timezone.now,
-                "brand_name": "DataViz", "MEDIA_URL": MEDIA_URL}
+                "brand_name": "DataViz",
+                "MEDIA_URL": MEDIA_URL,
+                "themes": ["light", "dark", "cupcake", "bumblebee", "emerald", "corporate", "synthwave", "retro", "cyberpunk", "valentine", "halloween", "garden", "forest", "aqua",
+                           "lofi", "pastel", "fantasy", "wireframe", "black", "luxury", "dracula", "cmyk", "autumn", "business", "acid", "lemonade", "night", "coffee", "winter", "dim", "nord", "sunset"]
+                }
 
 DATA_FILES = BASE_DIR.joinpath("DEVELOPMENT_STORAGE")
 WAGTAIL_SITE_NAME = 'DataViz'

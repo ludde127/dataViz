@@ -1,44 +1,44 @@
 <!DOCTYPE html>
 
-{# Load bootstrap #}
-{% load bootstrap5 %}
-{% bootstrap_css %}
-{% bootstrap_javascript %}
-
 {% load static %}
 
-<html lang="en" >
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="HandheldFriendly" content="true">
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="HandheldFriendly" content="true" />
     <title>{{ title }}</title>
-    <meta name="description" content="{% block meta_description %}{% endblock %}">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="stylesheet" type="text/css" href="{% static 'stylesheet.css' %}">
-    <link rel="icon" type="image/x-icon" href="{% static "website_logo/favicon.ico" %}">
-</head>
-<body class="{% block body_class %}{% endblock %}">
-    {% include "navbar.html" %}
-    {% bootstrap_messages %}
-    <div>
-        <div>
-        {% block content %}
-        {% endblock %}
+    <meta name="description"
+      content="{% block meta_description %}
+      {% endblock %}" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="stylesheet" type="text/css" href="{% static 'css/tailwind.css' %}" />
+    <link rel="icon" type="image/x-icon" href="{% static 'website_logo/favicon.ico' %}" />
+  </head>
+  <body class="{% block body_class %}
+    {% endblock %}">
+    <div class="relative flex min-h-screen flex-col">
+      {% include 'navbar.html' %}
+      <div class="flex flex-1 border-b pb-12">
+        <div class="container relative px-3 lg:px-8">
+          {% block content %}
+
+          {% endblock %}
         </div>
+      </div>
+      {% include 'footer.html' %}
     </div>
 
-    {% include "footer.html" %}
-    
-    <div id="theme-toggle">hejsan</div>
-
     {% block scripts %}
-        <script src="{% static 'js/utils.js' %}"></script>
-        <script src="{% static 'js/theme.js' %}"></script>
-        <script src="https://unpkg.com/lucide@latest"></script>
-        <script>lucide.createIcons();</script>
+      <script src="{% static 'js/utils.js' %}"></script>
+      <script src="{% static 'js/theme.js' %}"></script>
+      <script src="https://unpkg.com/lucide@latest"></script>
+      <script>
+        lucide.createIcons()
+      </script>
     {% endblock %}
     {% block custom_scripts %}
+
     {% endblock %}
-</body>
+  </body>
 </html>
