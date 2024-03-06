@@ -1,13 +1,26 @@
 <div class="dropdown">
-  <div tabindex="0" role="button" class="btn m-1">
-    Theme
-    <i data-lucide="chevron-down" class="h-4 w-4"></i>
+  <div tabindex="0" role="button" class="btn btn-ghost">
+    <i data-lucide="swatch-book" class="h-6 w-6"></i>
   </div>
-  <ul tabindex="0" class="dropdown-content bg-base-300 text-base-content rounded-box top-px h-auto max-h-64 w-56 overflow-y-auto shadow-2xl mt-16">
-    {% for theme in themes %}
-      <li>
-        <input type="radio" name="theme-dropdown" class="theme-controller btn btn-sm btn-block btn-ghost justify-start" aria-label="{{ theme|capfirst }}" data-theme="{{ theme }}" value="{{ theme }}" />
-      </li>
-    {% endfor %}
-  </ul>
+  <div tabindex="0" class="dropdown-content bg-base-300 text-base-content rounded-box top-px h-auto max-h-64 w-56 overflow-y-auto shadow-2xl mt-16">
+    <div class="grid grid-cols-1 gap-2 p-2">
+      {% for theme in themes %}
+        <button name="theme-dropdown" class="outline-base-content text-start outline-offset-4" data-set-theme="{{ theme }}">
+          <div data-theme="{{ theme }}" class="bg-base-100 rounded-btn text-base-content block w-full cursor-pointer font-sans">
+            <div class="grid grid-cols-5 grid-rows-3">
+              <div class="col-span-5 row-span-3 row-start-1 flex items-center gap-2 px-4 py-3">
+                <div class="flex-grow text-sm">{{ theme|capfirst }}</div>
+                <div class="flex h-full shrink-0 flex-wrap gap-1">
+                  <div class="bg-primary rounded-badge w-2"></div>
+                  <div class="bg-secondary rounded-badge w-2"></div>
+                  <div class="bg-accent rounded-badge w-2"></div>
+                  <div class="bg-neutral rounded-badge w-2"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </button>
+      {% endfor %}
+    </div>
+  </div>
 </div>

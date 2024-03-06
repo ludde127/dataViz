@@ -14,5 +14,5 @@ if (localStorage.theme) {
 }
 
 for (const element of document.getElementsByName("theme-dropdown")) {
-  element.addEventListener("click", _ => setTheme(element.dataset.theme));
+  element.addEventListener("click", _ => setTheme(element.dataset.setTheme));
 }
