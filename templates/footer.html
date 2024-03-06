@@ -1,4 +1,25 @@
-<footer class="py-3 container flex flex-row">
-  <span class="flex-1 text-left text-muted">© {{ time.year }} <span>{{ brand_name }}.</span></span>
-  <span class="text-muted" style="font-size: 0.8em">Site design: <a href="https://github.com/ludde127">Ludvig Lindholm</a>, <a href="https://github.com/husenap">Hussein Taher</a><br /></span>
+{% load static %}
+<footer class="footer flex items-center p-4 bg-base-200 text-base-content">
+  <aside class="flex-1 items-center flex flex-row">
+    <div class="avatar">
+      <div class="w-12 mask mask-squircle">
+        <a class="" href="/"><img src="{% static 'website_logo/android-chrome-192x192.png' %}" alt="Utils logo" /></a>
+      </div>
+    </div>
+    <p class="flex-1">
+      © {{ time.year }} <span>{{ brand_name }}.</span>
+    </p>
+  </aside>
+
+  <aside class="items-center grid-flow-col">
+    <p>
+      Site design:
+      <a href="https://github.com/ludde127">Ludvig Lindholm</a>,
+      <a href="https://github.com/husenap">Hussein Taher</a>
+    </p>
+  </aside>
+
+  <nav class="grid-flow-col gap-4 md:place-self-center md:justify-self-end">
+    <a href="https://github.com/ludde127/dataViz" target="_blank"><i data-lucide="github"></i></a>
+  </nav>
 </footer>
