@@ -82,8 +82,13 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'wagtail.contrib.redirects.middleware.RedirectMiddleware',
-
 ]
+
+if DEBUG:
+    INSTALLED_APPS.append("django_browser_reload")
+    MIDDLEWARE.append(
+        'django_browser_reload.middleware.BrowserReloadMiddleware')
+
 
 ROOT_URLCONF = 'dataViz.urls'
 
