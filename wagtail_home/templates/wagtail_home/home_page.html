@@ -1,39 +1,44 @@
 {% extends "base.html" %}
-
+{% load static %}
 {% load wagtailcore_tags %}
 
 {% block body_class %}template-homepage{% endblock %}
 
 {% block content %}
-    <div class="page-start">
-            <h1>{{ page.title }}</h1>
-            <p>{{ page.body|richtext }}</p>
+
+    <div class="hero h-[50vh]"
+         style="background-image: url({% static 'images/yapity-hero.png' %}">
+        <div class="hero-overlay bg-opacity-60"></div>
+        <div class="hero-content text-center text-neutral-content">
+            <div class="max-w-md drop-shadow-md">
+                <h1 class="mb-5 text-5xl font-bold">{{ page.title }}</h1>
+                <p class="mb-5">{{ page.body|richtext }}</p>
+            </div>
+        </div>
     </div>
-    <div class="text-container">
-
+    <div class="container">
         {% for child in children %}
-
             {% if child.title != "Tags" %}
-            <a class="link-unstyled" href='{% pageurl child %}'>
-            <div class="col">
-                <div class="card border-dark mb-3 card-hover-effect">
-                    <div class="card-header">
-                         <h3 class="text-center">
-                             {{ child.title }}
-                         </h3>
-                     </div>
-                    <div class="card-body">
-                         <div class="card-text page-description">
-                             {% with child=child.specific %}
-                                <p>{{ child.intro|richtext }}</p>
-                             {% endwith %}
+                <a href='{% pageurl child %}'>
+                <div class="col">
+                    <div class="card border-dark mb-3 card-hover-effect">
+                        <div class="card-header">
+                            <h3 class="text-center">
+                                {{ child.title }}
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="card-text page-description">
+                                {% with child=child.specific %}
+                                    <p>{{ child.intro|richtext }}</p>
+                                {% endwith %}
+                            </div>
+                        </div>
+                        <div class="card-footer text-center">
+                            {% include 'shortcuts/notepage-tags.html' with tags=post.tags.all %}
                         </div>
                     </div>
-                    <div class="card-footer text-center">
-                        {% include 'shortcuts/notepage-tags.html' with tags=post.tags.all %}
-                    </div>
                 </div>
-            </div>
             {% endif %}
         {% endfor %}
         </a>

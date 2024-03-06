@@ -1,165 +1,193 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% load static %}
 
 {% load wagtailcore_tags wagtailimages_tags %}
 {% load tags %}
 {% load custom_filters %}
-{% block body_class %}template-blogpage{% endblock %}
-{% block meta_description %}{{ page.meta_description }}{% endblock %}
+{% block body_class %}
+    template-blogpage
+{% endblock %}
+{% block meta_description %}
+    {{ page.meta_description }}
+{% endblock %}
 {% block content %}
     {% with page.get_parent as parent %}
-    <div class="page-start">
-        <h1>
-            <a class="icon-in-header" aria-label="Go back" href="{% pageurl parent %}">{% include 'icons/return-left.html' %}</a>
-
-            {{ page.title }}
-
-            {% if request.user == page.owner %}
-                <a class="icon-in-header" style="color: black;" target="_blank" aria-label="Edit" href="/cms/pages/{{ page.id }}/edit">{% include 'icons/edit.html' %}</a>
-            {% endif %}
-         </h1>
-        {% if page.tags.all.count %}
-        <div class="tags d-flex justify-content-center flex-wrap">
-            {% include 'shortcuts/notepage-tags.html' with tags=page.tags.all %}
-        </div>
-        {% endif %}
-
-        <p class="intro">{{ page.intro }}</p>
-
-        {% if page.get_children %}
-            <div class="d-flex justify-content-center flex-wrap" style="border-radius: 1em; border: 0px solid black;width: fit-content;margin:auto;padding: 10px;padding-top:3px;margin-top:0px;">
-                {% for child in page.get_children %}
-                    <a class="link-unstyled" style="padding: 5px;" aria-current="page" href="{% pageurl child %}"><button class="btn btn-sm gradient-bg-transparent" style="font-size: 1.1em;">{{ child.title }}</button></a>
-                {% endfor %}
+        <div class="flex flex-row">
+            <div class="drawer lg:drawer-open lg:w-auto">
+                <input id="tree-view-drawer" type="checkbox" class="drawer-toggle"/>
+                <div class="drawer-side">
+                    <label for="tree-view-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
+                    <div class="min-h-full bg-base-300 text-base-content">
+                        {% include "study_notes/components/tree_view_base.html" %}
+                    </div>
+                </div>
             </div>
 
-        {% endif %}
-    </div>
-    <div class="text-container">
-        <div class="richtext-stream">
-            {% for block in page.body %}
-            {% if block.block_type == 'heading' %}
-                <h2>{{ block.value }}</h2>
-            {% elif block.block_type == 'image' %}
-                <div class="custom-image" style="padding: 2vw;">
-                    {% image block.value height-800 %}
-                </div>
-            {% elif block.block_type == "quiz" %}
-                <div class="flashcard-div" id="quiz-holder-{{ block.id }} succ-fail-{{ block.id }}">
-                        <div class="card text-center blue-border">
-                          <div class="card-header succ-fail-{{ block.id }} " id="quiz-title-{{ block.id }}">
-                              <span style="float: left;margin-left:3em;">{{ block.value.title }}</span>
-                              <div style="float:right;">
-                                  <span class="badge rounded-pill bg-success">Score: <span id="quiz-score-{{ block.id }}">0</span></span>
-                                  <span class="badge rounded-pill bg-danger">Passing Score: {{ block.value.passing_score }}</span>
-                              </div>
-
-                          </div>
-                          <div class="card-body succ-fail-{{ block.id }}" id = quiz-body-{{ block.id }}>
-                            <p class="card-text" id="quiz-q-{{ block.id }}">{{ quiz_starts|get_item:block.id }}</p>
-
-                            <form class="form-group" id="quiz-btn-{{ block.id }}" onsubmit="return quizzes.quizRunner('{{ block.id }}');">
-
-                                <label style="display:none;" for="quiz-input-field-{{ block.id }}">Answer&nbsp;</label><input id="quiz-input-field-{{ block.id }}" style="max-width:400px;" placeholder="Answer..." aria-label="Answer" type="text" >
-                                <button class="btn btn-success" style="" type="button" onclick="quizzes.quizRunner('{{ block.id }}')">Submit</button>
-
-                            </form>
-                            <div class="inline-block" id="quiz-btn-next-{{ block.id }}" style="display:none;">
-                                <button class="btn btn-primary " type="button" onclick="quizzes.nextCard('{{ block.id }}')"><span id="quiz-btn-nextspan-{{ block.id }}">Next!</span></button>
-                            </div>
-                          </div>
-                          <div class="card-footer succ-fail-{{ block.id }}">
-                              Card <span id="quiz-progress-{{ block.id }}">1</span>/{{ quiz_lengths|get_item:block.id }}
-
-                          </div>
-                        </div>
-                </div>
-            {% elif block.block_type == "flashcards" %}
-                <div class="flashcard-div" id="quiz-holder-{{ block.id }} succ-fail-{{ block.id }}">
-                        <div class="card text-center blue-border">
-                          <div class="card-header succ-fail-{{ block.id }}" id="quiz-title-{{ block.id }}">
-                            <span style="font-size: x-large;margin-right: 3vw;">{{ block.value.title }}</span>
-
-
-                            {% if request.user.is_authenticated %}
-                              <button class="badge rounded-pill gradient-bg" id="quiz-subscribe-btn-{{ block.id }}" onclick="return flashcards.subscribeToggle('{{ block.id }}');">
-                                <span id="quiz-subscribe-span-{{ block.id }}">
-                                    {% if block.id in subscribed_cards %}
-                                    Unsubscribe
-                                    {% else %}
-                                    Subscribe
-                                    {% endif %}
-                                </span>
-                              </button>
-                            {% endif %}
-                              <span class="badge rounded-pill gradient-bg">Score: <span id="quiz-score-{{ block.id }}">0</span></span>
-                            <a class="link-unstyled" href="{% url 'user_profile' user %}">
-                               <img class="small-icon" src="{% static 'flashcards-logo.png' %}" alt="Flashcards" title="View all flashcards">
+            <div class="flex-1 relative">
+                {% include 'study_notes/components/hero.html' %}
+                {% include 'study_notes/components/toolbar.html' %}
+                <div class="container">
+                    {% include 'study_notes/components/breadcrumbs.html' %}
+                    {% if page.get_children %}
+                        <div class="flex flex-row flex-wrap"> {% for child in page.get_children %}
+                            <a aria-current="page"
+                               href="{% pageurl child %}">
+                                <button class="btn btn-sm">{{ child.title }}</button>
                             </a>
-                          </div>
-                          <div class="card-body succ-fail-{{ block.id }}" id = quiz-body-{{ block.id }}>
-                            <div class="card-text" id="quiz-q-{{ block.id }}">{{ flash_starts|get_item:block.id }}</div>
-
-                            <form class="form-group" id="quiz-btn-{{ block.id }}" onsubmit="return flashcards.quizRunner('{{ block.id }}');">
-                                <button class="btn gradient-bg-btn" style="" type="button" onclick="flashcards.quizRunner('{{ block.id }}')">Next</button>
-                            </form>
-                            <div class="btn-group btn-group-lg" id="quiz-btn-next-{{ block.id }}" style="display:none;">
-                                <button class="btn btn-danger btn-lg" type="button" onclick="flashcards.nextCard('{{ block.id }}', -1)">{% include "icons/thumbs-down.html" %}</button>
-                                <button class="btn btn-primary btn-lg" type="button" onclick="flashcards.nextCard('{{ block.id }}', 0)"><span id="quiz-btn-nextspan-{{ block.id }}">{% include "icons/fastforward-circle.html" %}</span><span id="quiz-btn-restartspan-{{ block.id }}">{% include "icons/restart-circle.html" %}</span></button>
-
-                                <button class="btn btn-success btn-lg" type="button" onclick="flashcards.nextCard('{{ block.id }}', 1)">{% include "icons/thumbs-up.html" %}</button>
-                            </div>
-                          </div>
-                          <div class="card-footer succ-fail-{{ block.id }}">
-                              Card <span id="quiz-progress-{{ block.id }}">1</span>/{{ flash_lengths|get_item:block.id }}
-
-                          </div>
+                        {% endfor %}
                         </div>
-                </div>
-            {% else %}
-                <div>
-                    <section class="block-{{ block.block_type }}">
-                        {% include_block block %}
-                    </section>
-                </div>
-            {% endif %}
-            <hr>
+                    {% endif %}
 
+                    <div class="drawer-content flex flex-col items-center justify-center">
+                        <label for="tree-view-drawer" class="btn btn-primary drawer-button">Open drawer</label>
+                    </div>
 
-            {% endfor %}
+                    <div class="prose mx-auto max-w-4xl py-8">
+                        <div>
+                            {% for block in page.body %}
+                                {% if block.block_type == 'heading' %}
+                                    <h1>{{ block.value.file }}</h1>
+                                {% elif block.block_type == 'image' %}
+                                    <figure class="h-[800px]">
+                                        {% image block.value height-800 %}
+                                    </figure>
+                                {% elif block.block_type == 'quiz' %}
+                                    <div class="flashcard-div" id="quiz-holder-{{ block.id }} succ-fail-{{ block.id }}">
+                                        <div class="card text-center blue-border">
+                                            <div class="card-header succ-fail-{{ block.id }} "
+                                                 id="quiz-title-{{ block.id }}">
+                                                <span style="float: left;margin-left:3em;">{{ block.value.title }}</span>
+                                                <div style="float:right;">
+                                            <span class="badge rounded-pill bg-success">Score: <span
+                                                    id="quiz-score-{{ block.id }}">0</span></span>
+                                                    <span class="badge rounded-pill bg-danger">Passing Score: {{ block.value.passing_score }}</span>
+                                                </div>
+                                            </div>
+                                            <div class="card-body succ-fail-{{ block.id }}"
+                                                 id="quiz-body-{{ block.id }}">
+                                                <p class="card-text"
+                                                   id="quiz-q-{{ block.id }}">{{ quiz_starts|get_item:block.id }}</p>
 
-            {% for item in page.gallery_images.all %}
-                <div style="float: left; margin: 10px">
-                    {% image item.image fill-320x240 %}
-                    <p>{{ item.caption }}</p>
+                                                <form class="form-group" id="quiz-btn-{{ block.id }}"
+                                                      onsubmit="return quizzes.quizRunner('{{ block.id }}');">
+                                                    <label style="display:none;" for="quiz-input-field-{{ block.id }}">Answer&nbsp;</label><input
+                                                        id="quiz-input-field-{{ block.id }}" style="max-width:400px;"
+                                                        placeholder="Answer..."
+                                                        aria-label="Answer" type="text"/>
+                                                    <button class="btn btn-success" style="" type="button"
+                                                            onclick="quizzes.quizRunner('{{ block.id }}')">Submit
+                                                    </button>
+                                                </form>
+                                                <div class="inline-block" id="quiz-btn-next-{{ block.id }}"
+                                                     style="display:none;">
+                                                    <button class="btn btn-primary" type="button"
+                                                            onclick="quizzes.nextCard('{{ block.id }}')"><span
+                                                            id="quiz-btn-nextspan-{{ block.id }}">Next!</span></button>
+                                                </div>
+                                            </div>
+                                            <div class="card-footer succ-fail-{{ block.id }}">
+                                                Card <span
+                                                    id="quiz-progress-{{ block.id }}">1</span>/{{ quiz_lengths|get_item:block.id }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% elif block.block_type == 'flashcards' %}
+                                    <div class="flashcard-div" id="quiz-holder-{{ block.id }} succ-fail-{{ block.id }}">
+                                        <div class="card text-center blue-border">
+                                            <div class="card-header succ-fail-{{ block.id }}"
+                                                 id="quiz-title-{{ block.id }}">
+                                                <span style="font-size: x-large;margin-right: 3vw;">{{ block.value.title }}</span>
+
+                                                {% if request.user.is_authenticated %}
+                                                    <button class="badge rounded-pill gradient-bg"
+                                                            id="quiz-subscribe-btn-{{ block.id }}"
+                                                            onclick="return flashcards.subscribeToggle('{{ block.id }}');">
+                    <span id="quiz-subscribe-span-{{ block.id }}">
+                      {% if block.id in subscribed_cards %}
+                          Unsubscribe
+                      {% else %}
+                          Subscribe
+                      {% endif %}
+                    </span>
+                                                    </button>
+                                                {% endif %}
+                                                <span class="badge rounded-pill gradient-bg">Score: <span
+                                                        id="quiz-score-{{ block.id }}">0</span></span>
+                                                <a class="link-unstyled" href="{% url 'user_profile' user %}"><img
+                                                        class="small-icon"
+                                                        src="{% static 'flashcards-logo.png' %}" alt="Flashcards"
+                                                        title="View all flashcards"/></a>
+                                            </div>
+                                            <div class="card-body succ-fail-{{ block.id }}"
+                                                 id="quiz-body-{{ block.id }}">
+                                                <div class="card-text"
+                                                     id="quiz-q-{{ block.id }}">{{ flash_starts|get_item:block.id }}</div>
+
+                                                <form class="form-group" id="quiz-btn-{{ block.id }}"
+                                                      onsubmit="return flashcards.quizRunner('{{ block.id }}');">
+                                                    <button class="btn gradient-bg-btn" style="" type="button"
+                                                            onclick="flashcards.quizRunner('{{ block.id }}')">Next
+                                                    </button>
+                                                </form>
+                                                <div class="btn-group btn-group-lg" id="quiz-btn-next-{{ block.id }}"
+                                                     style="display:none;">
+                                                    <button class="btn btn-danger btn-lg" type="button"
+                                                            onclick="flashcards.nextCard('{{ block.id }}', -1)">{% include 'icons/thumbs-down.html' %}</button>
+                                                    <button class="btn-primary btn btn-lg" type="button"
+                                                            onclick="flashcards.nextCard('{{ block.id }}', 0)"><span
+                                                            id="quiz-btn-nextspan-{{ block.id }}">{% include 'icons/fastforward-circle.html' %}</span><span
+                                                            id="quiz-btn-restartspan-{{ block.id }}">{% include 'icons/restart-circle.html' %}</span>
+                                                    </button>
+
+                                                    <button class="btn btn-success btn-lg" type="button"
+                                                            onclick="flashcards.nextCard('{{ block.id }}', 1)">{% include 'icons/thumbs-up.html' %}</button>
+                                                </div>
+                                            </div>
+                                            <div class="card-footer succ-fail-{{ block.id }}">
+                                                Card <span
+                                                    id="quiz-progress-{{ block.id }}">1</span>/{{ flash_lengths|get_item:block.id }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <div>
+                                        <section class="block-{{ block.block_type }}">
+                                            {% include_block block %}
+                                        </section>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+
+                            {% for item in page.gallery_images.all %}
+                                <div style="float: left; margin: 10px">
+                                    {% image item.image fill - 320 x240 %}
+                                    <p>{{ item.caption }}</p>
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        <small class="text-muted">Edited: {{ page.date }}</small>
+                        <br/>
+                        <small class="text-muted">By {{ page.owner }}</small>
+                        <div class="text-center">
+                            <a href="{% pageurl parent %}">
+                                <button type="button" class="btn btn-primary btn-lg">Go back to "{{ parent.title }}"
+                                </button>
+                            </a>
+                        </div>
+                    </div>
                 </div>
-            {% endfor %}
+            </div>
         </div>
-
-
-        <small class="text-muted">Edited: {{ page.date }}</small>
-        <br>
-        <small class="text-muted">By {{ page.owner }}</small>
-        <br>
-        <br>
-        <div class="text-center">
-            <a href="{% pageurl parent %}"><button type="button" class="btn btn-primary btn-lg">Go back to "{{ parent.title }}"</button></a>
-        </div>
-
-    </div>
     {% endwith %}
 {% endblock %}
 
 {% block custom_scripts %}
     <script src="{% mathjax %}"></script>
-    <script src="{% static 'js/quiz.js' %}" lang="js">
-    </script>
-    <script src="{% static 'js/flashcards.js' %}" lang="js">
-    </script>
+    <script src="{% static 'js/quiz.js' %}" lang="js"></script>
+    <script src="{% static 'js/flashcards.js' %}" lang="js"></script>
     <script lang="js">
-
-        let quizzes = new Quizzes({{ quiz_json|safe }});
-        let flashcards = new Flashcards({{ flash_json|safe }}, {{ page_id|safe }}, {{ subscribed_cards|safe }});
+        let quizzes = new Quizzes({{ quiz_json| safe }});
+        let flashcards = new Flashcards({{ flash_json| safe }}, {{ page_id | safe }}, {{ subscribed_cards | safe}});
     </script>
 {% endblock %}
-
