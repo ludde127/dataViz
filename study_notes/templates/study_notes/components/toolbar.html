@@ -1,12 +1,14 @@
-<ul class="sticky top-0 left-16 menu menu-horizontal bg-base-300 rounded-box">
+<ul class="menu menu-horizontal">
     <li>
-        <a class="tooltip tooltip-bottom" data-tip="Tree View">
+        <label for="tree-view-drawer" class="drawer-button tooltip tooltip-bottom lg:hidden" data-tip="Tree View">
             <i data-lucide="folder-tree"></i>
-        </a>
+        </label>
     </li>
     <li>
-        <a class="tooltip tooltip-bottom" data-tip="Edit">
-            <i data-lucide="pencil"></i>
-        </a>
+        {% if request.user.is_active %}
+            <a class="tooltip tooltip-bottom" data-tip="Edit File" target="_blank" aria-label="Edit File" href="/cms/pages/{{ page.id }}/edit">
+                <i data-lucide="pencil"></i>
+            </a>
+        {% endif %}
     </li>
 </ul>

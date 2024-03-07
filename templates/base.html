@@ -3,42 +3,41 @@
 {% load static %}
 
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="HandheldFriendly" content="true" />
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="HandheldFriendly" content="true"/>
     <title>{{ title }}</title>
     <meta name="description"
-      content="{% block meta_description %}
-      {% endblock %}" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="stylesheet" type="text/css" href="{% static 'css/tailwind.css' %}" />
-    <link rel="icon" type="image/x-icon" href="{% static 'website_logo/favicon.ico' %}" />
-  </head>
-  <body class="{% block body_class %}
-    {% endblock %}">
-    <div class="relative flex min-h-screen flex-col">
-      {% include 'navbar.html' %}
-      <div class="flex flex-1 pb-12">
+          content="{% block meta_description %}
+      {% endblock %}"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/tailwind.css' %}"/>
+    <link rel="icon" type="image/x-icon" href="{% static 'website_logo/favicon.ico' %}"/>
+</head>
+<body class="{% block body_class %}{% endblock %}">
+<div class="relative flex min-h-screen flex-col">
+    {% include 'navbar.html' %}
+    <div class="flex flex-1">
         <div class="w-full">
-          {% block content %}
+            {% block content %}
 
-          {% endblock %}
+            {% endblock %}
         </div>
-      </div>
-      {% include 'footer.html' %}
     </div>
+    {% include 'footer.html' %}
+</div>
 
-    {% block scripts %}
-      <script src="{% static 'js/utils.js' %}"></script>
-      <script src="{% static 'js/theme.js' %}"></script>
-      <script src="https://unpkg.com/lucide@latest"></script>
-      <script>
+{% block scripts %}
+    <script src="{% static 'js/utils.js' %}"></script>
+    <script src="{% static 'js/theme.js' %}"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
         lucide.createIcons()
-      </script>
-    {% endblock %}
-    {% block custom_scripts %}
+    </script>
+{% endblock %}
+{% block custom_scripts %}
 
-    {% endblock %}
-  </body>
+{% endblock %}
+</body>
 </html>
