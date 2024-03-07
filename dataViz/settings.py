@@ -10,7 +10,6 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 import os
-import pathlib
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -19,7 +18,6 @@ from django.utils import timezone
 from secret.secret import POSTGRES__PASS, DJANGO_SECRET_KEY, IS_PRODUCTION, POSTGRES__PORT
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
@@ -30,11 +28,13 @@ SECRET_KEY = DJANGO_SECRET_KEY
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = not IS_PRODUCTION
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "llindholm.com", "192.168.0.155"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "llindholm.com"]
+ALLOWED_HOSTS.extend(os.environ.get("ALLOWED_HOSTS", "").split(","))
 
+CSRF_TRUSTED_ORIGINS = os.environ.get("CSRF_TRUSTED_ORIGINS", "").split(",")
+CORS_ORIGIN_WHITELIST = os.environ.get("CORS_ORIGIN_WHITELIST", "").split(",")
 
 # Application definition
-
 INSTALLED_APPS = [
     'dataViz.apps.AdminConfig',
     'users',
@@ -108,7 +108,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'dataViz.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
@@ -122,7 +121,6 @@ DATABASES = {
         "PORT": POSTGRES__PORT
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -155,7 +153,6 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
@@ -176,9 +173,9 @@ MEDIA_URL = '/media/'
 # Path where media is stored
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
-
 BASE_CONTEXT = {"email": "ludvig@llindholm.com",
                 "time": timezone.now,
+                "GIT_HASH": os.environ.get('GIT_HASH', "dev"),
                 "brand_name": "DataViz", "MEDIA_URL": MEDIA_URL}
 
 DATA_FILES = BASE_DIR.joinpath("DEVELOPMENT_STORAGE")
@@ -209,12 +206,12 @@ LOGIN_URL = "/users/login"
 WAGTAIL_FRONTEND_LOGIN_URL = LOGIN_URL
 PASSWORD_REQUIRED_TEMPLATE = 'wagtail_home/password_required.html'
 
-
 APPEND_SLASH = True
 WAGTAILADMIN_STATIC_FILE_VERSION_STRINGS = True
 if IS_PRODUCTION:
     import sentry_sdk
     from sentry_sdk.integrations.django import DjangoIntegration
+
     sentry_sdk.init(
         dsn="https://0fcbf47fd99946289516f84646ba90a8@o1322592.ingest.sentry.io/6627281",
         integrations=[
