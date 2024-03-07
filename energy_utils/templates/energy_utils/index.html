@@ -1,5 +1,4 @@
 {% extends 'base.html' %}
-{% load crispy_forms_filters %}
 {% block content %}
 <div class="container-fluid">
     <h1 class="text-center">Energy Utilities</h1>
@@ -19,7 +18,7 @@
             one time token.</p>
             <form method="post" action="{% url 'energy_index' %}" class="text-center">
                 {% csrf_token %}
-                {{ tesla_form|crispy }}
+                {{ tesla_form }}
                 <button class="btn btn-primary" type="submit">Submit</button>
             </form>
         {% else %}
@@ -41,7 +40,7 @@
             one time token.</p>
         <form method="post" action="{% url 'energy_index' %}">
             {% csrf_token %}
-            {{ tesla_form|crispy }}
+            {{ tesla_form }}
             <button class="btn btn-primary" type="submit">Submit</button>
         </form>
     {% else %}

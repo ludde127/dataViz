@@ -1,12 +1,11 @@
 {% extends 'base.html' %}
-{% load crispy_forms_filters %}
 
 {% block content %}
 
     <div class="container-fluid text-center">
         <h1>{{ data_store.name|capfirst }}</h1>
         {% if data_store.description %}
-        <p>{{ data_store.description|capfirst }}</p>
+            <p>{{ data_store.description|capfirst }}</p>
         {% endif %}
         <br>
         {% if not shared %}
@@ -17,7 +16,7 @@
             <code>
                 url = "https://llindholm.com/data/access/<strong>{{ data_store.key }}</strong>"
                 <br>
-                resp = requests.post(url, json={{data_store.example_entry}},\
+                resp = requests.post(url, json={{ data_store.example_entry }},\
                 <br>
                 headers={'Authorization': 'TOK:SECRET_API_TOKEN'}).text
             </code>
@@ -27,12 +26,14 @@
         <h3>Now only plotting last 10k datapoints by default.</h3>
         {% for plot in plots %}
             <h2>{{ plot.name }}</h2>
-            <p id="chart-p-{{ forloop.counter0 }}" style="text-decoration-line: underline;text-decoration-color: red"></p>
+            <p id="chart-p-{{ forloop.counter0 }}"
+               style="text-decoration-line: underline;text-decoration-color: red"></p>
             {% if not shared %}
-            <div class="btn-group">
-                <a class="btn btn-secondary" href="{% url 'modify_plot' plot.id %}">Modify</a>
-                <a class="btn btn-primary" href="{% url 'plot_all_can_view' data_store.key %}">Share this! <small>All with this link can view</small></a>
-            </div>
+                <div class="btn-group">
+                    <a class="btn btn-secondary" href="{% url 'modify_plot' plot.id %}">Modify</a>
+                    <a class="btn btn-primary" href="{% url 'plot_all_can_view' data_store.key %}">Share this! <small>All
+                        with this link can view</small></a>
+                </div>
             {% endif %}
             <div class="plot text-center" style="margin:auto;">
                 <canvas id="chart{{ forloop.counter0 }}"></canvas>
@@ -40,31 +41,33 @@
 
         {% endfor %}
         {% if form %}
-        <h1>Add a new chart</h1>
-        <form method="post" action="{% url 'plot' data_store.key %}">
-            {% csrf_token %}
-            {{ form|crispy }}
-            <button class="btn btn-primary" type="submit" value="Submit">Submit</button>
-        </form>
+            <h1>Add a new chart</h1>
+            <form method="post" action="{% url 'plot' data_store.key %}">
+                {% csrf_token %}
+                {{ form }}
+                <button class="btn btn-primary" type="submit" value="Submit">Submit</button>
+            </form>
         {% endif %}
     </div>
 {% endblock %}
 {% block custom_scripts %}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.js" integrity="sha512-d6nObkPJgV791iTGuBoVC9Aa2iecqzJRE0Jiqvk85BhLHAPhWqkuBiQb1xz2jvuHNqHLYoN3ymPfpiB1o+Zgpw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.js"
+            integrity="sha512-d6nObkPJgV791iTGuBoVC9Aa2iecqzJRE0Jiqvk85BhLHAPhWqkuBiQb1xz2jvuHNqHLYoN3ymPfpiB1o+Zgpw=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
 
     <script>
-            {# Todo, modify so that choosing timeframes is possible, should probably stream data as that happends. #}
-            {% for plot in plots %}
-                {% with plot.plottable as plt %}
-                    {% if plt != "No data." %}
-                        const ctx{{ forloop.counter0 }} = document.getElementById('chart{{ forloop.counter0 }}');
-                        const myChart{{ forloop.counter0 }} = new Chart(ctx{{ forloop.counter0 }}, {{ plt | safe }});
-                    {% else %}
-                        document.getElementById('chart-p-{{ forloop.counter0 }}').innerHTML = "No data present to plot";
-                    {% endif %}
-                {% endwith %}
-            {% endfor %}
+        {# Todo, modify so that choosing timeframes is possible, should probably stream data as that happends. #}
+        {% for plot in plots %}
+            {% with plot.plottable as plt %}
+                {% if plt != "No data." %}
+                    const ctx{{ forloop.counter0 }} = document.getElementById('chart{{ forloop.counter0 }}');
+                    const myChart{{ forloop.counter0 }} = new Chart(ctx{{ forloop.counter0 }}, {{ plt | safe }});
+                {% else %}
+                    document.getElementById('chart-p-{{ forloop.counter0 }}').innerHTML = "No data present to plot";
+                {% endif %}
+            {% endwith %}
+        {% endfor %}
 
     </script>
 

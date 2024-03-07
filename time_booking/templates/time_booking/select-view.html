@@ -1,5 +1,4 @@
 {% extends 'base.html' %}
-{% load crispy_forms_filters %}
 
 {% block content %}
     <div class="container-fluid text-center">
@@ -30,7 +29,7 @@
             <h3>Add new booking object</h3>
 
             {% csrf_token %}
-            {{add_booking_form|crispy}}
+            {{add_booking_form}}
             <button class="btn btn-primary" type="submit">Submit</button>
         </form>
         {% else %}
@@ -41,7 +40,7 @@
 
 
                 {% csrf_token %}
-                {{add_booking_form|crispy}}
+                {{add_booking_form}}
                 <button class="btn btn-primary" type="submit" disabled="disabled">Submit</button>
             </form>
         {% endif %}
