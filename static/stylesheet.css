@@ -258,7 +258,7 @@ text-shadow: rgb(0, 0, 0) 2px 0px 0px, rgb(0, 0, 0) 1.75517px 0.958851px 0px, rg
     margin-right:auto;}
 
 
-.card-text ul li, .card-text ol li {display: inline-block; padding:0;text-align: left;}
+.card-text ul li, .card-text ol li {padding:0;text-align: left;}
 .card-text > .richtext-image {width: 100%; height:auto; max-width: 800px; max-height: fit-content; align-self: center;text-align: center;margin:auto;padding:0;}
 
 
