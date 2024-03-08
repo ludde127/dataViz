@@ -8,22 +8,24 @@
 {% block body_class %}
     template-blogpage
 {% endblock %}
+
 {% block meta_description %}
     {{ page.meta_description }}
 {% endblock %}
+
 {% block content %}
     {% with page.get_parent as parent %}
         <div class="drawer lg:drawer-open">
             <input id="tree-view-drawer" type="checkbox" class="drawer-toggle"/>
             <div class="drawer-content">
                 {% include 'study_notes/components/hero.html' %}
-                <div class="flex flex-row items-center bg-base-100 sticky top-0 z-50">
+                <div class="flex flex-row items-center bg-base-100 sticky top-0 z-10 shadow-sm">
                     {% include 'study_notes/components/toolbar.html' %}
                     {% include 'study_notes/components/breadcrumbs.html' %}
                 </div>
 
-                <div class="container">
-                    <div class="prose mx-auto max-w-4xl py-8">
+                <div class="relative container">
+                    <div class="prose lg:prose-lg mx-auto max-w-4xl py-8">
                         <div>
                             {% for block in page.body %}
                                 {% if block.block_type == 'heading' %}
@@ -153,18 +155,17 @@
                             {% endfor %}
                         </div>
 
-                        <small class="text-muted">Edited: {{ page.date }}</small>
-                        <br/>
-                        <small class="text-muted">By {{ page.owner }}</small>
-                        <div class="text-center">
-                            <a href="{% pageurl parent %}">
-                                <button type="button" class="btn btn-primary btn-lg">Go back to "{{ parent.title }}"
-                                </button>
-                            </a>
+                        <div class="absolute top-0 right-0 p-2">
+                            <div class="flex flex-row items-center gap-2">
+                                <div class="flex flex-col text-right">
+                                    <small>By {{ page.owner }}</small>
+                                    <small>{{ page.date }}</small>
+                                </div>
+                                {% include "components/user-avatar.html" with user=page.owner %}
+                            </div>
                         </div>
                     </div>
                 </div>
-                <label for="tree-view-drawer" class="btn btn-primary drawer-button lg:hidden">Open drawer</label>
             </div>
             <div class="drawer-side z-[100] lg:z-auto ">
                 <label for="tree-view-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
