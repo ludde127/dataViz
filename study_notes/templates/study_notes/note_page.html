@@ -148,8 +148,8 @@
                             {% endfor %}
 
                             {% for item in page.gallery_images.all %}
-                                <div style="float: left; margin: 10px">
-                                    {% image item.image fill - 320 x240 %}
+                                <div>
+                                    {% image item.image fill-320 x240 %}
                                     <p>{{ item.caption }}</p>
                                 </div>
                             {% endfor %}
@@ -158,10 +158,10 @@
                         <div class="absolute top-0 right-0 p-2">
                             <div class="flex flex-row items-center gap-2">
                                 <div class="flex flex-col text-right">
-                                    <small>By {{ page.owner }}</small>
-                                    <small>{{ page.date }}</small>
+                                    <small>{{ page.live_revision.user|capfirst }}</small>
+                                    <small>{{ page.live_revision.created_at|date:"Y-m-d" }}</small>
                                 </div>
-                                {% include "components/user-avatar.html" with user=page.owner %}
+                                {% include "components/user-avatar.html" with user=page.live_revision.user %}
                             </div>
                         </div>
                     </div>
