@@ -1,0 +1,22 @@
+<li>
+    <a href="/">Pages</a>
+</li>
+<li>
+    <a href="{% url 'index' %}">Dashboard</a>
+</li>
+<li>
+    <a href="{% url 'energy_index' %}">Energy</a>
+</li>
+<li>
+    <a href="{% url 'stock_index' %}">Stock</a>
+</li>
+{% if request.user.is_staff %}
+    <li>
+        <a href="/admin">Admin</a>
+    </li>
+{% endif %}
+{% if request.user.is_active %}
+    <li>
+        <a href="/cms">Wagtail-Admin</a>
+    </li>
+{% endif %}
