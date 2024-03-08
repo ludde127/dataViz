@@ -5,7 +5,6 @@
 {% block body_class %}template-homepage{% endblock %}
 
 {% block content %}
-
     <div class="hero h-[50vh]"
          style="background-image: url({% static 'images/yapity-hero.png' %}">
         <div class="hero-overlay bg-opacity-60"></div>
@@ -16,31 +15,22 @@
             </div>
         </div>
     </div>
-    <div class="container">
-        {% for child in children %}
-            {% if child.title != "Tags" %}
-                <a href='{% pageurl child %}'>
-                <div class="col">
-                    <div class="card border-dark mb-3 card-hover-effect">
-                        <div class="card-header">
-                            <h3 class="text-center">
-                                {{ child.title }}
-                            </h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="card-text page-description">
-                                {% with child=child.specific %}
-                                    <p>{{ child.intro|richtext }}</p>
+    <div class="py-8 container">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {% for post in children %}
+                {% if post.title != "Tags" %}
+                    <a href="{% pageurl post %}">
+                        <div class="card bg-neutral text-neutral-content shadow-xl">
+                            <div class="card-body">
+                                <h2 class="card-title">{{ post.title }}</h2>
+                                {% with post=post.specific %}
+                                    <p>{{ post.intro|richtext }}</p>
                                 {% endwith %}
                             </div>
                         </div>
-                        <div class="card-footer text-center">
-                            {% include 'shortcuts/notepage-tags.html' with tags=post.tags.all %}
-                        </div>
-                    </div>
-                </div>
-            {% endif %}
-        {% endfor %}
-        </a>
+                    </a>
+                {% endif %}
+            {% endfor %}
+        </div>
     </div>
 {% endblock %}
