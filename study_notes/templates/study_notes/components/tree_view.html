@@ -1,16 +1,26 @@
 {% if node.children|length %}
-<li>
-  <details open>
-    <summary><a href="{{node.page.url}}" class="link link-hover {% if page.id == node.page.id %}font-bold{% endif %}">{{node.page.title}}</a></summary>
-    <ul>
-      {%for ch in node.children %}
-        {%with node=ch %}
-          {%include "study_notes/components/tree_view.html" %}
-        {%endwith%}
-      {%endfor%}
-    </ul>
-  </details>
-</li>
+    <li>
+        <details open>
+            <summary>
+                <a href="{{ node.page.url }}"
+                   class="link link-hover {% if page.id == node.page.id %}font-bold{% endif %}">
+                    {{ node.page.title }}
+                </a>
+            </summary>
+            <ul>
+                {% for ch in node.children %}
+                    {% with node=ch %}
+                        {% include "study_notes/components/tree_view.html" %}
+                    {% endwith %}
+                {% endfor %}
+            </ul>
+        </details>
+    </li>
 {% else %}
-<li><a href="{{node.page.url}}" class="link link-hover">{{node.page.title}}</a></li>
+    <li>
+        <a href="{{ node.page.url }}"
+           class="link link-hover {% if page.id == node.page.id %}font-bold{% endif %}">
+            {{ node.page.title }}
+        </a>
+    </li>
 {% endif %}

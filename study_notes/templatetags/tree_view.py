@@ -1,6 +1,8 @@
 from django import template
 from wagtail.models import Page, Site
 
+from study_notes.models import NoteTagIndexPage
+
 register = template.Library()
 
 
@@ -10,11 +12,13 @@ def get_site_root(context):
     # defined else will return an object attribute error ('str' object has no
     # attribute 'get_children')
     root = Site.find_for_request(context['request']).root_page
-    return collect(root)
+    tree = collect(root)
+    return tree
 
 
 def collect(node: Page):
     return {
         "page": node,
-        "children": [collect(child) for child in node.get_children()]
+        "children": [collect(child) for child in node.get_children() if
+                     not isinstance(child.specific, NoteTagIndexPage)]
     }
