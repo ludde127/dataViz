@@ -279,9 +279,6 @@ class NotePage(Page):
         context["quiz_lengths"] = quiz_length
         context["title"] = self.title
 
-        print(self.live_revision.created_at)
-        print(self.date)
-
         context["live_revision"] = {
             "user": self.live_revision.user,
             "created_at": self.live_revision.created_at,
