@@ -85,8 +85,7 @@ MIDDLEWARE = [
 
 if DEBUG:
     INSTALLED_APPS.append("django_browser_reload")
-    MIDDLEWARE.append(
-        'django_browser_reload.middleware.BrowserReloadMiddleware')
+    MIDDLEWARE.append('django_browser_reload.middleware.BrowserReloadMiddleware')
 
 ROOT_URLCONF = 'dataViz.urls'
 
