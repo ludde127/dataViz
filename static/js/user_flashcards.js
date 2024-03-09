@@ -87,7 +87,7 @@ class UserFlashcards {
         let past_card = this.card_holder.past_card;
         let card = this.card_holder.next_card();
 
-        document.getElementById("quiz-btn-next-" + id_end).classList.toggle("hidden");
+        toggleShow("quiz-btn-next-" + id_end);
 
         this.scores[this.current_index - 1] = correct;
 
@@ -148,7 +148,7 @@ class UserFlashcards {
 
         let card = this.card_holder.past_card;
 
-        document.getElementById("quiz-btn-next-" + id_end).classList.toggle("hidden");
+        toggleShow("quiz-btn-next-" + id_end);
         document.getElementById("quiz-btn-" + id_end).style.display = "none";
         document.getElementById("quiz-q-" + id_end).innerHTML = card["q"] + "<hr>" + card["a"];
 
