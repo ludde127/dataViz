@@ -1,7 +1,5 @@
 {% if not user.is_authenticated %}
-    <div class="col-sm-auto">
-        <a href="{% url 'login' %}" class="badge bg-warning" style="color:black;text-decoration: None;font-size:1rem;">Login</a>
-    </div>
+        <a href="{% url 'login' %}" class="btn btn-primary btn-circle"><i data-lucide="log-in"></i></a>
 {% else %}
     <div class="dropdown dropdown-end">
         <div tabindex="0" role="button" class="btn btn-ghost btn-circle">

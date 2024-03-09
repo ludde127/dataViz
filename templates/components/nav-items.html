@@ -4,12 +4,16 @@
 <li>
     <a href="{% url 'index' %}">Dashboard</a>
 </li>
+
+{% comment %}
 <li>
     <a href="{% url 'energy_index' %}">Energy</a>
 </li>
 <li>
     <a href="{% url 'stock_index' %}">Stock</a>
 </li>
+{% endcomment %}
+
 {% if request.user.is_staff %}
     <li>
         <a href="/admin">Admin</a>
