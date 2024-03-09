@@ -22,3 +22,5 @@ for (const element of document.getElementsByName("theme-dropdown")) {
 window.addEventListener("storage", function (e) {
     checkTheme();
 }, false);
+
+checkTheme();
