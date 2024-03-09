@@ -3,13 +3,12 @@ import random
 import django.db.utils
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseNotFound, HttpResponse, HttpResponseForbidden, JsonResponse
-from django.shortcuts import render
 
 from dataViz.settings import BASE_CONTEXT
 from dataViz.utils import context_render
+from users.models import User
 from .models import UsersFlashcards, NotePage, FlashCardGroupReference
 from .models import filter_non_viewable
-from users.models import User
 
 
 def get_notepage_or_404(request, id):
@@ -118,13 +117,10 @@ def user_profile(request, user):
         context["users_id"] = user_object.id
         context["title"] = str(user) + "'s profile"
         try:
-            flash_card_list = user_object.usersflashcards.\
-                get_subscribed_flashcards(request)
+            flash_card_list = user_object.usersflashcards.get_subscribed_flashcards(request)
             try:
                 context["flash_card_list"] = flash_card_list
-                first = flash_card_list[random.randint(
-                    0, len(flash_card_list)-1)]
-                context["first_card_q"] = first["q"]
+                first = flash_card_list[random.randint(0, len(flash_card_list) - 1)]
 
                 copy = first.copy()
                 copy["a"] = str(copy["a"])
