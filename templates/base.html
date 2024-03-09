@@ -9,10 +9,13 @@
     <meta name="HandheldFriendly" content="true"/>
     <title>{{ title }}</title>
     <meta name="description"
-          content="{% block meta_description %}
-      {% endblock %}"/>
+          content="{% block meta_description %}{% endblock %}"/>
     <link rel="preconnect" href="https://fonts.googleapis.com"/>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/tailwind.css' %}"/>
+    {% if DEBUG %}
+        <link rel="stylesheet" type="text/css" href="{% static 'css/tailwind.css' %}"/>
+    {% else %}
+        <link rel="stylesheet" type="text/css" href="{% static 'css/tailwind.css.br' %}"/>
+    {% endif %}
     <link rel="icon" type="image/x-icon" href="{% static 'website_logo/favicon.ico' %}"/>
 </head>
 <body class="{% block body_class %}{% endblock %}">
