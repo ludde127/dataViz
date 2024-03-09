@@ -21,7 +21,7 @@
                     <div class="w-full bg-base-300 p-4 flex flex-row items-center"
                          id="quiz-title-user-subscribed-cards">
                         <span class="card-title flex-1">All {{ users_page|capfirst }}'s subscribed cards!</span>
-                        <span class="badge badge-accent">
+                        <span class="badge badge-accent lg:badge-lg">
                             Score:&nbsp;<span id="quiz-score-user-subscribed-cards">0</span>
                         </span>
                     </div>
@@ -29,8 +29,9 @@
                         <div id="quiz-q-user-subscribed-cards">{{ first_card.q }}</div>
                         <div class="card-actions justify-center">
                             <form id="quiz-btn-user-subscribed-cards"
+                                  class="w-full"
                                   onsubmit="return flashcards.quizRunner();">
-                                <button class="btn btn-primary"
+                                <button class="btn btn-primary btn-block lg:btn-lg"
                                         type="button"
                                         onclick="flashcards.quizRunner()">
                                     Next
@@ -75,13 +76,12 @@
                     </div>
                     <div class="w-full bg-base-300 p-4 flex flex-row items-center">
                         <span class="flex-1">
-                            
-                        Card: <span id="quiz-progress-user-subscribed-cards">1 | 1</span>/({{ amount_of_cards }} unique)
+                            Card: <span id="quiz-progress-user-subscribed-cards">1 | 1</span>/({{ amount_of_cards }} unique)
                         </span>
                         {% if users_id == current_user_id %}
                             <div>
                                 <a href="{% url 'view_flashcard_stats' %}">
-                                    <button class="btn btn-secondary">View Collection</button>
+                                    <button class="btn btn-neutral btn-outline">View Collection</button>
                                 </a>
                             </div>
                         {% endif %}
