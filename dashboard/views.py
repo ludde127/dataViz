@@ -5,10 +5,10 @@ from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 
-from dataViz.utils import context_render
-from dashboard.models import PlottingSetup, DataStorage
 from dashboard.forms import PlottingSetupForm
+from dashboard.models import PlottingSetup, DataStorage
 from data.forms import DataStorageForm
+from dataViz.utils import context_render
 
 
 # Create your views here.
@@ -52,8 +52,8 @@ def plot(request, key):
             return redirect("plot", key=key)
         else:
             messages.error(request, "Could not save the plotting setup form")
-    if data.public or (request.user.is_authenticated and request.user.normaluser == data.owner) or\
-            data.is_whitelist and request.user.normaluser in data.subjects:
+    if data.public or (
+            request.user.is_authenticated and request.user.normaluser == data.owner) or data.is_whitelist and request.user.normaluser in data.subjects:
         plots = data.plottingsetup_set.all()
 
         return context_render(request, "dashboard/plot.html", context={"title": "plot", "plots": plots,
@@ -97,11 +97,12 @@ def modify_plot(request, id):
     else:
         form = PlottingSetupForm(instance=plot)
     return context_render(request, "dashboard/modify_plot.html", context={"title": "Modify Plot",
-                                                                          "form": form, "old": plot})
+                                                                          "form": form,
+                                                                          "old": plot})
 
 
 @login_required
-def delete_datastore(request, key:str):
+def delete_datastore(request, key: str):
     ds = get_object_or_404(DataStorage, key=key)
     n = ds.name
     if request.user.normaluser == ds.owner:
@@ -119,7 +120,8 @@ def get_all_can_view_link(request, key):
     if ds.owner == request.user.normaluser:
         all_key = ds.create_all_can_view_key()
         url = reverse('all_can_view', kwargs={'key': key, 'all_can_view_key': all_key})
-        messages.success(request, mark_safe(f"All can view <a href={url}>url</a>"))
+        messages.success(request,
+                         mark_safe(f"Here's the <a class=\"link\" href={url}>public url</a> that anyone can view."))
     else:
         messages.error(request, "You are not the owner.")
     return redirect("plot", key=key)
@@ -129,5 +131,7 @@ def plot_all_can_view(request, key, all_can_view_key):
     ds = get_object_or_404(DataStorage, key=key, all_can_view_key=all_can_view_key)
 
     return context_render(request, "dashboard/plot.html",
-                          context={"title": "plot", "plots": ds.plottingsetup_set.all(), "data_store": ds,
+                          context={"title": "plot",
+                                   "plots": ds.plottingsetup_set.all(),
+                                   "data_store": ds,
                                    "shared": True})
