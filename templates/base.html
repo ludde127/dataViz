@@ -11,11 +11,7 @@
     <meta name="description"
           content="{% block meta_description %}{% endblock %}"/>
     <link rel="preconnect" href="https://fonts.googleapis.com"/>
-    {% if DEBUG %}
-        <link rel="stylesheet" type="text/css" href="{% static 'css/tailwind.css' %}"/>
-    {% else %}
-        <link rel="stylesheet" type="text/css" href="{% static 'css/tailwind.css.br' %}"/>
-    {% endif %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/tailwind.css' %}"/>
     <link rel="icon" type="image/x-icon" href="{% static 'website_logo/favicon.ico' %}"/>
 </head>
 <body class="{% block body_class %}{% endblock %}">
