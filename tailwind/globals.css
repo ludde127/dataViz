@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.my-prose {
+    @apply prose lg:prose-lg prose-li:my-0 prose-ol:my-0 prose-ul:my-0 prose-p:my-1 prose-hr:my-2;
+
+    ol {
+        @apply list-[decimal];
+
+        & ol {
+            @apply list-[lower-alpha];
+
+            & ol {
+                @apply list-[lower-roman];
+
+                & ol {
+                    @apply list-[decimal];
+
+                    & ol {
+                        @apply list-[lower-alpha];
+                    }
+                }
+            }
+        }
+    }
+
+}

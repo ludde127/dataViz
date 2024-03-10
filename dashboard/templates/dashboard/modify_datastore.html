@@ -1,5 +1,4 @@
 {% extends 'base.html' %}
-{% load crispy_forms_filters %}
 
 {% block content %}
     <div class="container-fluid d-flex justify-content-center">
@@ -7,7 +6,7 @@
     <h1>Modify the datastore <span class="emp">{{ data.name }}</span></h1>
     <form method="post" action="{% url 'modify_data' data.key %}">
         {% csrf_token %}
-        {{ form|crispy }}
+        {% include "dashboard/forms/form.html" %}
         <button class="btn btn-primary" type="submit" value="Submit">Submit</button>
     </form>
     <h2>Delete this datastore</h2>

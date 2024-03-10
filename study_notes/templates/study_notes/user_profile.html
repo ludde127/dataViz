@@ -5,62 +5,103 @@
 {% load custom_filters %}
 
 {% block content %}
-    <div class="text-container">
-        <div class="text-center" style="text-decoration: none;margin-top:4vh;">
-            <span class="h2">{{ users_page|capfirst }}</span><span class="h3">'s profile</span>
-        </div>
-
-    <br>
-    {% if are_there_cards %}
-        <div id="quiz-holder-user-subscribed-cards succ-fail-user-subscribed-cards">
-            <div class="card text-center blue-border user-profile-cards">
-              <div class="card-header succ-fail-user-subscribed-cards " id="quiz-title-user-subscribed-cards">
-                  <span class="card-header-text">All {{ users_page|capfirst }}'s subscribed cards!</span>
-                  <div style="float:right;">
-                      <span class="badge rounded-pill gradient-bg">Score: <span id="quiz-score-user-subscribed-cards">0</span></span>
-                  </div>
-              </div>
-              <div class="card-body succ-fail-user-subscribed-cards" id = quiz-body-user-subscribed-cards>
-                <div class="card-text" id="quiz-q-user-subscribed-cards">{{ first_card_q }}</div>
-
-                <form class="form-group" id="quiz-btn-user-subscribed-cards" onsubmit="return flashcards.quizRunner();">
-                    <button class="btn gradient-bg-btn" type="button" onclick="flashcards.quizRunner()">Next</button>
-                </form>
-                <div class="btn-group btn-group-lg" id="quiz-btn-next-user-subscribed-cards" style="display:none;">
-                    <button class="btn btn-danger btn-lg" type="button" onclick="flashcards.nextCard(-1)">{% include "icons/thumbs-down.html" %}</button>
-                    <button class="btn btn-primary btn-lg" type="button" onclick="flashcards.nextCard(0)"><span id="quiz-btn-nextspan-user-subscribed-cards">{% include "icons/fastforward-circle.html" %}</span><span id="quiz-btn-restartspan-user-subscribed-cards">{% include "icons/restart-circle.html" %}</span></button>
-                    <button class="btn btn-primary btn-lg" type="button" onclick="flashcards.nextCard(0.7)">{% include "icons/smile-happy.html" %}</button>
-                    <button class="btn btn-primary btn-lg" type="button" onclick="flashcards.nextCard(1)">{% include "icons/smile-super-happy.html" %}</button>
-                    <button class="btn btn-success btn-lg" type="button" onclick="flashcards.nextCard(7)">{% include "icons/thumbs-up.html" %}</button>
-                </div>
-              </div>
-              <div class="card-footer succ-fail-user-subscribed-cards">
-                  Card: <span id="quiz-progress-user-subscribed-cards">1 | 1</span>/({{ amount_of_cards }} unique)
-
-              </div>
+    <div class="hero bg-base-200 p-12">
+        <div class="hero-content text-center">
+            <div class="max-w-md prose lg:prose-lg">
+                <h1>{{ users_page|capfirst }}'s profile</h1>
             </div>
         </div>
-
-        <br>
-        {% if users_id == current_user_id %}
-            <div class="text-center">
-                <a class="link-unstyled" href="{% url 'view_flashcard_stats' %}">
-                    <button class="btn btn-lg btn-info">Flashcard Collection</button>
-                </a>
-            </div>
-        {% endif %}
-    {% else %}
-        <p class="text-center warning">No cards found :C</p>
-    {% endif %}
     </div>
 
+    <div class="container my-prose py-8">
+        <h2>Subscribed flashcards</h2>
+        {% if are_there_cards %}
+            <div id="quiz-holder-user-subscribed-cards succ-fail-user-subscribed-cards">
+                <div class="card bg-base-100 shadow-xl overflow-hidden">
+                    <div class="w-full bg-base-300 p-4 flex flex-row items-center"
+                         id="quiz-title-user-subscribed-cards">
+                        <span class="card-title flex-1">All {{ users_page|capfirst }}'s subscribed cards!</span>
+                        <span class="badge badge-accent lg:badge-lg">
+                            Score:&nbsp;<span id="quiz-score-user-subscribed-cards">0</span>
+                        </span>
+                    </div>
+                    <div class="card-body bg-base-200 text-base-content" id="quiz-body-user-subscribed-cards">
+                        <div id="quiz-q-user-subscribed-cards">{{ first_card.q }}</div>
+                        <div class="card-actions justify-center">
+                            <form id="quiz-btn-user-subscribed-cards"
+                                  class="w-full"
+                                  onsubmit="return flashcards.quizRunner();">
+                                <button class="btn btn-primary btn-block lg:btn-lg"
+                                        type="button"
+                                        onclick="flashcards.quizRunner()">
+                                    Next
+                                </button>
+                            </form>
+                            <div class="hidden join" id="quiz-btn-next-user-subscribed-cards">
+                                <div class="tooltip tooltip-error" data-tip="Again">
+                                    <button class="btn btn-error sm:btn-lg join-item" onclick="flashcards.nextCard(-1)">
+                                        <i data-lucide="x"></i>
+                                    </button>
+                                </div>
+                                <div class="tooltip tooltip-neutral" data-tip="Skip">
+                                    <button class="btn btn-neutral sm:btn-lg join-item"
+                                            onclick="flashcards.nextCard(0)">
+                                    <span id="quiz-btn-nextspan-user-subscribed-cards">
+                                        <i data-lucide="redo"></i>
+                                    </span>
+                                        <span id="quiz-btn-restartspan-user-subscribed-cards">
+                                        <i data-lucide="rotate-ccw"></i>
+                                    </span>
+                                    </button>
+                                </div>
+                                <div class="tooltip tooltip-warning" data-tip="Ok">
+                                    <button class="btn btn-warning sm:btn-lg join-item"
+                                            onclick="flashcards.nextCard(0.7)">
+                                        <i data-lucide="smile"></i>
+                                    </button>
+                                </div>
+                                <div class="tooltip tooltip-info" data-tip="Good">
+                                    <button class="btn btn-info sm:btn-lg join-item" onclick="flashcards.nextCard(1)">
+                                        <i data-lucide="laugh"></i>
+                                    </button>
+                                </div>
+                                <div class="tooltip tooltip-success" data-tip="Easy">
+                                    <button class="btn btn-success sm:btn-lg join-item"
+                                            onclick="flashcards.nextCard(7)">
+                                        <i data-lucide="check"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="w-full bg-base-300 p-4 flex flex-row items-center">
+                        <span class="flex-1">
+                            Card: <span id="quiz-progress-user-subscribed-cards">1 | 1</span>/({{ amount_of_cards }} unique)
+                        </span>
+                        {% if users_id == current_user_id %}
+                            <div>
+                                <a href="{% url 'view_flashcard_stats' %}">
+                                    <button class="btn btn-neutral btn-outline">View Collection</button>
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <br>
+        {% else %}
+            <p>{{ users_page|capfirst }} hasn't subscribed to any flashcards... 🥺👉👈</p>
+        {% endif %}
+    </div>
 {% endblock %}
 
 {% block custom_scripts %}
-    <script src="{% static 'js/user_flashcards.js' %}" lang="js">
-    </script>
-    <script lang="js">
-        let flashcards = new UserFlashcards({{ flash_card_list|safe }}, {{ first_card|safe }});
-    </script>
+    {% if are_there_cards %}
+        <script src="{% static 'js/user_flashcards.js' %}" lang="js">
+        </script>
+        <script lang="js">
+            let flashcards = new UserFlashcards({{ flash_card_list|safe }}, {{ first_card|safe }});
+        </script>
+    {% endif %}
 {% endblock %}
-

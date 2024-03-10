@@ -1,39 +1,39 @@
 import time
-from wagtail.api import APIField
-from wagtail.fields import RichTextField, StreamField
-from django import forms
-from wagtail.blocks import RichTextBlock, CharBlock, StructBlock, IntegerBlock, StreamBlock, TextBlock
-from wagtail.images.blocks import ImageChooserBlock
-from wagtailcodeblock.blocks import CodeBlock
-from wagtail_home.customizations.widgets.math_jax import MathBlock
 
-from wagtail.admin.panels import FieldPanel, InlinePanel, MultiFieldPanel
+from django import forms
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
+from modelcluster.contrib.taggit import ClusterTaggableManager
+from modelcluster.fields import ParentalKey, ParentalManyToManyField
+from taggit.models import TaggedItemBase
+from wagtail.admin.panels import FieldPanel, InlinePanel, MultiFieldPanel
+from wagtail.api import APIField
+from wagtail.blocks import RichTextBlock, CharBlock, StructBlock, IntegerBlock, StreamBlock
+from wagtail.fields import RichTextField, StreamField
+from wagtail.images.blocks import ImageChooserBlock
+from wagtail.models import Page, Orderable
 from wagtail.search import index
 from wagtail.snippets.models import register_snippet
+from wagtail.templatetags.wagtailcore_tags import richtext
+from wagtailcodeblock.blocks import CodeBlock
 
 from dataViz.settings import BASE_CONTEXT
-from modelcluster.fields import ParentalKey, ParentalManyToManyField
-from modelcluster.contrib.taggit import ClusterTaggableManager
-from taggit.models import TaggedItemBase
-from django.contrib.postgres.fields import ArrayField
-
-from wagtail.models import Page, Orderable
-
+from wagtail_home.customizations.widgets.math_jax import MathBlock
 from wagtail_home.models import filter_non_viewable
-from wagtail.templatetags.wagtailcore_tags import richtext
+
 
 # https://docs.wagtail.org/en/v4.1.1/getting_started/tutorial.html
 
 @register_snippet
 class FlashCardHistory(models.Model):
-    user = models.ForeignKey(to="users.User",on_delete=models.CASCADE, default=None)
+    user = models.ForeignKey(to="users.User", on_delete=models.CASCADE, default=None)
     flashcard_id = models.UUIDField("Id of flashcard")
     last_shown = models.DateTimeField("Last shown to user", auto_now=True, editable=False)
     times_shown = models.IntegerField("Amount of times shown to user", default=0)
     score = models.FloatField("The score", default=0)
 
-    time_score_array = ArrayField(ArrayField(models.FloatField(), size=2, null=True), null=True) # This is ment to store [(interaction_time, score), ...]
+    time_score_array = ArrayField(ArrayField(models.FloatField(), size=2, null=True),
+                                  null=True)  # This is ment to store [(interaction_time, score), ...]
 
     class Meta:
         unique_together = ["user", "flashcard_id"]
@@ -42,7 +42,7 @@ class FlashCardHistory(models.Model):
         self.score += score_change
         self.times_shown += 1
 
-        array =  self.time_score_array
+        array = self.time_score_array
         if array is None:
             array = list()
 
@@ -62,22 +62,22 @@ class FlashCardHistory(models.Model):
 
     def weight(self):
         array = self.get_array()
-        val = 1e8 # No data stored so far. This will weigh heavily
+        val = 1e8  # No data stored so far. This will weigh heavily
         if len(array) > 3:
-            val = -sum((e[1] for e in array[-3:]))/3
+            val = -sum((e[1] for e in array[-3:])) / 3
         elif len(array) > 0:
-            val = -sum((e[1] for e in array))/len(array)
+            val = -sum((e[1] for e in array)) / len(array)
         else:
             return val
 
-
         return val
-        #return -60*val - self.last_shown.timestamp()
-        #return -self.score/self.times_shown
+        # return -60*val - self.last_shown.timestamp()
+        # return -self.score/self.times_shown
+
 
 @register_snippet
 class FlashCardGroupReference(models.Model):
-    notepage_id = models.IntegerField() # Id of the notepage the flashcards are in
+    notepage_id = models.IntegerField()  # Id of the notepage the flashcards are in
     flashcards_id = models.UUIDField("Id of the flashcard group")
     subscription = models.BooleanField(default=False)
     flashcard_histories = models.ManyToManyField(FlashCardHistory)
@@ -97,18 +97,22 @@ class QuizCard(StructBlock):
     answer = CharBlock(required=True)
     score = IntegerBlock(required=False)
 
+
 class ManyQuizCards(StructBlock):
     title = CharBlock(max_length=200, required=False)
     cards = StreamBlock([("Card", QuizCard()), ], use_json_field=True)
     passing_score = IntegerBlock(required=False)
 
+
 class FlashCard(StructBlock):
     question = RichTextBlock(required=True, max_length=600)
     answer = RichTextBlock(required=True, max_length=5000)
 
+
 class ManyFlashcards(StructBlock):
     title = CharBlock(max_length=200, required=False)
     cards = StreamBlock([("Card", FlashCard()), ], use_json_field=True)
+
 
 class NotePageTag(TaggedItemBase):
     subpage_types = []
@@ -118,13 +122,14 @@ class NotePageTag(TaggedItemBase):
         "NotePage", related_name="tagged_items", on_delete=models.CASCADE
     )
 
+
 class NotesIndexPage(Page):
-    #title = RichTextField(blank=False)
+    # title = RichTextField(blank=False)
     intro = RichTextField(blank=True)
     subpage_types = ["study_notes.NotePage"]
     parent_page_type = ["wagtail_home.HomePage"]
     content_panels = Page.content_panels + [
-        #FieldPanel('titel'),
+        # FieldPanel('titel'),
         FieldPanel('intro')
     ]
 
@@ -135,7 +140,6 @@ class NotesIndexPage(Page):
 
         pages = self.get_children().live()
 
-
         context['title'] = "All Notes"
 
         context['note_pages'] = filter_non_viewable(request.user, pages.order_by('-first_published_at'))
@@ -145,11 +149,11 @@ class NotesIndexPage(Page):
 class NotePage(Page):
     date = models.DateField("Post date")
     intro = models.CharField(max_length=250, blank=True)
-    #body = RichTextField(blank=True)
+    # body = RichTextField(blank=True)
     tags = ClusterTaggableManager(through=NotePageTag, blank=True)
     categories = ParentalManyToManyField('study_notes.NoteCategory', blank=True)
-    subpage_types = ["study_notes.NotePage",]
-    parent_page_type = ["study_notes.NotesIndexPage",]
+    subpage_types = ["study_notes.NotePage", ]
+    parent_page_type = ["study_notes.NotesIndexPage", ]
 
     views = models.BigIntegerField(default=0, editable=False)
 
@@ -233,7 +237,9 @@ class NotePage(Page):
             try:
                 # This could be used later.
                 if request.user.is_authenticated:
-                    reference = request.user.usersflashcards.flashcard_groups.get(flashcards_id=b.id, notepage_id=self.id, subscription=True)
+                    reference = request.user.usersflashcards.flashcard_groups.get(flashcards_id=b.id,
+                                                                                  notepage_id=self.id,
+                                                                                  subscription=True)
             except (UsersFlashcards.DoesNotExist, FlashCardGroupReference.DoesNotExist):
                 pass
             else:
@@ -246,7 +252,8 @@ class NotePage(Page):
             for (j, card) in enumerate(block["cards"]):
                 if not first_question:
                     first_question = card.value["question"]
-                flashcards[str(j)] = {"q": str(richtext(card.value["question"])), "a": str(richtext(card.value["answer"])), "id": card.id}
+                flashcards[str(j)] = {"q": str(richtext(card.value["question"])),
+                                      "a": str(richtext(card.value["answer"])), "id": card.id}
             inner["cards"] = flashcards
 
             flashcards_json[b.id] = inner
@@ -254,12 +261,10 @@ class NotePage(Page):
             flashcards_length[b.id] = len(block["cards"])
         return flashcards_json, flashcards_start, flashcards_length, list(subscribed_cards)
 
-
     def get_context(self, request):
         # Update context to include only published posts, ordered by reverse-chron
         context = super().get_context(request)
         context.update(BASE_CONTEXT)
-
 
         quiz_json, quiz_start, quiz_length = self.get_quiz()
         flashcards_json, flashcards_start, flashcards_length, subscribed_cards = self.get_flashcards(request)
@@ -273,6 +278,12 @@ class NotePage(Page):
         context["quiz_starts"] = quiz_start
         context["quiz_lengths"] = quiz_length
         context["title"] = self.title
+
+        context["live_revision"] = {
+            "user": self.live_revision.user,
+            "created_at": self.live_revision.created_at,
+        }
+
         self.views += 1
         self.save()
         return context
@@ -283,6 +294,7 @@ class NotePage(Page):
             return gallery_item.image
         else:
             return None
+
 
 class NotePageGalleryImage(Orderable):
     subpage_types = []
@@ -313,12 +325,11 @@ class NoteTagIndexPage(Page):
             pages = NotePage.objects.live().filter(tags__name=tag)
 
             context['notepages'] = filter_non_viewable(request.user, pages)
-        context["title"] = "Tag: "+tag
+        context["title"] = "Tag: " + tag
         # Update template context
         context.update(BASE_CONTEXT)
 
         return context
-
 
 
 @register_snippet
@@ -346,12 +357,10 @@ class UsersFlashcards(models.Model):
     flashcard_groups = models.ManyToManyField(FlashCardGroupReference)
     user = models.OneToOneField("users.User", on_delete=models.CASCADE)
 
-
     def get_subscribed_flashcards(self, request, have_full_array=False):
         if request.user.is_authenticated:
             return self.get_users_flashcards(request.user, have_full_array=have_full_array)
         return []
-
 
     def get_users_flashcards(self, user, have_full_array=False):
         """Create a flat list of all the cards.

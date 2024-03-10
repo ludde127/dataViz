@@ -1,11 +1,12 @@
-
 let id_end = "user-subscribed-cards";
+
 function shuffle(array) {
     //https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
-    return array.map(value => ({ value, sort: Math.random() }))
-    .sort((a, b) => a.sort - b.sort)
-    .map(({ value }) => value)
+    return array.map(value => ({value, sort: Math.random()}))
+        .sort((a, b) => a.sort - b.sort)
+        .map(({value}) => value)
 }
+
 class CardHolder {
     constructor(card_array, first_card) {
         // card_array holds array of these {"q": card.value["question"], "a": card.value["answer"],
@@ -17,10 +18,9 @@ class CardHolder {
         }
 
         this.past_card = first_card;
-        this.past_cards = [first_card, ];
+        this.past_cards = [first_card,];
         //console.log(first_card)
     }
-
 
 
     next_card() {
@@ -30,8 +30,7 @@ class CardHolder {
         let result = undefined;
 
         // May have to instead sort two times as this may lock in a card with a rather low score.
-        let list_of_cards = Object.values(this.card_id_to_card).sort(
-            (a, b) => a["last_displayed_float"] - b["last_displayed_float"]);
+        let list_of_cards = Object.values(this.card_id_to_card).sort((a, b) => a["last_displayed_float"] - b["last_displayed_float"]);
 
         for (const card of list_of_cards) {
             // I HAVE NO CLUE WHY I NEED TO CHECK THAT THIS CARD IS NOT EQUAL TO LAST, IT SHOULD BE LAST IN QUEUE.
@@ -39,8 +38,8 @@ class CardHolder {
             let weight = card["weight"];
 
             let seconds_since_shown = Date.now() / 1000 - card["last_displayed_float"];
-            if (seconds_since_shown < 60*60) {
-                weight = weight - (60*60-seconds_since_shown)/15; // To make it less likely for a card to show up all the time
+            if (seconds_since_shown < 60 * 60) {
+                weight = weight - (60 * 60 - seconds_since_shown) / 15; // To make it less likely for a card to show up all the time
             }
             weight -= card["times_displayed"]
             if (!(card === this.past_card) && card["times_displayed"] === 0) {
@@ -83,13 +82,14 @@ class UserFlashcards {
         this.current_index = 0;
         this.cardsSeen = [first_card["id"],];
     }
+
     nextCard(correct) {
         let past_card = this.card_holder.past_card;
         let card = this.card_holder.next_card();
 
-        document.getElementById("quiz-btn-next-"+id_end).style.display = "none";
+        toggleShow("quiz-btn-next-" + id_end);
 
-        this.scores[this.current_index-1] = correct;
+        this.scores[this.current_index - 1] = correct;
 
         async function interactionChange(past_card) {
             //console.log(past_card);
@@ -104,11 +104,11 @@ class UserFlashcards {
         })
 
 
-        document.getElementById("quiz-score-"+id_end).innerHTML = this.amountCorrect();
+        document.getElementById("quiz-score-" + id_end).innerHTML = this.amountCorrect();
 
-        document.getElementById("quiz-btn-"+id_end).style.display = "initial";
+        document.getElementById("quiz-btn-" + id_end).style.display = "initial";
 
-        document.getElementById("quiz-q-"+id_end).innerHTML = card["q"];
+        document.getElementById("quiz-q-" + id_end).innerHTML = card["q"];
 
 
         if (card && (!this.cardsSeen.includes(card["id"]))) {
@@ -116,8 +116,7 @@ class UserFlashcards {
             this.cardsSeen.push(card["id"])
 
         }
-        document.getElementById("quiz-progress-"+id_end).innerHTML =
-            this.current_index + ` | ${this.current_index_unique+1}`;
+        document.getElementById("quiz-progress-" + id_end).innerHTML = `${this.current_index + 1} | ${this.current_index_unique + 1}`;
 
 
         return false
@@ -141,20 +140,19 @@ class UserFlashcards {
     }
 
     quizRunner() {
-        if (this.current_index===0) {
+        if (this.current_index === 0) {
             this.begin();
-            document.getElementById("quiz-btn-nextspan-"+id_end).style.display = "inline";
-            document.getElementById("quiz-btn-restartspan-"+id_end).style.display = "none";
+            document.getElementById("quiz-btn-nextspan-" + id_end).style.display = "inline";
+            document.getElementById("quiz-btn-restartspan-" + id_end).style.display = "none";
         }
 
         let card = this.card_holder.past_card;
 
-        document.getElementById("quiz-btn-next-"+id_end).style.display = "inline";
-        document.getElementById("quiz-btn-"+id_end).style.display = "none";
-        document.getElementById("quiz-q-"+id_end).innerHTML = card["q"] + "<hr>" + card["a"];
+        toggleShow("quiz-btn-next-" + id_end);
+        document.getElementById("quiz-btn-" + id_end).style.display = "none";
+        document.getElementById("quiz-q-" + id_end).innerHTML = card["q"] + "<hr>" + card["a"];
 
-        this.current_index+=1;
-
+        this.current_index += 1;
 
         return false
     }

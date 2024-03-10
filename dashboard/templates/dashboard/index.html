@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-{% load crispy_forms_filters %}
 
 {% block content %}
     <div class="container-lg" style="margin:auto;">
@@ -36,7 +35,7 @@
                     <h1>Add a datastore</h1>
                     <form method="post" action="{% url 'index' %}">
                         {% csrf_token %}
-                        {{ form|crispy }}
+                        {% include "dashboard/forms/form.html" %}
                         <button class="btn btn-primary" type="submit" value="Submit">Submit</button>
                     </form>
                 </div>

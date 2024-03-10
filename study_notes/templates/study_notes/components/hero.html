@@ -1,0 +1,17 @@
+{% load wagtailcore_tags %}
+{% load tags %}
+{% load custom_filters %}
+
+<div class="hero bg-base-300">
+    <div class="hero-content text-center">
+      <div class="max-w-md gap-4 flex flex-col">
+        <h1 class="text-5xl font-bold">{{ page.title }}</h1>
+        {% if page.tags.all.count %}
+        <div>
+          {% include 'shortcuts/notepage-tags.html' with tags=page.tags.all %}
+        </div>
+        {% endif %}
+        <p>{{ page.intro|richtext }}</p>
+      </div>
+    </div>
+</div>

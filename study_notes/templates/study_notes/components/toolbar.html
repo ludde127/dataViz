@@ -1,0 +1,14 @@
+<ul class="menu menu-horizontal">
+    <li>
+        <label for="tree-view-drawer" class="drawer-button tooltip tooltip-bottom lg:hidden" data-tip="Tree View">
+            <i data-lucide="folder-tree"></i>
+        </label>
+    </li>
+    <li>
+        {% if request.user.is_active %}
+            <a class="tooltip tooltip-bottom" data-tip="Edit File" target="_blank" aria-label="Edit File" href="/cms/pages/{{ page.id }}/edit">
+                <i data-lucide="pencil"></i>
+            </a>
+        {% endif %}
+    </li>
+</ul>

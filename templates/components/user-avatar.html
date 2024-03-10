@@ -1,0 +1,13 @@
+<div class="avatar">
+    {% if user.avatar %}
+        <div class="avatar rounded-full w-10">
+            <img alt="{{ user }} profile picture" src="{{ user.profile_image }}"/>
+        </div>
+    {% else %}
+        <div class="avatar placeholder rounded-full w-10">
+            <div class="bg-neutral text-neutral-content">
+                <span class="text-xl">{{ user|capfirst|slice:"1" }}</span>
+            </div>
+        </div>
+    {% endif %}
+</div>

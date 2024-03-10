@@ -1,44 +1,29 @@
 {% extends "base.html" %}
 {% load wagtailimages_tags %}
-
 {% load wagtailcore_tags %}
 
 {% block body_class %}template-notesindexpage{% endblock %}
 {% block meta_description %}{{ page.meta_description }}{% endblock %}
 
 {% block content %}
-
-    <div class="page-start">
-       <h1>{{ page.title }}</h1>
-
-        <div class="intro">{{ page.intro|richtext }}</div>
-    </div>
-    <div class="text-container">
-        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3">
+    {% include "study_notes/components/hero.html" %}
+    <div class="py-8 container">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {% for post in note_pages %}
                 {% with post=post.specific %}
-                    <div class="col">
-                        <a class="link-unstyled" href='{% pageurl post %}'>
-
-                        <div class="card border-dark mb-3 card-hover-effect">
-                            <div class="card-header">
-                                 <h3 class="text-center">
-                                     {{ post.title }}
-                                 </h3>
-                             </div>
-                            <div class="card-body">
-                                 <div class="card-text page-description">
-                                    {% with post.main_image as main_image %}
-                                        {% if main_image %}{% image main_image fill-160x100 class="boxed-image" %}{% endif %}
-                                    {% endwith %}
-                                    <p>{{ post.intro }}....</p>
-                                </div>
-                            </div>
-                            <div class="card-footer text-center">
+                    <div class="card bg-neutral text-neutral-content shadow-xl">
+                        <div class="card-body">
+                            {% with post.main_image as main_image %}
+                                {% if main_image %}{% image main_image fill-160x100 class="boxed-image" %}{% endif %}
+                            {% endwith %}
+                            <a href="{% pageurl post %}">
+                                <h2 class="card-title">{{ post.title }}</h2>
+                                <p>{{ post.intro }}</p>
+                            </a>
+                            <div class="flex flex-row gap-2">
                                 {% include 'shortcuts/notepage-tags.html' with tags=post.tags.all %}
                             </div>
                         </div>
-                        </a>
                     </div>
                 {% endwith %}
             {% endfor %}

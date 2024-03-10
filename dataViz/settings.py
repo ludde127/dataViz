@@ -35,17 +35,15 @@ CSRF_TRUSTED_ORIGINS = os.environ.get("CSRF_TRUSTED_ORIGINS", "").split(",")
 CORS_ORIGIN_WHITELIST = os.environ.get("CORS_ORIGIN_WHITELIST", "").split(",")
 
 # Application definition
+
 INSTALLED_APPS = [
     'dataViz.apps.AdminConfig',
     'users',
-    'bootstrap5',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    "crispy_forms",
-    "crispy_bootstrap5",
     "dashboard",
     "data",
     "tags",
@@ -83,12 +81,13 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'wagtail.contrib.redirects.middleware.RedirectMiddleware',
-
 ]
 
+if DEBUG:
+    INSTALLED_APPS.append("django_browser_reload")
+    MIDDLEWARE.append('django_browser_reload.middleware.BrowserReloadMiddleware')
+
 ROOT_URLCONF = 'dataViz.urls'
-CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
-CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 TEMPLATES = [
     {
@@ -173,13 +172,21 @@ MEDIA_URL = '/media/'
 # Path where media is stored
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
-BASE_CONTEXT = {"email": "ludvig@llindholm.com",
-                "time": timezone.now,
-                "GIT_HASH": os.environ.get('GIT_HASH', "dev"),
-                "brand_name": "DataViz", "MEDIA_URL": MEDIA_URL}
+BASE_CONTEXT = {
+    "DEBUG": DEBUG,
+    "email": "ludvig@llindholm.com",
+    "time": timezone.now,
+    "GIT_HASH": os.environ.get('GIT_HASH', "dev"),
+    "brand_name": "Yapity",
+    "MEDIA_URL": MEDIA_URL,
+    "themes": ["light", "dark", "cupcake", "bumblebee", "emerald", "corporate", "synthwave", "retro",
+               "cyberpunk", "valentine", "halloween", "garden", "forest", "aqua",
+               "lofi", "pastel", "fantasy", "wireframe", "black", "luxury", "dracula", "cmyk", "autumn",
+               "business", "acid", "lemonade", "night", "coffee", "winter", "dim", "nord", "sunset"]
+}
 
 DATA_FILES = BASE_DIR.joinpath("DEVELOPMENT_STORAGE")
-WAGTAIL_SITE_NAME = 'DataViz'
+WAGTAIL_SITE_NAME = 'Yapity'
 WAGTAILADMIN_BASE_URL = "llindholm.com/cms"
 
 WAGTAIL_CODE_BLOCK_LANGUAGES = (

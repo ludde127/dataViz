@@ -30,7 +30,7 @@ wagtail_urlpatterns = [
 
 urlpatterns = [
     path('dashboard/', include("dashboard.urls")),
-    #path("social/", include("blocks.urls")),
+    # path("social/", include("blocks.urls")),
     path("data/", include("data.urls")),
     path('admin/', admin_site.urls),
     path("users/", include("users.urls")),
@@ -39,7 +39,8 @@ urlpatterns = [
     path("search/", include("wagtail_home.urls")),
     path("stocks/", include("stocks.urls")),
     path("time-booking/", include("time_booking.urls")),
-    path("personal-site/api/", include("personal_site_content.urls"))
+    path("personal-site/api/", include("personal_site_content.urls")),
+    path("__reload__/", include("django_browser_reload.urls"))
 ]
 urlpatterns.extend(wagtail_urlpatterns)
 

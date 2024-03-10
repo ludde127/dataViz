@@ -1,0 +1,37 @@
+<header class="supports-backdrop-blur:bg-base-100/60 z-50 w-full bg-base-100/95 backdrop-blur">
+    <div class="navbar p-1">
+        <div class="flex-1 gap-2">
+            {% include "components/site-logo.html" %}
+            <a class="text-xl hidden lg:inline-flex">{{ brand_name }}</a>
+
+            <div class="dropdown">
+                <div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
+                    <i data-lucide="menu" class="h-6 w-6"></i>
+                </div>
+                <ul tabindex="0"
+                    class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+                    {% include "components/nav-items.html" %}
+                </ul>
+            </div>
+            
+            <ul class="menu menu-horizontal hidden lg:flex">
+                {% include "components/nav-items.html" %}
+            </ul>
+        </div>
+
+
+        <div class="flex-none gap-2">
+            {% include 'theme-picker.html' %}
+            {% include 'components/search-bar.html' %}
+            {% include 'components/user-button.html' %}
+        </div>
+    </div>
+</header>
+
+<div id="search-results-div" style="width: 100%;display: none;visibility: hidden">
+    <div class="text-center search-div gradient-bg-transparent d-flex align-content-center">
+        <ul class="search-ul navbar-nav" id="search-results">
+            {# INSERT CHILDREN :D #}
+        </ul>
+    </div>
+</div>

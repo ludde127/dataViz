@@ -1,57 +1,74 @@
 {% extends 'base.html' %}
+{% load wagtailcore_tags %}
+{% load study_notes_custom_filters %}
 {% load tags %}
-{% load custom_filters %}
 
 {% block content %}
-    <div class="container">
-        <h1 class="text-center" style="margin-bottom: 5vh;">Flashcard data</h1>
-        <div class="row row-cols-1 row-cols-lg-2">
-        {% for flashcard in flashcards %}
-            <div class="col">
-                <div class="card border-info mb-3">
-                    <div class="card-header">
-                        <h3>{{ flashcard|get_item:'q' }}</h3>
-                    </div>
-                    <div class="card-body">
-                        <div class="card-text">
+    <div class="hero bg-base-200 p-12">
+        <div class="hero-content text-center">
+            <div class="max-w-md my-prose">
+                <h1>Flashcard Data</h1>
+            </div>
+        </div>
+    </div>
 
-                            <p>{{ flashcard|get_item:'a' }}</p>
+    <div class="container py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {% for flashcard in flashcards %}
+                <div class="card bg-base-100 shadow-xl overflow-hidden">
+                    <div class="w-full bg-base-300 p-4 flex flex-row items-center gap-2">
+                        <div class="flex-1">
+                            <span class="badge badge-accent lg:badge-lg">Score: {{ flashcard.score|floatformat:3 }} </span>
+                            <span class="badge badge-accent lg:badge-lg">Weight: {{ flashcard.weight|floatformat:3 }} </span>
                         </div>
+                        <button class="btn btn-info btn-circle"
+                                onclick="flashcard_modal_{{ forloop.counter0 }}.showModal()">
+                            <i data-lucide="table"></i>
+                        </button>
                     </div>
-
-                    <div class="card-footer">
-                        <div class="d-flex justify-content-between">
-                            <p style="float:left;">Score: {{ flashcard|get_item:'score' }}</p>
-                            <button class="btn btn-info" style="margin:0;" onclick="toggleShow('flashcard-stats-{{ forloop.counter0 }}')">Show stats</button>
-                            <p style="float:right;">Sorting weight: {{ flashcard|get_item:'weight' }}</p>
+                    <div class="card-body bg-base-200">
+                        <div class="my-prose">
+                            {{ flashcard.q }}
+                            <hr>
+                            {{ flashcard.a }}
                         </div>
-                        <div style="display: none;" id="flashcard-stats-{{ forloop.counter0 }}">
-                            <hr style="margin-top: 2vh;">
-                            <h4 class="text-center" style="margin-top: 2vh;">Scores</h4>
-                            <table class="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <td>#</td>
-                                        <td>Time</td>
-                                        <td>Points</td>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for i in flashcard|get_item:'array' %}
-                                        <tr>
-                                            <td>{{ forloop.counter }}</td>
-                                            <td>{{ i.0|timestamp_to_datetime }}</td>
-                                            <td>{{ i.1 }}</td>
-                                        </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
 
+                        <div class="card-actions justify-end">
+                            <dialog id="flashcard_modal_{{ forloop.counter0 }}" class="modal">
+                                <div class="modal-box">
+                                    <div class="my-prose">
+                                        {{ flashcard.q }}
+                                    </div>
+                                    <hr>
+                                    <div class="w-full max-h-[50vh] lg:max-h-[75vh] overflow-y-auto">
+                                        <table class="table table-zebra">
+                                            <thead>
+                                            <tr>
+                                                <th></th>
+                                                <th>Date</th>
+                                                <th>Points</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% for i in flashcard|get_item:'array' %}
+                                                <tr>
+                                                    <td>{{ forloop.counter }}</td>
+                                                    <td>{{ i.0|timestamp_to_datetime }}</td>
+                                                    <td>{{ i.1 }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <form method="dialog" class="modal-backdrop">
+                                    <button>close</button>
+                                </form>
+                            </dialog>
                         </div>
                     </div>
                 </div>
-            </div>
-        {% endfor %}
+            {% endfor %}
         </div>
     </div>
 {% endblock %}
