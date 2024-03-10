@@ -21,6 +21,14 @@
 <body class="{% block body_class %}{% endblock %}">
 <div class="relative flex min-h-screen flex-col">
     {% include 'components/navbar.html' %}
+    {# TODO: Style this #}
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
     <div class="flex flex-1">
         <div class="w-full">
             {% block content %}

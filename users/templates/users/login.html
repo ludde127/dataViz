@@ -12,7 +12,7 @@
         </div>
         <form method="POST">
             {% csrf_token %}
-            {{ form }}
+            {% include "dashboard/forms/form.html" %}
             <button type="submit" value="Submit" class="btn btn-primary">Login</button>
             <br>
             <br>

@@ -1,29 +1,26 @@
 {% extends 'base.html' %}
 
 {% block content %}
+    <div class="hero bg-base-300">
+        <div class="hero-content text-center">
+            <div class="max-w-md gap-4 flex flex-col">
+                <h1 class="text-5xl font-bold">{{ data_store.name|capfirst }}</h1>
+                {% if data_store.description %}
+                    <p>{{ data_store.description|capfirst }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
 
-    <div class="container-fluid text-center">
-        <h1>{{ data_store.name|capfirst }}</h1>
-        {% if data_store.description %}
-            <p>{{ data_store.description|capfirst }}</p>
-        {% endif %}
-        <br>
+    <div class="container my-prose py-8">
         {% if not shared %}
-
             <h3>A short python example to post data.</h3>
-            <hr>
-            <br>
-            <code>
-                url = "https://llindholm.com/data/access/<strong>{{ data_store.key }}</strong>"
-                <br>
-                resp = requests.post(url, json={{ data_store.example_entry }},\
-                <br>
-                headers={'Authorization': 'TOK:SECRET_API_TOKEN'}).text
-            </code>
-            <br>
-            <br>
+            <div class="mockup-code not-prose">
+                <pre data-prefix="1"><code>url = "{{ request.scheme }}://{{ request.get_host }}/data/access/<strong>{{ data_store.key }}</strong>"</code></pre>
+                <pre data-prefix="2"><code>resp = requests.post(url, json={{ data_store.example_entry }}, headers={'Authorization': 'TOK:SECRET_API_TOKEN'}).text</code></pre>
+            </div>
         {% endif %}
-        <h3>Now only plotting last 10k datapoints by default.</h3>
+        <h4>Now only plotting last 10k datapoints by default.</h4>
         {% for plot in plots %}
             <h2>{{ plot.name }}</h2>
             <p id="chart-p-{{ forloop.counter0 }}"
@@ -35,7 +32,7 @@
                         with this link can view</small></a>
                 </div>
             {% endif %}
-            <div class="plot text-center" style="margin:auto;">
+            <div class="plot text-center m-auto">
                 <canvas id="chart{{ forloop.counter0 }}"></canvas>
             </div>
 
@@ -44,7 +41,7 @@
             <h1>Add a new chart</h1>
             <form method="post" action="{% url 'plot' data_store.key %}">
                 {% csrf_token %}
-                {{ form }}
+                {% include "dashboard/forms/form.html" %}
                 <button class="btn btn-primary" type="submit" value="Submit">Submit</button>
             </form>
         {% endif %}
