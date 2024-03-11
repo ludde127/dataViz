@@ -1,4 +1,4 @@
 {% load wagtailcore_tags %}
 {% for tag in tags %}
-  <a class="badge badge-accent" href="{% slugurl 'tags' %}?tag={{ tag }}">{{ tag }}</a>
+    <a class="badge badge-accent" href="{% slugurl 'tags' %}?tag={{ tag }}">{{ tag }}</a>
 {% endfor %}

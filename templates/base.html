@@ -15,7 +15,7 @@
     <link rel="icon" type="image/x-icon" href="{% static 'website_logo/favicon.ico' %}"/>
 </head>
 <body class="{% block body_class %}{% endblock %}">
-<div class="relative flex min-h-screen flex-col">
+<div class="relative flex min-h-screen flex-col overflow-x-clip">
     {% include 'components/navbar.html' %}
     {% if messages %}
         <div class="toast toast-end">
