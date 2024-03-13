@@ -16,6 +16,12 @@ from pathlib import Path
 from django.utils import timezone
 
 from secret.secret import POSTGRES__PASS, DJANGO_SECRET_KEY, IS_PRODUCTION, POSTGRES__PORT
+from utils.yapenv import load_yapenv
+
+# Load custom environment variables
+load_yapenv()
+load_yapenv(".yapenv.local")
+load_yapenv(".yapenv.production")
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -30,6 +36,7 @@ DEBUG = not IS_PRODUCTION
 
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", "llindholm.com"]
 ALLOWED_HOSTS.extend(os.environ.get("ALLOWED_HOSTS", "").split(","))
+print(ALLOWED_HOSTS)
 
 CSRF_TRUSTED_ORIGINS = os.environ.get("CSRF_TRUSTED_ORIGINS", "").split(",")
 CORS_ORIGIN_WHITELIST = os.environ.get("CORS_ORIGIN_WHITELIST", "").split(",")

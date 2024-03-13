@@ -1,6 +1,7 @@
 /secret/
 
 /DEVELOPMENT_STORAGE/
+static_root/
 
 __pycache__/
 
@@ -11,6 +12,7 @@ node_modules/
 media/
 
 .idea/
+venv/
 
 .yapenv*.local
 .yapenv*.production

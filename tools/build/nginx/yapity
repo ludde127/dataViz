@@ -1,0 +1,14 @@
+server {
+    server_name yapity.llindholm.com;
+    location = /favicon.ico { access_log off; log_not_found off; }
+
+    location /static/ {
+	alias /root/dataViz/static_root/;
+    	autoindex on;
+    }
+
+    location / {
+        include proxy_params;
+        proxy_pass http://unix:/root/dataViz/yapity.sock;
+    }
+}
