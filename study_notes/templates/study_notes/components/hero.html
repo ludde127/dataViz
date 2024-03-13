@@ -2,12 +2,12 @@
 {% load tags %}
 {% load custom_filters %}
 
-<div class="hero bg-base-300">
+<div class="hero bg-base-300 text-base-content">
     <div class="hero-content text-center">
       <div class="max-w-md gap-4 flex flex-col">
-        <h1 class="text-5xl font-bold">{{ page.title }}</h1>
+        <h1 class="text-3xl font-bold">{{ page.title }}</h1>
         {% if page.tags.all.count %}
-        <div>
+        <div class="flex flex-row flex-wrap justify-center gap-2">
           {% include 'shortcuts/notepage-tags.html' with tags=page.tags.all %}
         </div>
         {% endif %}

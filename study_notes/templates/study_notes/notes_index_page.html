@@ -20,7 +20,7 @@
                                 <h2 class="card-title">{{ post.title }}</h2>
                                 <p>{{ post.intro }}</p>
                             </a>
-                            <div class="flex flex-row gap-2">
+                            <div class="flex flex-row flex-wrap gap-2">
                                 {% include 'shortcuts/notepage-tags.html' with tags=post.tags.all %}
                             </div>
                         </div>

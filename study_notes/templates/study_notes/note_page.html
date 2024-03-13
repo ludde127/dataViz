@@ -22,6 +22,7 @@
                 <div class="flex flex-row items-center bg-base-100 sticky top-0 z-10 shadow-sm">
                     {% include 'study_notes/components/toolbar.html' %}
                     {% include 'study_notes/components/breadcrumbs.html' %}
+                    {% include 'study_notes/components/last_edited.html' %}
                 </div>
 
                 <div class="relative container">
@@ -154,23 +155,13 @@
                                 </div>
                             {% endfor %}
                         </div>
-
-                        <div class="absolute top-0 right-0 p-2">
-                            <div class="flex flex-row items-center gap-2">
-                                <div class="flex flex-col text-right">
-                                    <small>{{ page.live_revision.user|capfirst }}</small>
-                                    <small>{{ page.live_revision.created_at|date:"Y-m-d" }}</small>
-                                </div>
-                                {% include "components/user-avatar.html" with user=page.live_revision.user %}
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
             <div class="drawer-side z-[100] lg:z-auto ">
                 <label for="tree-view-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
                 <div class="h-full bg-base-200 text-base-content">
-                    {% include "study_notes/components/tree_view_base.html" %}
+                    {% include "study_notes/components/tree_view_base.html" with node=parent %}
                 </div>
             </div>
         </div>

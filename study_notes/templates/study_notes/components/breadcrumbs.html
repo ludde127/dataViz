@@ -3,10 +3,10 @@
   <ul>
     {% for p in self.get_ancestors %}
       {% if p.is_root == False %}
-        <li><a href="{{ p.url }}">{{ p.title }}</a></li>
+        <li><a href="{{ p.url }}">{{ p.title|truncatechars:25 }}</a></li>
       {% endif %}
     {% endfor %}
-    <li>{{ self.title }}</li>
+    <li>{{ self.title|truncatechars:25 }}</li>
   </ul>
 </div>
 {% endif %}
