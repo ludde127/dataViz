@@ -1,21 +1,20 @@
 {% load static %}
-<footer class="footer flex items-center p-4 bg-base-300 text-base-content">
-    <aside class="flex-1 items-center flex flex-row">
+<footer class="footer flex flex-col sm:flex-row items-center p-4 bg-base-300 text-base-content gap-2">
+    <div class="flex-1 items-center flex flex-row">
         {% include "components/site-logo.html" %}
         <p class="flex-1">
             © {{ time.year }} <span>{{ brand_name }}.</span>
         </p>
-    </aside>
+    </div>
 
-    <aside class="items-center grid-flow-col">
-        <p>
+    <div class="items-center grid-flow-col gap-2">
+        <span>
             Site design:
             <a href="https://github.com/ludde127">Ludvig Lindholm</a>,
             <a href="https://github.com/husenap">Hussein Taher</a>
-        </p>
-    </aside>
-
-    <nav class="grid-flow-col gap-4 md:place-self-center md:justify-self-end">
+        </span>
         <a href="https://github.com/ludde127/dataViz" target="_blank"><i data-lucide="github"></i></a>
-    </nav>
+        <span>{{ GIT_HASH }}</span>
+    </div>
 </footer>
+
