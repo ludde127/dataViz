@@ -20,5 +20,3 @@ def load_yapenv(file=".yapenv"):
                     continue
                 k, v = line.split("=")[:2]
                 os.environ[k.strip()] = v.strip()
-    else:
-        print("Couldn't find environment file {}".format(file))
