@@ -1,0 +1,12 @@
+[Unit]
+Description=yapity gunicorn daemon
+After=network.target
+
+[Service]
+User=root
+Group=www-data
+WorkingDirectory=/root/dataViz
+ExecStart=/root/dataViz/venv/bin/gunicorn --log-level debug --error-logfile /var/log/gunicorn/yapity_error.log --workers 3 --bind unix:/root/dataViz/yapity.sock dataViz.wsgi:application
+
+[Install]
+WantedBy=multi-user.target

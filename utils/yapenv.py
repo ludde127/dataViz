@@ -13,10 +13,12 @@ def load_yapenv(file=".yapenv"):
     """
     if os.path.exists(file):
         with open(file, "r") as f:
-            print("Reading environment variable from {}".format(file))
+            print("Reading environment variables from {}".format(file))
             for line in f.readlines():
                 line = line.strip()
                 if not line.strip() or line[0] == '#':
                     continue
                 k, v = line.split("=")[:2]
                 os.environ[k.strip()] = v.strip()
+    else:
+        print("Couldn't find environment file {}".format(file))

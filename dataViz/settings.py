@@ -16,6 +16,12 @@ from pathlib import Path
 from django.utils import timezone
 
 from secret.secret import POSTGRES__PASS, DJANGO_SECRET_KEY, IS_PRODUCTION, POSTGRES__PORT
+from utils.yapenv import load_yapenv
+
+# Load custom environment variables
+load_yapenv()
+load_yapenv(".yapenv.local")
+load_yapenv(".yapenv.production")
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 

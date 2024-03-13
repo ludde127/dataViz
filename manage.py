@@ -3,17 +3,9 @@
 import os
 import sys
 
-from utils.yapenv import load_yapenv
-
-
 def main():
     """Run administrative tasks."""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dataViz.settings')
-
-    # Load custom environment variables
-    load_yapenv()
-    load_yapenv(".yapenv.local")
-    load_yapenv(".yapenv.production")
 
     try:
         from django.core.management import execute_from_command_line
