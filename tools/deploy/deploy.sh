@@ -15,10 +15,6 @@ if [ "$(git rev-list HEAD..origin/${BRANCH} --count)" -gt 0 ] || [ "$1" = "force
   git pull -X theirs || exit
   sh $BASE_DIR/tools/deploy/deploy_django.sh
 
-  # Append git hash to env file
-  echo "" >> .yapenv.production
-  echo GIT_HASH=$(git rev-parse --short HEAD) >> .yapenv.production
-
   echo "Deployed"
 else
   echo "The ${BRANCH} branch is up to date."
