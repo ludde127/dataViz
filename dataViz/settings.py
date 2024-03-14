@@ -37,8 +37,10 @@ DEBUG = not IS_PRODUCTION
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", "llindholm.com"]
 ALLOWED_HOSTS.extend(os.environ.get("ALLOWED_HOSTS", "").split(","))
 
-CSRF_TRUSTED_ORIGINS = os.environ.get("CSRF_TRUSTED_ORIGINS", "").split(",")
-CORS_ORIGIN_WHITELIST = os.environ.get("CORS_ORIGIN_WHITELIST", "").split(",")
+if "CSRF_TRUSTED_ORIGINS" in os.environ:
+    CSRF_TRUSTED_ORIGINS = os.environ.get("CSRF_TRUSTED_ORIGINS", "").split(",")
+if "CORS_ORIGIN_WHITELIST" in os.environ:
+    CORS_ORIGIN_WHITELIST = os.environ.get("CORS_ORIGIN_WHITELIST", "").split(",")
 
 # Application definition
 
