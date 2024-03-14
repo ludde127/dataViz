@@ -2,7 +2,7 @@
 
 # Define the branch you want to check
 BRANCH="master"
-BASE_DIR="~/dataViz"
+BASE_DIR=~/dataViz
 cd $BASE_DIR || exit
 # Fetch the latest changes from the remote repository
 git checkout $BRANCH
@@ -13,7 +13,7 @@ if [ "$(git rev-list HEAD..origin/${BRANCH} --count)" -gt 0 ] || [ "$1" = "force
   echo "There are new commits on the ${BRANCH} branch."
   git stash
   git pull -X theirs || exit
-  sh $BASE_DIR/scripts/deploy/deploy_django.sh
+  sh $BASE_DIR/tools/deploy/deploy_django.sh
 
   # Append git hash to env file
   echo "" >> .yapenv.production
