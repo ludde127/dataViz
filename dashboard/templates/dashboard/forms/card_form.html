@@ -1,0 +1,19 @@
+{% csrf_token %}
+<div class="card shadow-xl max-w-96 mx-auto overflow-hidden">
+    <div class="w-full p-4 bg-base-300">
+        <span class="card-title">{{ title }}</span>
+    </div>
+    <div class="card-body bg-base-200">
+        {% for field in form.visible_fields %}
+            <div class="form-control">
+                <label class="cursor-pointer label gap-2">
+                    <span class="label-text">{{ field.label }}</span>
+                    {{ field }}
+                </label>
+            </div>
+        {% endfor %}
+        <div class="card-actions justify-end">
+            <button class="btn btn-primary" type="submit" value="Submit">Submit</button>
+        </div>
+    </div>
+</div>

@@ -1,55 +1,58 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <div class="container-lg" style="margin:auto;">
-        <div class="text-center">
-            <h1>Dashboard</h1>
-
+    <div class="hero bg-base-200 p-12">
+        <div class="hero-content text-center">
+            <div class="max-w-md prose lg:prose-lg">
+                <h1>Dashboard</h1>
+            </div>
         </div>
-        {% if data_stores %}
-            {% for store in data_stores %}
-                <div class="container text-center">
-                <h2>{{ store.name|capfirst }}</h2>
-                <p>{{ store.description }}</p>
-                <br>
-                <h4>Latest inserted row.</h4>
-                <p>{{ store.latest_row }}</p>
-                <br>
-                <div>
-                    <h3>Stats</h3>
-                    <p>{{ store.rows }} Rows.</p>
-                    <p>Approx. {{ store.storage_size_in_best_format }}</p>
-                </div>
-                <div class="btn-group btn-group">
-                    <a href="{% url "secret_key" store.key %}" class="btn btn-warning">View secret key.</a>
-                    <a class="btn btn-secondary" href="{% url "modify_data" store.key %}">Modify datastore</a>
-                    <a class="btn btn-primary" href="{% url "plot" store.key %}">View Plot</a>
-                </div>
-                <hr>
-                </div>
-            {% endfor %}
-        {% endif %}
+    </div>
+    <div class="container py-8 gap-4">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-2">
+            {% if data_stores %}
+                {% for store in data_stores %}
+                    <div class="card shadow-xl overflow-hidden">
+                        <div class="w-full bg-base-300 p-4 flex flex-row items-center gap-2">
+                            <span class="card-title flex-1">{{ store.name|capfirst }}</span>
+                            <span class="badge badge-info">{{ store.rows }} Rows.</span>
+                            <span class="badge badge-info">Approx. {{ store.storage_size_in_best_format }}</span>
+                        </div>
+                        <div class="card-body bg-base-200">
+                            <p>{{ store.description }}</p>
+                            <h4>Latest inserted row: <strong>{{ store.latest_row }}</strong></h4>
+                            <div class="card-actions">
+                                <div class="join btn-block">
+                                    <a class="join-item btn btn-warning" href="{% url "secret_key" store.key %}">View
+                                        secret
+                                        key.</a>
+                                    <a class="join-item btn btn-secondary" href="{% url "modify_data" store.key %}">Modify
+                                        datastore</a>
+                                    <a class="join-item btn btn-primary" href="{% url "plot" store.key %}">View Plot</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
         <div>
             {% if request.user.is_authenticated %}
-                <div class="text-center">
-                    <h1>Add a datastore</h1>
-                    <form method="post" action="{% url 'index' %}">
-                        {% csrf_token %}
-                        {% include "dashboard/forms/form.html" %}
-                        <button class="btn btn-primary" type="submit" value="Submit">Submit</button>
-                    </form>
-                </div>
+                <form method="post" action="{% url 'index' %}">
+                    {% include "dashboard/forms/card_form.html" with title="Add a datastore" %}
+                </form>
             {% else %}
                 <hr>
                 <br>
                 <h3 class="mx-auto text-center">Welcome!</h3>
                 <article>
-                    <p>Please {% include 'shortcuts/login-url.html'  with next=request.get_full_path %} to enable creation of datastores
+                    <p>Please {% include 'shortcuts/login-url.html'  with next=request.get_full_path %} to enable
+                        creation of datastores
                         which is a quick and easy way to store and plot data simple POST requests.</p>
                     <p>An example is <code>resp = requests.post(url,
                         json={'a': 'SomeValue', 'time': 'Time_either_unix_seconds_or_datetime_OSI8601'},
                         headers={'Authorization': 'TOK:SECRET_API_TOKEN'}).text</code>
-                    Which would send up SomeValue to the datastore at url.
+                        Which would send up SomeValue to the datastore at url.
                     </p>
                 </article>
             {% endif %}
