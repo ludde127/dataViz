@@ -21,9 +21,9 @@
         {% if not shared %}
             <h3>A short python example to post data</h3>
             <div class="mockup-code not-prose">
-                <pre data-prefix="1"><code>SECRET_API_TOKEN = "{{ data_store.secret_key }}"</code></pre>
-                <pre data-prefix="2"><code>DATASTORE_UUID = "{{ data_store.key }}"</code></pre>
-                <pre data-prefix="3"><code>url = f"{{ request.scheme }}://{{ request.get_host }}/data/access/<strong>{DATASTORE_UUID}</strong>"</code></pre>
+                <pre data-prefix="1"><code>SECRET_API_TOKEN = "<strong>{{ data_store.secret_key }}</strong>"</code></pre>
+                <pre data-prefix="2"><code>DATASTORE_UUID = "<strong>{{ data_store.key }}</strong>"</code></pre>
+                <pre data-prefix="3"><code>url = f"{{ request.scheme }}://{{ request.get_host }}/data/access/{DATASTORE_UUID}"</code></pre>
                 <pre data-prefix="4"><code>resp = requests.post(url,</code></pre>
                 <pre data-prefix="5"><code>         json={{ data_store.example_entry }},</code></pre>
                 <pre data-prefix="6"><code>         headers={"Authorization": f"TOK:{SECRET_API_TOKEN}"}).text</code></pre>
@@ -32,13 +32,15 @@
         <h4>Now only plotting last 10k datapoints by default</h4>
         {% for plot in plots %}
             <h2>{{ plot.name }}</h2>
-            <p id="chart-p-{{ forloop.counter0 }}"
-               style="text-decoration-line: underline;text-decoration-color: red"></p>
+            <p id="chart-p-{{ forloop.counter0 }}"></p>
             {% if not shared %}
-                <div class="btn-group">
-                    <a class="btn btn-secondary" href="{% url 'modify_plot' plot.id %}">Modify</a>
-                    <a class="btn btn-primary" href="{% url 'plot_all_can_view' data_store.key %}">Share this! <small>All
-                        with this link can view</small></a>
+                <div class="join">
+                    <a href="{% url 'modify_plot' plot.id %}">
+                        <button class="join-item btn btn-secondary">Modify</button>
+                    </a>
+                    <a href="{% url 'plot_all_can_view' data_store.key %}">
+                        <button class="join-item btn btn-primary">Share plot!</button>
+                    </a>
                 </div>
             {% endif %}
             <div class="plot text-center m-auto">
@@ -55,7 +57,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
 
     <script>
-        {# Todo, modify so that choosing timeframes is possible, should probably stream data as that happends. #}
+        {# Todo, modify so that choosing timeframes is possible, should probably stream data as that happens. #}
         {% for plot in plots %}
             {% with plot.plottable as plt %}
                 {% if plt != "No data." %}
