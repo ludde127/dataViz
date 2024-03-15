@@ -16,7 +16,6 @@ from dataViz.utils import context_render
 
 def index(request):
     if request.user.is_authenticated:
-
         if request.method == "POST":
             owner = DataStorage(owner=request.user.normaluser)
             dsf = DataStorageForm(request.POST, instance=owner)
@@ -79,11 +78,13 @@ def modify_datastore(request, key):
         form = DataStorageForm(request.POST, instance=data)
         if form.is_valid():
             form.save()
+            messages.success(request, "Successfully modified the datastore!")
             return redirect("index")
-    else:
-        form = DataStorageForm(instance=data)
-    return context_render(request, "dashboard/modify_datastore.html",
-                          context={"title": "Modify Datastorage", "form": form, "data": data})
+        else:
+            messages.error(request, "Failed to modify the datastore!")
+    # return context_render(request, "dashboard/modify_datastore.html",
+    #                       context={"title": "Modify Datastorage", "form": form, "data": data})
+    return redirect("index")
 
 
 @login_required

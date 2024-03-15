@@ -2,11 +2,16 @@
 
 {% block content %}
     <div class="hero bg-base-300">
-        <div class="hero-content text-center">
-            <div class="max-w-md gap-4 flex flex-col">
+        <div class="hero-content flex flex-col">
+            <div class="text-center my-prose">
                 <h1 class="text-5xl font-bold">{{ data_store.name|capfirst }}</h1>
                 {% if data_store.description %}
                     <p>{{ data_store.description|capfirst }}</p>
+                {% endif %}
+            </div>
+            <div>
+                {% if form %}
+                    {% include "dashboard/components/create_new_plot_dialog.html" %}
                 {% endif %}
             </div>
         </div>
@@ -14,13 +19,17 @@
 
     <div class="container my-prose py-8">
         {% if not shared %}
-            <h3>A short python example to post data.</h3>
+            <h3>A short python example to post data</h3>
             <div class="mockup-code not-prose">
-                <pre data-prefix="1"><code>url = "{{ request.scheme }}://{{ request.get_host }}/data/access/<strong>{{ data_store.key }}</strong>"</code></pre>
-                <pre data-prefix="2"><code>resp = requests.post(url, json={{ data_store.example_entry }}, headers={'Authorization': 'TOK:SECRET_API_TOKEN'}).text</code></pre>
+                <pre data-prefix="1"><code>SECRET_API_TOKEN = "{{ data_store.secret_key }}"</code></pre>
+                <pre data-prefix="2"><code>DATASTORE_UUID = "{{ data_store.key }}"</code></pre>
+                <pre data-prefix="3"><code>url = f"{{ request.scheme }}://{{ request.get_host }}/data/access/<strong>{DATASTORE_UUID}</strong>"</code></pre>
+                <pre data-prefix="4"><code>resp = requests.post(url,</code></pre>
+                <pre data-prefix="5"><code>         json={{ data_store.example_entry }},</code></pre>
+                <pre data-prefix="6"><code>         headers={"Authorization": f"TOK:{SECRET_API_TOKEN}"}).text</code></pre>
             </div>
         {% endif %}
-        <h4>Now only plotting last 10k datapoints by default.</h4>
+        <h4>Now only plotting last 10k datapoints by default</h4>
         {% for plot in plots %}
             <h2>{{ plot.name }}</h2>
             <p id="chart-p-{{ forloop.counter0 }}"
@@ -37,14 +46,6 @@
             </div>
 
         {% endfor %}
-        {% if form %}
-            <h1>Add a new chart</h1>
-            <form method="post" action="{% url 'plot' data_store.key %}">
-                {% csrf_token %}
-                {% include "dashboard/forms/form.html" %}
-                <button class="btn btn-primary" type="submit" value="Submit">Submit</button>
-            </form>
-        {% endif %}
     </div>
 {% endblock %}
 {% block custom_scripts %}

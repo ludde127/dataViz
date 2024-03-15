@@ -1,0 +1,19 @@
+<button class="btn btn-primary" onclick="new_datastore_modal.showModal()">New Datastore</button>
+<dialog id="new_datastore_modal" class="modal">
+    <div class="modal-box">
+        <form method="dialog">
+            <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+        </form>
+        <h3 class="font-bold text-lg">Create a new Datastore</h3>
+        <form method="post" action="{% url 'index' %}">
+            {% csrf_token %}
+            {% include "dashboard/forms/form_fields.html" %}
+            <div class="modal-action">
+                <button class="btn btn-primary" type="submit" value="Submit">Submit</button>
+            </div>
+        </form>
+    </div>
+    <form method="dialog" class="modal-backdrop">
+        <button>close</button>
+    </form>
+</dialog>

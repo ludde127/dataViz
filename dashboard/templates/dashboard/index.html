@@ -1,15 +1,18 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <div class="hero bg-base-200 p-12">
-        <div class="hero-content text-center">
-            <div class="max-w-md prose lg:prose-lg">
+    <div class="hero bg-base-200">
+        <div class="hero-content flex flex-col">
+            <div class="max-w-md text-center prose lg:prose-lg">
                 <h1>Dashboard</h1>
             </div>
+            {% if request.user.is_authenticated %}
+                {% include "dashboard/components/create_new_datastore_dialog.html" %}
+            {% endif %}
         </div>
     </div>
     <div class="container py-8 gap-4">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-2">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
             {% if data_stores %}
                 {% for store in data_stores %}
                     <div class="card shadow-xl overflow-hidden">
@@ -23,12 +26,11 @@
                             <h4>Latest inserted row: <strong>{{ store.latest_row }}</strong></h4>
                             <div class="card-actions">
                                 <div class="join btn-block">
-                                    <a class="join-item btn btn-warning" href="{% url "secret_key" store.key %}">View
-                                        secret
-                                        key.</a>
-                                    <a class="join-item btn btn-secondary" href="{% url "modify_data" store.key %}">Modify
-                                        datastore</a>
-                                    <a class="join-item btn btn-primary" href="{% url "plot" store.key %}">View Plot</a>
+                                    <a class="flex-1 join-item btn btn-primary" href="{% url "plot" store.key %}">
+                                        <i data-lucide="line-chart"></i>View Plots
+                                    </a>
+                                    {% include "dashboard/components/modify_datastore_dialog.html" with form=store.form %}
+                                    {% include "dashboard/components/view_secret_key_dialog.html" %}
                                 </div>
                             </div>
                         </div>
@@ -36,25 +38,22 @@
                 {% endfor %}
             {% endif %}
         </div>
-        <div>
-            {% if request.user.is_authenticated %}
-                <form method="post" action="{% url 'index' %}">
-                    {% include "dashboard/forms/card_form.html" with title="Add a datastore" %}
-                </form>
-            {% else %}
-                <hr>
-                <br>
-                <h3 class="mx-auto text-center">Welcome!</h3>
-                <article>
-                    <p>Please {% include 'shortcuts/login-url.html'  with next=request.get_full_path %} to enable
-                        creation of datastores
-                        which is a quick and easy way to store and plot data simple POST requests.</p>
-                    <p>An example is <code>resp = requests.post(url,
-                        json={'a': 'SomeValue', 'time': 'Time_either_unix_seconds_or_datetime_OSI8601'},
-                        headers={'Authorization': 'TOK:SECRET_API_TOKEN'}).text</code>
-                        Which would send up SomeValue to the datastore at url.
-                    </p>
-                </article>
+        <div class="my-prose mx-auto">
+            {% if not request.user.is_authenticated %}
+                <h2 class="mx-auto text-center">Welcome!</h2>
+                <p>
+                    Please
+                    {% include 'shortcuts/login-url.html'  with next=request.get_full_path %}
+                    to enable creation of datastores which is a quick and easy way to store
+                    and plot data using simple POST requests.</p>
+                <h3>Example usage</h3>
+
+                <p>The following code would send <code>SomeValue</code> to the datastore at the specified url.</p>
+                <div class="mockup-code not-prose">
+                    <pre data-prefix="1"><code>resp = requests.post(url,</code></pre>
+                    <pre data-prefix="2"><code>        json={'a': 'SomeValue', 'time': 'Time_either_unix_seconds_or_datetime_OSI8601'},</code></pre>
+                    <pre data-prefix="3"><code>        headers={'Authorization': 'TOK:SECRET_API_TOKEN'}).text</code></pre>
+                </div>
             {% endif %}
         </div>
     </div>
