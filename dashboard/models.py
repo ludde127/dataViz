@@ -1,11 +1,11 @@
 import json
-from pprint import pprint
 
 import pandas as pd
 from django.core.exceptions import ValidationError
 from django.db import models
+
 from data.models import DataStorage
-from users.models import NormalUser, Permissions
+from users.models import Permissions
 
 background_colors = [
     'rgba(255, 99, 132, 0.2)',
@@ -69,7 +69,7 @@ class Plot:
                 "backgroundColor": self.background_colors[n % len(background_colors)],
                 "borderColor": self.border_colors[n % len(self.border_colors)
                                                   ]} for n, column_name in enumerate(self.df.columns)]
-                    }
+                     }
         head_dictionary["data"] = head_data
         head_dictionary["type"] = self.plot_type
 
@@ -90,16 +90,15 @@ class Plot:
                 }],
             },
         }
-        print(head_dictionary)
 
         if self.index_is_time:
             head_dictionary["options"]["scales"]["x"] = {"type": 'time',
-                                                            "time": {
-                                                                "unit": 'hour',
-                                                                "displayFormats": {
-                                                                    "hour": 'yyyy-MM-dd: HH'
-                                                                }
-                                                            }}
+                                                         "time": {
+                                                             "unit": 'hour',
+                                                             "displayFormats": {
+                                                                 "hour": 'yyyy-MM-dd: HH'
+                                                             }
+                                                         }}
 
         return json.dumps(head_dictionary)
 
@@ -163,3 +162,8 @@ class PlottingSetup(Permissions):
             self.data, self.plot_type,
             self.data.key, dataframe, round_index=self.round_index,
             index_is_time=self.index_is_time).json()
+
+    def form(self):
+        # This has to be imported locally as DataStorageForm depends on this same Model
+        from dashboard.forms import PlottingSetupForm
+        return PlottingSetupForm(instance=self)
