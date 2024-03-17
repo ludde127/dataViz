@@ -14095,22 +14095,18 @@ html:has(.drawer-open.drawer-open) {
   ol {
     list-style-type: decimal;
   }
-
   ol {
     & ol {
       list-style-type: lower-alpha;
     }
-
     & ol {
       & ol {
         list-style-type: lower-roman;
       }
-
       & ol {
         & ol {
           list-style-type: decimal;
         }
-
         & ol {
           & ol {
             list-style-type: lower-alpha;

@@ -164,6 +164,6 @@ class PlottingSetup(Permissions):
             index_is_time=self.index_is_time).json()
 
     def form(self):
-        # This has to be imported locally as DataStorageForm depends on this same Model
+        # This has to be imported locally as PlottingSetupForm depends on this same Model
         from dashboard.forms import PlottingSetupForm
         return PlottingSetupForm(instance=self)
