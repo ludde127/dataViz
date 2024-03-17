@@ -37,10 +37,13 @@
         {% for plot in plots %}
             <h2>{{ plot.name }}</h2>
             {% if not shared %}
-                <div class="join w-full">
+                <div class="join w-full not-prose">
                     {% include "dashboard/components/modify_plot_dialog.html" %}
                     <a href="{% url 'plot_all_can_view' data_store.key %}" class="flex-1">
-                        <button class="w-full join-item btn btn-primary">Share plot!</button>
+                        <button class="w-full join-item btn btn-primary">
+                            <i data-lucide="share-2"></i>
+                            Share plot!
+                        </button>
                     </a>
                 </div>
             {% endif %}
