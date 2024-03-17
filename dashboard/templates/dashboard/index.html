@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load yapity_forms_filters %}
 
 {% block content %}
     <div class="hero bg-base-200">
@@ -25,9 +26,9 @@
                             <p>{{ store.description }}</p>
                             <h4>Latest inserted row: <strong>{{ store.latest_row }}</strong></h4>
                             <div class="card-actions">
-                                <div class="join btn-block">
-                                    <a class="flex-1 join-item btn btn-primary" href="{% url "plot" store.key %}">
-                                        <i data-lucide="line-chart"></i>View
+                                <div class="w-full flex flex-col sm:flex-row gap-2">
+                                    <a class="w-full flex-1 btn btn-primary" href="{% url "plot" store.key %}">
+                                        <i data-lucide="line-chart"></i>View Plots
                                     </a>
                                     {% include "dashboard/components/modify_datastore_dialog.html" with form=store.form %}
                                     {% include "dashboard/components/view_secret_key_dialog.html" %}

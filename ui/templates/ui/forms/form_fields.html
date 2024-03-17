@@ -1,8 +1,8 @@
 {% for field in form.visible_fields %}
     <div class="form-control">
-        <label class="cursor-pointer label gap-2">
+        <label class="label">
             <span class="label-text">{{ field.label }}</span>
-            {{ field }}
         </label>
+        {{ field }}
     </div>
 {% endfor %}

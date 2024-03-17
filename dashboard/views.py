@@ -1,6 +1,5 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils.safestring import mark_safe
@@ -43,32 +42,25 @@ def index(request):
 
 def plot(request, key):
     data = get_object_or_404(DataStorage, key=key)
+
+    psf = PlottingSetupForm(request.POST, instance=PlottingSetup(data=data, owner=request.user.normaluser))
+
     if request.method == "POST" and request.user.normaluser == data.owner:
         # Plot settings
-        psf = PlottingSetupForm(request.POST, instance=PlottingSetup(data=data, owner=request.user.normaluser))
         if psf.is_valid():
             psf.save()
             return redirect("plot", key=key)
         else:
-            messages.error(request, "Could not save the plotting setup form")
+            messages.error(request, "Could not save the plotting setup form: " + str(psf.errors))
     if data.public or (
             request.user.is_authenticated and request.user.normaluser == data.owner) or data.is_whitelist and request.user.normaluser in data.subjects:
         plots = data.plottingsetup_set.all()
-
         return context_render(request, "dashboard/plot.html", context={"title": "plot", "plots": plots,
                                                                        "data_store": data,
-                                                                       "form": PlottingSetupForm()})
+                                                                       "form": psf})
     else:
         messages.error(request, "You do not have the required permissions")
         return redirect("index")
-
-
-@login_required
-def secrets_for_data_store(request, public_key: str):
-    data_store = get_object_or_404(DataStorage, key=public_key)
-    if data_store.owner.user == request.user:
-        return context_render(request, "dashboard/secret_key.html", context={"data_store": data_store})
-    return HttpResponse("You are not authenticated.")
 
 
 @login_required

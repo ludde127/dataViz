@@ -1,5 +1,5 @@
-<button class="flex-1 join-item btn btn-secondary" onclick="modify_datastore_modal_{{ store.id }}.showModal()">
-    <i data-lucide="pencil"></i>Modify
+<button class="flex-1 btn btn-secondary" onclick="modify_datastore_modal_{{ store.id }}.showModal()">
+    <i data-lucide="pencil"></i>Modify Datastore
 </button>
 <dialog id="modify_datastore_modal_{{ store.id }}" class="modal">
     <div class="modal-box">
@@ -9,7 +9,7 @@
         <h3 class="font-bold text-lg">Modify {{ store.name }}</h3>
         <form method="post" action="{% url 'modify_data' store.key %}">
             {% csrf_token %}
-            {% include "dashboard/forms/form_fields.html" %}
+            {% include "ui/forms/form.html" %}
             <div class="modal-action">
                 <button class="btn btn-primary" type="submit" value="Submit">Submit</button>
             </div>

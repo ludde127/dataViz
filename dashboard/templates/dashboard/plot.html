@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load yapity_forms_filters %}
 
 {% block content %}
     <div class="hero bg-base-300">
@@ -29,24 +30,27 @@
                 <pre data-prefix="6"><code>         headers={"Authorization": f"TOK:{SECRET_API_TOKEN}"}).text</code></pre>
             </div>
         {% endif %}
-        <h4>Now only plotting last 10k datapoints by default</h4>
+        <div role="alert" class="alert alert-info mt-4">
+            <i data-lucide="info"></i>
+            <span>Now only plotting last 10k datapoints by default.</span>
+        </div>
         {% for plot in plots %}
             <h2>{{ plot.name }}</h2>
-            <p id="chart-p-{{ forloop.counter0 }}"></p>
             {% if not shared %}
-                <div class="join">
-                    <a href="{% url 'modify_plot' plot.id %}">
-                        <button class="join-item btn btn-secondary">Modify</button>
-                    </a>
-                    <a href="{% url 'plot_all_can_view' data_store.key %}">
-                        <button class="join-item btn btn-primary">Share plot!</button>
+                <div class="join w-full">
+                    {% include "dashboard/components/modify_plot_dialog.html" %}
+                    <a href="{% url 'plot_all_can_view' data_store.key %}" class="flex-1">
+                        <button class="w-full join-item btn btn-primary">Share plot!</button>
                     </a>
                 </div>
             {% endif %}
+            <p id="chart-p-{{ forloop.counter0 }}"></p>
             <div class="plot text-center m-auto">
                 <canvas id="chart{{ forloop.counter0 }}"></canvas>
             </div>
-
+            {% if not forloop.last %}
+                <hr>
+            {% endif %}
         {% endfor %}
     </div>
 {% endblock %}
@@ -65,6 +69,7 @@
                     const myChart{{ forloop.counter0 }} = new Chart(ctx{{ forloop.counter0 }}, {{ plt | safe }});
                 {% else %}
                     document.getElementById('chart-p-{{ forloop.counter0 }}').innerHTML = "No data present to plot";
+                    document.getElementById('chart{{ forloop.counter0 }}').classList.add("hidden");
                 {% endif %}
             {% endwith %}
         {% endfor %}

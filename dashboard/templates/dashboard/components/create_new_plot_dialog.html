@@ -7,7 +7,7 @@
         <h3 class="font-bold text-lg">Create a new Plot</h3>
         <form method="post" action="{% url 'plot' data_store.key %}">
             {% csrf_token %}
-            {% include "dashboard/forms/form.html" %}
+            {% include "ui/forms/form.html" %}
             <div class="modal-action">
                 <button class="btn btn-primary" type="submit" value="Submit">Submit</button>
             </div>
