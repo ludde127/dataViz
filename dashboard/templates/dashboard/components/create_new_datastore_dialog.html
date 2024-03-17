@@ -1,4 +1,6 @@
-<button class="btn btn-primary" onclick="new_datastore_modal.showModal()">New Datastore</button>
+<button class="btn btn-primary" onclick="new_datastore_modal.showModal()">
+    New Datastore
+</button>
 <dialog id="new_datastore_modal" class="modal">
     <div class="modal-box">
         <form method="dialog">
@@ -9,7 +11,7 @@
             {% csrf_token %}
             {% include "ui/forms/form.html" %}
             <div class="modal-action">
-                <button class="btn btn-primary" type="submit" value="Submit">Submit</button>
+                <button class="btn btn-primary btn-block" type="submit" value="Submit">Submit</button>
             </div>
         </form>
     </div>
