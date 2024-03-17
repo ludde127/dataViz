@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     "dashboard",
     "data",
     "tags",
+    "ui",
     # "reversion",
     "energy_utils",
     'wagtail.contrib.forms',
