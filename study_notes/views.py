@@ -1,3 +1,4 @@
+import json
 import random
 
 import django.db.utils
@@ -119,7 +120,7 @@ def user_profile(request, user):
         try:
             flash_card_list = user_object.usersflashcards.get_subscribed_flashcards(request)
             try:
-                context["flash_card_list"] = flash_card_list
+                context["flash_card_list"] = json.dumps(flash_card_list)
                 first = flash_card_list[random.randint(0, len(flash_card_list) - 1)]
 
                 copy = first.copy()
