@@ -1,12 +1,18 @@
 {% extends 'base.html' %}
+{% load yapity_forms_filters %}
 
 {% block content %}
     <div class="hero bg-base-300">
-        <div class="hero-content text-center">
-            <div class="max-w-md gap-4 flex flex-col">
+        <div class="hero-content flex flex-col">
+            <div class="text-center my-prose">
                 <h1 class="text-5xl font-bold">{{ data_store.name|capfirst }}</h1>
                 {% if data_store.description %}
                     <p>{{ data_store.description|capfirst }}</p>
+                {% endif %}
+            </div>
+            <div>
+                {% if form %}
+                    {% include "dashboard/components/create_new_plot_dialog.html" %}
                 {% endif %}
             </div>
         </div>
@@ -14,37 +20,41 @@
 
     <div class="container my-prose py-8">
         {% if not shared %}
-            <h3>A short python example to post data.</h3>
+            <h3>A short python example to post data</h3>
             <div class="mockup-code not-prose">
-                <pre data-prefix="1"><code>url = "{{ request.scheme }}://{{ request.get_host }}/data/access/<strong>{{ data_store.key }}</strong>"</code></pre>
-                <pre data-prefix="2"><code>resp = requests.post(url, json={{ data_store.example_entry }}, headers={'Authorization': 'TOK:SECRET_API_TOKEN'}).text</code></pre>
+                <pre data-prefix="1"><code>SECRET_API_TOKEN = "<strong>{{ data_store.secret_key }}</strong>"</code></pre>
+                <pre data-prefix="2"><code>DATASTORE_UUID = "<strong>{{ data_store.key }}</strong>"</code></pre>
+                <pre data-prefix="3"><code>url = f"{{ request.scheme }}://{{ request.get_host }}/data/access/{DATASTORE_UUID}"</code></pre>
+                <pre data-prefix="4"><code>resp = requests.post(url,</code></pre>
+                <pre data-prefix="5"><code>         json={{ data_store.example_entry }},</code></pre>
+                <pre data-prefix="6"><code>         headers={"Authorization": f"TOK:{SECRET_API_TOKEN}"}).text</code></pre>
             </div>
         {% endif %}
-        <h4>Now only plotting last 10k datapoints by default.</h4>
+        <div role="alert" class="alert alert-info mt-4">
+            <i data-lucide="info"></i>
+            <span>Now only plotting last 10k datapoints by default.</span>
+        </div>
         {% for plot in plots %}
             <h2>{{ plot.name }}</h2>
-            <p id="chart-p-{{ forloop.counter0 }}"
-               style="text-decoration-line: underline;text-decoration-color: red"></p>
             {% if not shared %}
-                <div class="btn-group">
-                    <a class="btn btn-secondary" href="{% url 'modify_plot' plot.id %}">Modify</a>
-                    <a class="btn btn-primary" href="{% url 'plot_all_can_view' data_store.key %}">Share this! <small>All
-                        with this link can view</small></a>
+                <div class="join w-full not-prose">
+                    {% include "dashboard/components/modify_plot_dialog.html" %}
+                    <a href="{% url 'plot_all_can_view' data_store.key %}" class="flex-1">
+                        <button class="w-full join-item btn btn-primary">
+                            <i data-lucide="share-2"></i>
+                            Share plot!
+                        </button>
+                    </a>
                 </div>
             {% endif %}
+            <p id="chart-p-{{ forloop.counter0 }}"></p>
             <div class="plot text-center m-auto">
                 <canvas id="chart{{ forloop.counter0 }}"></canvas>
             </div>
-
+            {% if not forloop.last %}
+                <hr>
+            {% endif %}
         {% endfor %}
-        {% if form %}
-            <h1>Add a new chart</h1>
-            <form method="post" action="{% url 'plot' data_store.key %}">
-                {% csrf_token %}
-                {% include "dashboard/forms/form.html" %}
-                <button class="btn btn-primary" type="submit" value="Submit">Submit</button>
-            </form>
-        {% endif %}
     </div>
 {% endblock %}
 {% block custom_scripts %}
@@ -54,7 +64,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
 
     <script>
-        {# Todo, modify so that choosing timeframes is possible, should probably stream data as that happends. #}
+        {# Todo, modify so that choosing timeframes is possible, should probably stream data as that happens. #}
         {% for plot in plots %}
             {% with plot.plottable as plt %}
                 {% if plt != "No data." %}
@@ -62,6 +72,7 @@
                     const myChart{{ forloop.counter0 }} = new Chart(ctx{{ forloop.counter0 }}, {{ plt | safe }});
                 {% else %}
                     document.getElementById('chart-p-{{ forloop.counter0 }}').innerHTML = "No data present to plot";
+                    document.getElementById('chart{{ forloop.counter0 }}').classList.add("hidden");
                 {% endif %}
             {% endwith %}
         {% endfor %}

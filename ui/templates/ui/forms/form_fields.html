@@ -1,0 +1,8 @@
+{% for field in form.visible_fields %}
+    <div class="form-control">
+        <label class="label">
+            <span class="label-text">{{ field.label }}</span>
+        </label>
+        {{ field }}
+    </div>
+{% endfor %}

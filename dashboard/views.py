@@ -1,9 +1,10 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
+from django.db import IntegrityError
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils.safestring import mark_safe
+from django.views.decorators.http import require_POST
 
 from dashboard.forms import PlottingSetupForm
 from dashboard.models import PlottingSetup, DataStorage
@@ -16,7 +17,6 @@ from dataViz.utils import context_render
 
 def index(request):
     if request.user.is_authenticated:
-
         if request.method == "POST":
             owner = DataStorage(owner=request.user.normaluser)
             dsf = DataStorageForm(request.POST, instance=owner)
@@ -44,74 +44,85 @@ def index(request):
 
 def plot(request, key):
     data = get_object_or_404(DataStorage, key=key)
+
+    psf = PlottingSetupForm(request.POST, instance=PlottingSetup(data=data, owner=request.user.normaluser))
+
     if request.method == "POST" and request.user.normaluser == data.owner:
         # Plot settings
-        psf = PlottingSetupForm(request.POST, instance=PlottingSetup(data=data, owner=request.user.normaluser))
         if psf.is_valid():
-            psf.save()
-            return redirect("plot", key=key)
+            try:
+                psf.save()
+                return redirect("plot", key=key)
+            except IntegrityError as e:
+                messages.error(request, "Failed to create the plot!")
         else:
-            messages.error(request, "Could not save the plotting setup form")
+            messages.error(request, "Failed to create the plot:" + str(psf.errors))
+
     if data.public or (
             request.user.is_authenticated and request.user.normaluser == data.owner) or data.is_whitelist and request.user.normaluser in data.subjects:
         plots = data.plottingsetup_set.all()
-
         return context_render(request, "dashboard/plot.html", context={"title": "plot", "plots": plots,
                                                                        "data_store": data,
-                                                                       "form": PlottingSetupForm()})
+                                                                       "form": psf})
     else:
         messages.error(request, "You do not have the required permissions")
         return redirect("index")
 
 
 @login_required
-def secrets_for_data_store(request, public_key: str):
-    data_store = get_object_or_404(DataStorage, key=public_key)
-    if data_store.owner.user == request.user:
-        return context_render(request, "dashboard/secret_key.html", context={"data_store": data_store})
-    return HttpResponse("You are not authenticated.")
-
-
-@login_required
+@require_POST
 def modify_datastore(request, key):
     data = get_object_or_404(DataStorage, key=key, owner=request.user.normaluser)
-    if request.method == "POST":
-        form = DataStorageForm(request.POST, instance=data)
-        if form.is_valid():
-            form.save()
-            return redirect("index")
+    form = DataStorageForm(request.POST, instance=data)
+    if form.is_valid():
+        form.save()
+        messages.success(request, "Successfully modified the datastore!")
     else:
-        form = DataStorageForm(instance=data)
-    return context_render(request, "dashboard/modify_datastore.html",
-                          context={"title": "Modify Datastorage", "form": form, "data": data})
+        messages.error(request, "Failed to modify the datastore!")
+    return redirect("index")
 
 
 @login_required
+@require_POST
 def modify_plot(request, id):
     plot = get_object_or_404(PlottingSetup, id=id, owner=request.user.normaluser)
-    if request.method == "POST":
-        form = PlottingSetupForm(request.POST, instance=plot)
-        if form.is_valid():
+    form = PlottingSetupForm(request.POST, instance=plot)
+    if form.is_valid():
+        try:
             form.save()
-            return redirect("plot", key=plot.data.key)
+            messages.success(request, "Successfully modified the plot!")
+        except IntegrityError as e:
+            messages.error(request, "Failed to modify the plot!")
     else:
-        form = PlottingSetupForm(instance=plot)
-    return context_render(request, "dashboard/modify_plot.html", context={"title": "Modify Plot",
-                                                                          "form": form,
-                                                                          "old": plot})
+        messages.error(request, "Failed to modify the plot:" + str(form.errors))
+    return redirect("plot", key=plot.data.key)
 
 
 @login_required
+@require_POST
 def delete_datastore(request, key: str):
     ds = get_object_or_404(DataStorage, key=key)
     n = ds.name
     if request.user.normaluser == ds.owner:
         ds.delete_data()
         ds.delete()
-        messages.info(request, f"Deleted the datastore '{n}'.")
+        messages.success(request, f"Deleted the datastore '{n}'.")
     else:
         messages.error(request, f"You are not the owner. Did nothing.")
     return redirect("index")
+
+
+@login_required
+@require_POST
+def delete_plot(request, id: int):
+    plot = get_object_or_404(PlottingSetup, id=id)
+    name = plot.name
+    if request.user.normaluser == plot.owner:
+        plot.delete()
+        messages.success(request, f"Deleted the plot '{name}'.")
+    else:
+        messages.error(request, f"You are not the owner. Did nothing.")
+    return redirect("plot", key=plot.data.key)
 
 
 @login_required

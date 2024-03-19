@@ -1,34 +1,34 @@
 import datetime
 import os
+import secrets
 import uuid
+from os import path as os_path
 
-import pandas
+import pandas as pd
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import Q
 from django.http import QueryDict
 
 from dataViz.settings import DATA_FILES
 # Create your models here.
-from users.models import NormalUser, Permissions
-from os import path as os_path
-import secrets
-import pandas as pd
+from users.models import Permissions
 
-BYTES_PER_GB = 1024**3
-BYTES_PER_MB = 1024**2
+BYTES_PER_GB = 1024 ** 3
+BYTES_PER_MB = 1024 ** 2
 BYTES_PER_KB = 1024
+
 
 class InconstantTypes:
     pass
 
+
 def bytes_to_pretty_string(bytes: float) -> str:
-    if bytes > BYTES_PER_GB/10:
-        return f"{round(bytes/BYTES_PER_GB, 3)} GB"
-    elif bytes > BYTES_PER_MB/10:
-        return f"{round(bytes/BYTES_PER_MB, 3)} MB"
-    elif bytes > BYTES_PER_KB/10:
-        return f"{round(bytes/BYTES_PER_KB, 3)} KB"
+    if bytes > BYTES_PER_GB / 10:
+        return f"{round(bytes / BYTES_PER_GB, 3)} GB"
+    elif bytes > BYTES_PER_MB / 10:
+        return f"{round(bytes / BYTES_PER_MB, 3)} MB"
+    elif bytes > BYTES_PER_KB / 10:
+        return f"{round(bytes / BYTES_PER_KB, 3)} KB"
     else:
         return f"{round(bytes)} Bytes"
 
@@ -43,7 +43,8 @@ def float_timestamp_to_dt(v: float) -> datetime.datetime:
 
 class DataStorage(Permissions):
     csv_names = models.CharField(verbose_name="Data column names (ex. 'time, velocity, position')", max_length=1000)
-    key = models.CharField(verbose_name="KEY", default=uuid.uuid4, unique=True, max_length=200) #  TODO MAKE THIS ACTUALLY SAFE
+    key = models.CharField(verbose_name="KEY", default=uuid.uuid4, unique=True,
+                           max_length=200)  # TODO MAKE THIS ACTUALLY SAFE
 
     rows = models.IntegerField(verbose_name="Amount of rows", default=0)
     storage_size = models.IntegerField(verbose_name="Storage Size (Bytes)", default=0)
@@ -70,15 +71,21 @@ class DataStorage(Permissions):
 
     def valid_authorization(self, request):
         try:
-            auth = str(request.environ.get('HTTP_AUTHORIZATION'))  # Gives TOK:<mAmq8-3c880bMCmxy_LQkUJy18r4-uR09zvu0tLEDz4>
+            auth = str(
+                request.environ.get('HTTP_AUTHORIZATION'))  # Gives TOK:<mAmq8-3c880bMCmxy_LQkUJy18r4-uR09zvu0tLEDz4>
             if "TOK" in auth:
-                auth = auth.split(":")[-1].replace("<", "").replace(">","")
+                auth = auth.split(":")[-1].replace("<", "").replace(">", "")
         except KeyError:
             raise ValueError("You must set the http authorization header to your secret api key")
         return auth == self.secret_key
 
     def file_path(self):
-        return DATA_FILES.joinpath(str(self.key)+".csv")
+        return DATA_FILES.joinpath(str(self.key) + ".csv")
+
+    def form(self):
+        # This has to be imported locally as DataStorageForm depends on this same Model
+        from data.forms import DataStorageForm
+        return DataStorageForm(instance=self)
 
     def csv_column_names(self):
         return [s.strip() for s in self.csv_names.split(",")]
@@ -100,7 +107,7 @@ class DataStorage(Permissions):
 
     def __add_data(self, parsed: QueryDict, file_opening="a+"):
         if isinstance(parsed, QueryDict):
-            parsed = {k: v for (k, v) in list(parsed.lists())} # This turns it into the form i would expect -->
+            parsed = {k: v for (k, v) in list(parsed.lists())}  # This turns it into the form i would expect -->
         elif isinstance(parsed, dict):
 
             parsed = {k: [v, ] for k, v in parsed.items()}
@@ -116,7 +123,7 @@ class DataStorage(Permissions):
                 for i in range(length):
                     line = ",".join([str(parsed[key][i]) for key in self.csv_column_names()])
                     self.rows += 1
-                    lines.append(line.strip()+"\n")
+                    lines.append(line.strip() + "\n")
                 f.writelines(lines)
         except FileNotFoundError:
             import os
@@ -188,7 +195,8 @@ class DataStorage(Permissions):
                 missing.append(str(name))
         if len(missing) > 0:
             raise AssertionError("Some of the specified data "
-                                 "names where missing: " + str(missing) + " The existing where " + str(parsed_json.keys()))
+                                 "names where missing: " + str(missing) + " The existing where " + str(
+                parsed_json.keys()))
 
     def latest_row(self):
         if not self.file_path().exists():
@@ -207,7 +215,7 @@ class DataStorage(Permissions):
                 try:
                     timestamp = int(float(v))
                 except TypeError:
-                    #https://stackabuse.com/converting-strings-to-datetime-in-python/
+                    # https://stackabuse.com/converting-strings-to-datetime-in-python/
                     date_time_obj = datetime.datetime.strptime(str(v), '%Y-%m-%d %H:%M:%S.%f')
                     timestamp = int(date_time_obj.timestamp())
                 return n, float_timestamp_to_dt(timestamp)
@@ -246,7 +254,7 @@ class DataStorage(Permissions):
         index = self.index_column
         t = self.index_column_values_are_time
 
-        def placeholder(column:str):
+        def placeholder(column: str):
             if column == index and t:
                 return "Time_either_unix_seconds_or_datetime_OSI8601"
             elif column == index:

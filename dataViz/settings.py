@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     "dashboard",
     "data",
     "tags",
+    "ui",
     # "reversion",
     "energy_utils",
     'wagtail.contrib.forms',
@@ -187,10 +188,10 @@ BASE_CONTEXT = {
     "GIT_HASH": os.environ.get('GIT_HASH', "dev"),
     "brand_name": "Yapity",
     "MEDIA_URL": MEDIA_URL,
-    "themes": ["light", "dark", "cupcake", "bumblebee", "emerald", "corporate", "synthwave", "retro",
-               "cyberpunk", "valentine", "halloween", "garden", "forest", "aqua",
-               "lofi", "pastel", "fantasy", "wireframe", "black", "luxury", "dracula", "cmyk", "autumn",
-               "business", "acid", "lemonade", "night", "coffee", "winter", "dim", "nord", "sunset"]
+    "themes": ["light", "dark", "cupcake", "bumblebee", "emerald", "corporate", "retro", "cyberpunk", "valentine",
+               "garden", "aqua", "lofi", "pastel", "fantasy", "wireframe", "cmyk", "autumn", "acid", "lemonade",
+               "winter", "nord", "synthwave", "halloween", "forest", "black", "luxury", "dracula", "business", "night",
+               "coffee", "dim", "sunset"]
 }
 
 DATA_FILES = BASE_DIR.joinpath("DEVELOPMENT_STORAGE")
