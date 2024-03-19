@@ -1,6 +1,6 @@
 {% if node.get_descendants|length %}
     <li>
-        <details open>
+        <details {% if node in ancestors or page.pk == node.pk %}open{% endif %}>
             <summary>
                 <a href="{{ node.url }}"
                    class="link link-hover {% if page.id == node.id %}font-bold{% endif %}">
