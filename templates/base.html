@@ -21,7 +21,7 @@
         <div class="toast toast-end">
             {% for message in messages %}
                 <div {% if message.tags %}class="alert alert-{{ message.tags }}"{% endif %}>
-                    <span>{{ message }}</span>
+                    <span>{{ message|safe }}</span>
                 </div>
             {% endfor %}
         </div>
