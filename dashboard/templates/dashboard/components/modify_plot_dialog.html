@@ -1,0 +1,32 @@
+<button class="join-item flex-1 btn btn-secondary" onclick="modify_plot_modal_{{ plot.id }}.showModal()">
+    <i data-lucide="pencil"></i>Modify Plot
+</button>
+<dialog id="modify_plot_modal_{{ plot.id }}" class="modal">
+    <div class="modal-box">
+        <form method="dialog">
+            <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+        </form>
+        <h3 class="font-bold text-lg">Modify {{ plot.name }}</h3>
+        <form method="post" action="{% url 'modify_plot' plot.id %}">
+            {% csrf_token %}
+            {% include "ui/forms/form.html" with form=plot.form %}
+            <div class="modal-action">
+                <button class="btn btn-primary btn-block" type="submit" value="Submit">Submit</button>
+            </div>
+        </form>
+        {% if plot.owner == request.user.normaluser %}
+            <form action="{% url 'delete_plot' plot.id %}"
+                  method="post"
+                  onclick="return confirm('Are you sure you want to delete the plot? You cannot undo this action.');">
+                {% csrf_token %}
+                <div class="modal-action">
+                    <button class="btn btn-error btn-block">Delete</button>
+                </div>
+            </form>
+        {% endif %}
+    </div>
+    <form method="dialog" class="modal-backdrop">
+        <button>close</button>
+    </form>
+</dialog>
+

@@ -1,19 +1,37 @@
 {% extends 'base.html' %}
-{% block content %}
-    <div class="container-fluid">
-        <div class="container-fluid d-flex justify-content-center">
-            <div style="text-align: center;">
-                <h1>Create an account</h1>
-                <br>
-                <p>If you <strong>do</strong> have an account you can login <a href="{% url 'login' %}">here.</a></p>
+{% load static %}
 
+{% block content %}
+    <div class="hero flex-1 h-full"
+         style="background-image: url({% static 'images/yapity-hero.png' %});">
+        <div class="hero-overlay bg-opacity-80"></div>
+        <div class="hero-content flex-col lg:flex-row-reverse">
+            <div class="text-center lg:text-left my-prose">
+                <h1 class="text-5xl font-bold !text-neutral-content">Signup now!</h1>
+                <p class="py-6 drop-shadow-md !text-neutral-content text-balance">Welcome to Yapity, your go-to
+                    note-taking haven!
+                    We're thrilled to have you on board. Dive into a seamless experience of jotting down your notes,
+                    thoughts,
+                    ideas, and to-dos. Happy noting!</p>
+            </div>
+            <div class="card shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
+                <div class="card-body">
+                    <form method="POST">
+                        {% csrf_token %}
+                        {% include "ui/forms/form.html" %}
+                        <div class="form-control mt-6">
+                            <button type="submit" value="Submit" class="btn btn-primary">Create account</button>
+                        </div>
+                    </form>
+                    <div class="card-actions">
+                        <p class="text-left">Already have an account?
+                            <a href="{% url 'login' %}" class="link">
+                                Login
+                            </a>
+                        </p>
+                    </div>
+                </div>
             </div>
         </div>
-        <form action="{% url "create_account" %}" method="POST">
-            {% csrf_token %}
-            {% include "dashboard/forms/form.html" %}
-            <button type="submit" value="Submit" class="btn btn-primary">Create account</button>
-        </form>
-
     </div>
 {% endblock %}
