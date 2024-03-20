@@ -191,7 +191,9 @@ BASE_CONTEXT = {
     "themes": ["light", "dark", "cupcake", "bumblebee", "emerald", "corporate", "retro", "cyberpunk", "valentine",
                "garden", "aqua", "lofi", "pastel", "fantasy", "wireframe", "cmyk", "autumn", "acid", "lemonade",
                "winter", "nord", "synthwave", "halloween", "forest", "black", "luxury", "dracula", "business", "night",
-               "coffee", "dim", "sunset"]
+               "coffee", "dim", "sunset"],
+    "dark_themes": ["dark", "synthwave", "halloween", "forest", "black", "luxury", "dracula", "business", "night",
+                    "coffee", "dim", "sunset"]
 }
 
 DATA_FILES = BASE_DIR.joinpath("DEVELOPMENT_STORAGE")
