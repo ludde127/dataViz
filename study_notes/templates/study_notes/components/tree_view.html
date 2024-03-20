@@ -1,26 +1,29 @@
-{% if node.get_descendants|length %}
-    <li>
-        <details {% if node in ancestors or page.pk == node.pk %}open{% endif %}>
-            <summary>
-                <a href="{{ node.url }}"
-                   class="link link-hover {% if page.id == node.id %}font-bold{% endif %}">
-                    {{ node.title }}
-                </a>
-            </summary>
-            <ul>
-                {% for ch in node.get_children  %}
-                    {% with node=ch %}
-                        {% include "study_notes/components/tree_view.html" %}
-                    {% endwith %}
-                {% endfor %}
-            </ul>
-        </details>
-    </li>
-{% else %}
-    <li>
-        <a href="{{ node.url }}"
-           class="link link-hover {% if page.id == node.id %}font-bold{% endif %}">
-            {{ node.title }}
-        </a>
-    </li>
+{% load study_notes_custom_filters %}
+{% if node.live %}
+    {% if node|get_live_children|length %}
+        <li>
+            <details {% if node in ancestors or page.pk == node.pk %}open{% endif %}>
+                <summary>
+                    <a href="{{ node.url }}"
+                       class="link link-hover {% if page.id == node.id %}font-bold{% endif %}">
+                        {{ node.title }}
+                    </a>
+                </summary>
+                <ul>
+                    {% for ch in node.get_children %}
+                        {% with node=ch %}
+                            {% include "study_notes/components/tree_view.html" %}
+                        {% endwith %}
+                    {% endfor %}
+                </ul>
+            </details>
+        </li>
+    {% else %}
+        <li>
+            <a href="{{ node.url }}"
+               class="link link-hover {% if page.id == node.id %}font-bold{% endif %}">
+                {{ node.title }}
+            </a>
+        </li>
+    {% endif %}
 {% endif %}
