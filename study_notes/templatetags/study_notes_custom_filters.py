@@ -13,5 +13,5 @@ def get_item(dictionary, key):
 
 
 @register.filter
-def get_live_children(page):
-    return [c for c in page.get_children() if c.live]
+def get_sorted_live_children(page):
+    return sorted([c for c in page.get_children() if c.live], key=lambda p: p.title)
