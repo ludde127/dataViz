@@ -1,7 +1,7 @@
 <div class="avatar">
-    {% if user.avatar %}
+    {% if user.wagtail_userprofile.avatar %}
         <div class="avatar rounded-full w-10">
-            <img alt="{{ user }} profile picture" src="{{ user.profile_image }}"/>
+            <img alt="{{ user }} profile picture" src="{{ user.wagtail_userprofile.avatar.url }}"/>
         </div>
     {% else %}
         <div class="avatar placeholder rounded-full w-10">
