@@ -24,5 +24,8 @@
             }
         }
     }
+}
 
+* {
+    scrollbar-color: oklch(var(--bc)) oklch(var(--b2));
 }

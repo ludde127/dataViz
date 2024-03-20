@@ -14117,6 +14117,10 @@ html:has(.drawer-open.drawer-open) {
   }
 }
 
+* {
+  scrollbar-color: oklch(var(--bc)) oklch(var(--b2));
+}
+
 .hover\:prose-lg:hover {
   font-size: 1.125rem;
   line-height: 1.7777778;
