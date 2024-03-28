@@ -88,8 +88,9 @@
                     </div>
                 </div>
             </div>
-
             <br>
+            <yapity-flashcards data-cards="{{ flash_card_list }}"
+                               data-first-card="{{ first_card }}"></yapity-flashcards>
         {% else %}
             <p>{{ users_page|capfirst }} hasn't subscribed to any flashcards... 🥺👉👈</p>
         {% endif %}
@@ -98,10 +99,12 @@
 
 {% block custom_scripts %}
     {% if are_there_cards %}
-        <script src="{% static 'js/user_flashcards.js' %}" lang="js">
-        </script>
-        <script lang="js">
-            let flashcards = new UserFlashcards({{ flash_card_list|safe }}, {{ first_card|safe }});
+        <script src="{% static 'js/custom-elements/flashcards.js' %}" type="module"></script>
+        <script src="{% static 'js/user_flashcards.js' %}" type="module"></script>
+        <script type="module">
+            import UserFlashcards from "/static/js/user_flashcards.js";
+
+            globalThis.flashcards = new UserFlashcards({{ flash_card_list|safe }}, {{ first_card|safe }});
         </script>
     {% endif %}
 {% endblock %}

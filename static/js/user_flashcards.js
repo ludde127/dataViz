@@ -1,3 +1,5 @@
+import toggleShow from "./utils.js";
+
 let id_end = "user-subscribed-cards";
 
 function shuffle(array) {
@@ -70,7 +72,7 @@ class CardHolder {
     }
 }
 
-class UserFlashcards {
+export default class UserFlashcards {
     constructor(flash_card_list, first_card) {
         this.flashcards = flash_card_list;
         this.scores = {};

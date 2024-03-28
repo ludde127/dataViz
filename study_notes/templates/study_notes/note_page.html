@@ -33,7 +33,7 @@
                                     <h1>{{ block.value.file }}</h1>
                                 {% elif block.block_type == 'image' %}
                                     <figure class="h-[800px]">
-                                        {% image block.value height-800 %}
+                                        {% image block.value height-800 format-webp %}
                                     </figure>
                                 {% elif block.block_type == 'quiz' %}
                                     <div class="flashcard-div"
