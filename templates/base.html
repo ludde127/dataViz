@@ -13,6 +13,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com"/>
     <link rel="stylesheet" type="text/css" href="{% static 'css/tailwind.css' %}?v={{ GIT_HASH }}"/>
     <link rel="icon" type="image/x-icon" href="{% static 'website_logo/favicon.ico' %}"/>
+    <script src="{% static 'js/theme.js' %}"></script>
 </head>
 <body class="{% block body_class %}{% endblock %}">
 <div class="relative flex min-h-screen flex-col overflow-x-clip">
@@ -37,14 +38,12 @@
 
 {% block scripts %}
     <script src="{% static 'js/utils.js' %}" type="module"></script>
-    <script src="{% static 'js/theme.js' %}"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script>
         lucide.createIcons()
     </script>
 {% endblock %}
 {% block custom_scripts %}
-
 {% endblock %}
 </body>
 </html>
