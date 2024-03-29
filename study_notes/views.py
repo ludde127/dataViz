@@ -25,18 +25,18 @@ def get_notepage_or_404(request, id):
 
 
 def toggle_subscription(request, subscribe=True):
-    if request.GET and request.user.is_authenticated:
+    if request.user.is_authenticated:
+        _json = json.loads(request.body)
         # http://127.0.0.1:8000/api-v2/change/subscribe/?page=11&flashcards=47b3d79e-189a-4bd8-99b1-45e2d75106f9
-        page = request.GET.get("page")
-        flashcard_group = request.GET.get("flashcards")
+        page = _json.get("page")
+        flashcard_group = _json.get("flashcards")
 
         err404, page_or_404 = get_notepage_or_404(request, page)
         if err404:
             return page_or_404
-        users_flashcards, created_new = UsersFlashcards.objects.get_or_create(
-            user=request.user)
-        flashcards, created_new = users_flashcards.flashcard_groups.get_or_create(
-            notepage_id=page, flashcards_id=flashcard_group)
+        users_flashcards, created_new = UsersFlashcards.objects.get_or_create(user=request.user)
+        flashcards, created_new = users_flashcards.flashcard_groups.get_or_create(notepage_id=page,
+                                                                                  flashcards_id=flashcard_group)
 
         if flashcards.subscription != subscribe:  # False and True per example
             flashcards.subscription = not flashcards.subscription
@@ -45,7 +45,7 @@ def toggle_subscription(request, subscribe=True):
 
         users_flashcards.save()
 
-        return HttpResponse("Subscribed", status=200)
+        return HttpResponse("Updated subscription", status=200)
 
     elif not request.user.is_authenticated:
         return HttpResponseForbidden(status=500)
@@ -54,10 +54,16 @@ def toggle_subscription(request, subscribe=True):
         return HttpResponseNotFound()
 
 
+@require_POST
+@csrf_exempt
+@login_required
 def subscribe_to_flashcard_group(request):
     return toggle_subscription(request, True)
 
 
+@require_POST
+@csrf_exempt
+@login_required
 def unsubscribe_to_flashcard_group(request):
     return toggle_subscription(request, False)
 
@@ -100,7 +106,7 @@ def view_flashcards_info(request):
     except UsersFlashcards.DoesNotExist:
         return HttpResponseNotFound("You have no flashcards")
     context = BASE_CONTEXT.copy()
-    data = users_flashcards.get_subscribed_flashcards(request, True)
+    data = users_flashcards.get_subscribed_flashcards(request)
     context["flashcards"] = data
     return context_render(request, "study_notes/flashcard_info.html", context=context)
 
@@ -121,15 +127,10 @@ def user_profile(request, user):
         context["title"] = str(user) + "'s profile"
         try:
             flash_card_list = user_object.usersflashcards.get_subscribed_flashcards(request)
-            try:
+            if flash_card_list and len(flash_card_list) > 0:
                 context["flash_card_list"] = json.dumps(flash_card_list)
-
                 context["amount_of_cards"] = len(flash_card_list)
                 context["are_there_cards"] = True
-
-            # value error from the randint if no cards are present.
-            except (IndexError, ValueError):
-                pass
         except UsersFlashcards.DoesNotExist:
             pass
         return context_render(request, "study_notes/user_profile.html", context=context)
