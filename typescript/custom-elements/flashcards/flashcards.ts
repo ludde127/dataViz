@@ -17,7 +17,6 @@ class Deck {
     constructor(cards: Array<Flashcard>) {
         this.cards = cards;
         this.#sort();
-        this.#dump();
     }
 
     draw() {
@@ -27,9 +26,6 @@ class Deck {
     insert(card: Flashcard) {
         this.cards.push(card);
         this.#sort();
-
-        console.log("Inserted card into deck");
-        this.#dump();
     }
 
     #heuristic(card: Flashcard) {
@@ -65,6 +61,8 @@ class YapityFlashcards extends HTMLElement {
 
     currentCard: Flashcard;
 
+    faceUp: "front" | "back";
+
     constructor() {
         super();
 
@@ -90,6 +88,8 @@ class YapityFlashcards extends HTMLElement {
         this.backFaceContent = this.backFace.querySelector("#face-content")!;
 
         this.currentCard = this.deck.draw();
+
+        this.faceUp = "front";
         this.#showCard();
     }
 
@@ -100,12 +100,20 @@ class YapityFlashcards extends HTMLElement {
         this.backFace.classList.toggle("flashcard-flip-in");
         this.backFace.classList.toggle("flashcard-flip-out");
         this.flipButton.classList.add("hidden");
-        this.interactionButtons.forEach(e => e.classList.toggle("btn-disabled"));
+        this.interactionButtons.forEach(e => {
+            console.log("toggle");
+            e.classList.toggle("btn-disabled")
+        });
+        this.faceUp = this.faceUp == "front" ? "back" : "front";
+        this.#showCard();
     }
 
     #showCard() {
-        this.frontFaceContent.innerHTML = this.currentCard.q;
-        this.backFaceContent.innerHTML = this.currentCard.a;
+        if (this.faceUp == "front") {
+            this.frontFaceContent.innerHTML = this.currentCard.q;
+        } else {
+            this.backFaceContent.innerHTML = this.currentCard.a;
+        }
     }
 
     async #nextCard(score: number) {
