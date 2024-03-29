@@ -3,16 +3,50 @@ type Flashcard = {
     a: string;
     block_id: string;
     id: string;
-    last_display_float: number;
+    last_displayed_float: number;
     notepage_id: number;
     score: number;
     times_displayed: number;
     weight: number;
 };
+type InteractionResponse = Pick<Flashcard, "id" | "score" | "times_displayed" | "weight" | "last_displayed_float">;
 
 class Deck {
+    cards: Array<Flashcard>;
+
     constructor(cards: Array<Flashcard>) {
+        this.cards = cards;
+        this.#sort();
+        this.#dump();
     }
+
+    draw() {
+        return this.cards.shift()!;
+    }
+
+    insert(card: Flashcard) {
+        this.cards.push(card);
+        this.#sort();
+
+        console.log("Inserted card into deck");
+        this.#dump();
+    }
+
+    #heuristic(card: Flashcard) {
+        const secondsSinceLastDisplayed = Date.now() / 1000.0 - card.last_displayed_float;
+        const decay = 150 * Math.exp(-secondsSinceLastDisplayed / 60.0);
+        return card.weight - decay;
+    }
+
+    #sort() {
+        this.cards.sort((a, b) => this.#heuristic(b) - this.#heuristic(a));
+    }
+
+    #dump() {
+        this.cards.map(c => `${this.#heuristic(c)}: ${Date.now() / 1000.0 - c.last_displayed_float}: ${c.weight}: ${c.q.slice(0, 40)}...`).forEach(c => console.log(c));
+        console.log(this.cards);
+    }
+
 }
 
 class YapityFlashcards extends HTMLElement {
@@ -55,8 +89,8 @@ class YapityFlashcards extends HTMLElement {
         this.backFace = this.querySelector("#back-face")!;
         this.backFaceContent = this.backFace.querySelector("#face-content")!;
 
-        this.currentCard = this.flashcards[0];
-        this.#showCard(this.currentCard);
+        this.currentCard = this.deck.draw();
+        this.#showCard();
     }
 
 
@@ -69,14 +103,18 @@ class YapityFlashcards extends HTMLElement {
         this.interactionButtons.forEach(e => e.classList.toggle("btn-disabled"));
     }
 
-    #showCard(card: Flashcard) {
-        this.frontFaceContent.innerHTML = card.q;
-        this.backFaceContent.innerHTML = card.a;
+    #showCard() {
+        this.frontFaceContent.innerHTML = this.currentCard.q;
+        this.backFaceContent.innerHTML = this.currentCard.a;
     }
 
-    #nextCard(score: number) {
-        console.log(`next card ${score}`)
-        console.log(this.#cardInteraction(this.currentCard, score));
+    async #nextCard(score: number) {
+        const updates = await this.#cardInteraction(this.currentCard, score);
+        const newCard: Flashcard = {...this.currentCard, ...updates};
+        this.deck.insert(newCard);
+        this.currentCard = this.deck.draw();
+        this.#flip();
+        this.#showCard();
     }
 
     async #cardInteraction(card: Flashcard, score: number) {
@@ -86,11 +124,11 @@ class YapityFlashcards extends HTMLElement {
                 page: card.notepage_id,
                 flashcards: card.block_id,
                 flashcard: card.id,
-                score
+                score,
             })
         });
-        const data = await response.json();
-        return JSON.parse(data) as Flashcard;
+
+        return await response.json() as InteractionResponse;
     }
 }
 

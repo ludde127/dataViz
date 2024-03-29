@@ -1,9 +1,10 @@
 import json
-import random
 
 import django.db.utils
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseNotFound, HttpResponse, HttpResponseForbidden, JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 
 from dataViz.settings import BASE_CONTEXT
 from dataViz.utils import context_render
@@ -61,34 +62,35 @@ def unsubscribe_to_flashcard_group(request):
     return toggle_subscription(request, False)
 
 
+@require_POST
+@csrf_exempt
+@login_required
 def add_flashcard_interactions(request):
-    if request.GET and request.user.is_authenticated:
-        # http://127.0.0.1:8000/api-v2/change/flashcard-interaction/?page=11&flashcards=47b3d79e-189a-4bd8-99b1-45e2d75106f9&flashcard=fadcd3c1-4520-4a06-8c2d-538d794e9aaf&score=1
-        page = request.GET.get("page")
-        flashcard_group = request.GET.get("flashcards")
-        flashcard = request.GET.get("flashcard")
-        score = request.GET.get("score")
-        # No longer check the score values, user could fuck up their own algo if they want
-        print(score)
+    _json = json.loads(request.body)
+    # http://127.0.0.1:8000/api-v2/change/flashcard-interaction/?page=11&flashcards=47b3d79e-189a-4bd8-99b1-45e2d75106f9&flashcard=fadcd3c1-4520-4a06-8c2d-538d794e9aaf&score=1
+    page = _json.get("page")
+    flashcard_group = _json.get("flashcards")
+    flashcard = _json.get("flashcard")
+    score = _json.get("score")
 
-        err404, page_or_404 = get_notepage_or_404(request, page)
-        if err404:
-            return page_or_404
-        users_flashcards = UsersFlashcards.objects.get_or_create(user=request.user)[
-            0]
-        flashcards: FlashCardGroupReference = users_flashcards.flashcard_groups.get_or_create(
-            notepage_id=page, flashcards_id=flashcard_group)[0]
-        histories = flashcards.flashcard_histories.get_or_create(
-            user=request.user, flashcard_id=flashcard)[0]
+    err404, page_or_404 = get_notepage_or_404(request, page)
+    if err404:
+        return page_or_404
+    users_flashcards = UsersFlashcards.objects.get_or_create(user=request.user)[0]
+    flashcards: FlashCardGroupReference = users_flashcards.flashcard_groups.get_or_create(
+        notepage_id=page,
+        flashcards_id=flashcard_group)[0]
+    histories = flashcards.flashcard_histories.get_or_create(
+        user=request.user,
+        flashcard_id=flashcard)[0]
 
-        histories = histories.increment(float(score))
+    histories = histories.increment(float(score))
 
-        json_data = {"id": histories.flashcard_id, "score": histories.score,
-                     "times_displayed": histories.times_shown, "weight": histories.weight(),
-                     "last_displayed_float": histories.last_shown.timestamp()}
+    json_data = {"id": histories.flashcard_id, "score": histories.score,
+                 "times_displayed": histories.times_shown, "weight": histories.weight(),
+                 "last_displayed_float": histories.last_shown.timestamp()}
 
-        return JsonResponse(data=json_data, status=200)
-    return HttpResponseForbidden()
+    return JsonResponse(data=json_data, status=200)
 
 
 @login_required
@@ -121,12 +123,7 @@ def user_profile(request, user):
             flash_card_list = user_object.usersflashcards.get_subscribed_flashcards(request)
             try:
                 context["flash_card_list"] = json.dumps(flash_card_list)
-                first = flash_card_list[random.randint(0, len(flash_card_list) - 1)]
 
-                copy = first.copy()
-                copy["a"] = str(copy["a"])
-                print(copy)
-                context["first_card"] = first
                 context["amount_of_cards"] = len(flash_card_list)
                 context["are_there_cards"] = True
 

@@ -1,0 +1,65 @@
+{% load static %}
+
+<yapity-flashcards data-cards="{{ flash_card_list }}">
+    <div class="flex-1 flex flex-row flex-wrap gap-1">
+        <span class="badge badge-primary lg:badge-lg text-nowrap">
+            Card:&nbsp;<span id="progress-badge">1</span>/{{ amount_of_cards }}
+        </span>
+        <span class="badge badge-accent lg:badge-lg text-nowrap">Score:&nbsp;
+            <span id="score-badge">0</span>
+        </span>
+    </div>
+    <div class="relative my-4 h-96 cursor-pointer" id="face-container">
+        <div class="h-96 flashcard-face absolute flashcard-flip-in card bg-base-100 shadow-xl overflow-hidden w-full"
+             id="front-face">
+            <div class="flashcard-face card-body bg-base-200 text-base-content overflow-y-auto">
+                <div id="face-content" class="flashcard-face"></div>
+            </div>
+        </div>
+        <div class="h-96 flashcard-face absolute flashcard-flip-out card bg-base-100 shadow-xl overflow-hidden w-full"
+             id="back-face">
+            <div class="flashcard-face card-body bg-base-200 text-base-content overflow-y-auto">
+                <div id="face-content" class="flashcard-face">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <button class="btn btn-primary btn-block lg:btn-lg hidden" id="flip-button">
+            <i data-lucide="flip-horizontal"></i>
+            Flip Card
+        </button>
+        <div class="join btn-block" id="interaction-buttons">
+            <div class="tooltip tooltip-error flex-1" data-tip="Again">
+                <button class="btn btn-error btn-disabled sm:btn-lg join-item w-full"
+                        data-score="-1">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+            <div class="tooltip tooltip-neutral flex-1" data-tip="Skip">
+                <button class="btn btn-neutral btn-disabled sm:btn-lg join-item w-full"
+                        data-score="0">
+                    <i data-lucide="redo"></i>
+                </button>
+            </div>
+            <div class="tooltip tooltip-warning flex-1" data-tip="Ok">
+                <button class="btn btn-warning btn-disabled sm:btn-lg join-item w-full"
+                        data-score="0.7">
+                    <i data-lucide="smile"></i>
+                </button>
+            </div>
+            <div class="tooltip tooltip-info flex-1" data-tip="Good">
+                <button class="btn btn-info btn-disabled sm:btn-lg join-item w-full"
+                        data-score="1">
+                    <i data-lucide="laugh"></i>
+                </button>
+            </div>
+            <div class="tooltip tooltip-success flex-1" data-tip="Easy">
+                <button class="btn btn-success btn-disabled sm:btn-lg join-item w-full"
+                        data-score="7">
+                    <i data-lucide="check"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</yapity-flashcards>
