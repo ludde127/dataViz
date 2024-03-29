@@ -70,7 +70,7 @@ pnpm build
 
 ## Typescript
 
-If you're going write typescript code and need to recompile the javascript files:
+If you're going to write typescript code and need to recompile the javascript files:
 
 ### Setup
 
@@ -93,7 +93,7 @@ The typescript files will be compiled and placed in `static/js/compiled/`
 pnpm build
 ```
 
-### Add script to `base.html`
+### Adding scripts to `base.html`
 
 ```html
 

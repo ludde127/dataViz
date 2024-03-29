@@ -36,7 +36,8 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
 var _Deck_instances, _Deck_heuristic, _Deck_sort, _Deck_dump, _YapityFlashcards_instances, _YapityFlashcards_flip,
-    _YapityFlashcards_showCard, _YapityFlashcards_nextCard, _YapityFlashcards_cardInteraction;
+    _YapityFlashcards_showCard, _YapityFlashcards_nextCard, _YapityFlashcards_cardInteraction,
+    _YapityFlashcards_disableButtons, _YapityFlashcards_enableButtons;
 
 class Deck {
     constructor(cards) {
@@ -99,12 +100,18 @@ class YapityFlashcards extends HTMLElement {
 }
 
 _YapityFlashcards_instances = new WeakSet(), _YapityFlashcards_flip = function _YapityFlashcards_flip() {
+    this.faceUp = this.faceUp == "front" ? "back" : "front";
     this.frontFace.classList.toggle("flashcard-flip-in");
     this.frontFace.classList.toggle("flashcard-flip-out");
     this.backFace.classList.toggle("flashcard-flip-in");
     this.backFace.classList.toggle("flashcard-flip-out");
-    this.interactionButtons.forEach(e => e.classList.toggle("btn-disabled"));
-    this.faceUp = this.faceUp == "front" ? "back" : "front";
+    this.interactionButtons.forEach(e => {
+        if (this.faceUp == "front") {
+            __classPrivateFieldGet(this, _YapityFlashcards_instances, "m", _YapityFlashcards_disableButtons).call(this);
+        } else {
+            __classPrivateFieldGet(this, _YapityFlashcards_instances, "m", _YapityFlashcards_enableButtons).call(this);
+        }
+    });
     __classPrivateFieldGet(this, _YapityFlashcards_instances, "m", _YapityFlashcards_showCard).call(this);
 }, _YapityFlashcards_showCard = function _YapityFlashcards_showCard() {
     if (this.faceUp == "front") {
@@ -114,6 +121,7 @@ _YapityFlashcards_instances = new WeakSet(), _YapityFlashcards_flip = function _
     }
 }, _YapityFlashcards_nextCard = function _YapityFlashcards_nextCard(score) {
     return __awaiter(this, void 0, void 0, function* () {
+        __classPrivateFieldGet(this, _YapityFlashcards_instances, "m", _YapityFlashcards_disableButtons).call(this);
         const updates = yield __classPrivateFieldGet(this, _YapityFlashcards_instances, "m", _YapityFlashcards_cardInteraction).call(this, this.currentCard, score);
         const newCard = Object.assign(Object.assign(Object.assign({}, this.currentCard), updates), {lastScore: score});
         this.deck.insert(newCard);
@@ -135,6 +143,10 @@ _YapityFlashcards_instances = new WeakSet(), _YapityFlashcards_flip = function _
         });
         return yield response.json();
     });
+}, _YapityFlashcards_disableButtons = function _YapityFlashcards_disableButtons() {
+    this.interactionButtons.forEach(e => e.classList.add("btn-disabled"));
+}, _YapityFlashcards_enableButtons = function _YapityFlashcards_enableButtons() {
+    this.interactionButtons.forEach(e => e.classList.remove("btn-disabled"));
 };
 customElements.define("yapity-flashcards", YapityFlashcards);
 //# sourceMappingURL=flashcards.js.map

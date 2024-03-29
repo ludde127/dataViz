@@ -105,13 +105,21 @@ class YapityFlashcards extends HTMLElement {
 
 
     #flip() {
+        this.faceUp = this.faceUp == "front" ? "back" : "front";
+
         this.frontFace.classList.toggle("flashcard-flip-in");
         this.frontFace.classList.toggle("flashcard-flip-out");
         this.backFace.classList.toggle("flashcard-flip-in");
         this.backFace.classList.toggle("flashcard-flip-out");
-        this.interactionButtons.forEach(e => e.classList.toggle("btn-disabled"));
 
-        this.faceUp = this.faceUp == "front" ? "back" : "front";
+        this.interactionButtons.forEach(e => {
+            if (this.faceUp == "front") {
+                this.#disableButtons();
+            } else {
+                this.#enableButtons();
+            }
+        });
+
         this.#showCard();
     }
 
@@ -124,6 +132,8 @@ class YapityFlashcards extends HTMLElement {
     }
 
     async #nextCard(score: number) {
+        this.#disableButtons();
+
         const updates = await this.#cardInteraction(this.currentCard, score);
         const newCard: Flashcard = {...this.currentCard, ...updates, lastScore: score};
 
@@ -147,6 +157,14 @@ class YapityFlashcards extends HTMLElement {
             })
         });
         return await response.json() as InteractionResponse;
+    }
+
+    #disableButtons() {
+        this.interactionButtons.forEach(e => e.classList.add("btn-disabled"));
+    }
+
+    #enableButtons() {
+        this.interactionButtons.forEach(e => e.classList.remove("btn-disabled"));
     }
 }
 
