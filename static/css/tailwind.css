@@ -2790,6 +2790,14 @@ html {
   --tw-backdrop-sepia: ;
 }
 
+.\!container {
+  width: 100% !important;
+  margin-right: auto !important;
+  margin-left: auto !important;
+  padding-right: 2rem !important;
+  padding-left: 2rem !important;
+}
+
 .container {
   width: 100%;
   margin-right: auto;
@@ -2799,6 +2807,10 @@ html {
 }
 
 @media (min-width: 1400px) {
+  .\!container {
+    max-width: 1400px !important;
+  }
+
   .container {
     max-width: 1400px;
   }
@@ -3739,6 +3751,11 @@ html {
     border-color: var(--fallback-er, oklch(var(--er)/var(--tw-border-opacity)));
   }
 
+  .\!label a:hover {
+    --tw-text-opacity: 1 !important;
+    color: var(--fallback-bc, oklch(var(--bc)/var(--tw-text-opacity))) !important;
+  }
+
   .label a:hover {
     --tw-text-opacity: 1;
     color: var(--fallback-bc, oklch(var(--bc)/var(--tw-text-opacity)));
@@ -3798,10 +3815,22 @@ html {
     color: var(--fallback-pc, oklch(var(--pc)/var(--tw-text-opacity)));
   }
 
+  .\!table tr.hover:hover,
+  .\!table tr.hover:nth-child(even):hover {
+    --tw-bg-opacity: 1 !important;
+    background-color: var(--fallback-b2, oklch(var(--b2)/var(--tw-bg-opacity))) !important;
+  }
+
   .table tr.hover:hover,
   .table tr.hover:nth-child(even):hover {
     --tw-bg-opacity: 1;
     background-color: var(--fallback-b2, oklch(var(--b2)/var(--tw-bg-opacity)));
+  }
+
+  .\!table tr.hover:hover,
+  .\!table tr.hover:nth-child(even):hover {
+    --tw-bg-opacity: 1 !important;
+    background-color: var(--fallback-b2, oklch(var(--b2)/var(--tw-bg-opacity))) !important;
   }
 
   .table-zebra tr.hover:hover,
@@ -4814,6 +4843,19 @@ html {
   flex-direction: column;
 }
 
+.\!label {
+  display: flex !important;
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  user-select: none !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding-left: 0.25rem !important;
+  padding-right: 0.25rem !important;
+  padding-top: 0.5rem !important;
+  padding-bottom: 0.5rem !important;
+}
+
 .label {
   display: flex;
   -webkit-user-select: none;
@@ -5018,6 +5060,11 @@ html {
   border-bottom-width: 2px;
   min-height: 2.2em;
   min-width: 2.2em;
+}
+
+.\!link {
+  cursor: pointer !important;
+  text-decoration-line: underline !important;
 }
 
 .link {
@@ -5281,6 +5328,18 @@ html {
   justify-content: flex-end;
 }
 
+.\!progress {
+  position: relative !important;
+  width: 100% !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
+  overflow: hidden !important;
+  height: 0.5rem !important;
+  border-radius: var(--rounded-box, 1rem) !important;
+  background-color: var(--fallback-bc, oklch(var(--bc)/0.2)) !important;
+}
+
 .progress {
   position: relative;
   width: 100%;
@@ -5370,6 +5429,19 @@ html {
   --tw-border-opacity: 0.2;
 }
 
+.\!range {
+  height: 1.5rem !important;
+  width: 100% !important;
+  cursor: pointer !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  --range-shdw: var(--fallback-bc, oklch(var(--bc)/1)) !important;
+  overflow: hidden !important;
+  border-radius: var(--rounded-box, 1rem) !important;
+  background-color: transparent !important;
+}
+
 .range {
   height: 1.5rem;
   width: 100%;
@@ -5381,6 +5453,10 @@ html {
   overflow: hidden;
   border-radius: var(--rounded-box, 1rem);
   background-color: transparent;
+}
+
+.\!range:focus {
+  outline: none !important;
 }
 
 .range:focus {
@@ -5678,6 +5754,15 @@ input.tab:checked + .tab-content,
   display: block;
 }
 
+.\!table {
+  position: relative !important;
+  width: 100% !important;
+  border-radius: var(--rounded-box, 1rem) !important;
+  text-align: left !important;
+  font-size: 0.875rem !important;
+  line-height: 1.25rem !important;
+}
+
 .table {
   position: relative;
   width: 100%;
@@ -5685,6 +5770,14 @@ input.tab:checked + .tab-content,
   text-align: left;
   font-size: 0.875rem;
   line-height: 1.25rem;
+}
+
+.\!table :where(.table-pin-rows thead tr) {
+  position: sticky !important;
+  top: 0px !important;
+  z-index: 1 !important;
+  --tw-bg-opacity: 1 !important;
+  background-color: var(--fallback-b1, oklch(var(--b1)/var(--tw-bg-opacity))) !important;
 }
 
 .table :where(.table-pin-rows thead tr) {
@@ -5695,12 +5788,28 @@ input.tab:checked + .tab-content,
   background-color: var(--fallback-b1, oklch(var(--b1)/var(--tw-bg-opacity)));
 }
 
+.\!table :where(.table-pin-rows tfoot tr) {
+  position: sticky !important;
+  bottom: 0px !important;
+  z-index: 1 !important;
+  --tw-bg-opacity: 1 !important;
+  background-color: var(--fallback-b1, oklch(var(--b1)/var(--tw-bg-opacity))) !important;
+}
+
 .table :where(.table-pin-rows tfoot tr) {
   position: sticky;
   bottom: 0px;
   z-index: 1;
   --tw-bg-opacity: 1;
   background-color: var(--fallback-b1, oklch(var(--b1)/var(--tw-bg-opacity)));
+}
+
+.\!table :where(.table-pin-cols tr th) {
+  position: sticky !important;
+  left: 0px !important;
+  right: 0px !important;
+  --tw-bg-opacity: 1 !important;
+  background-color: var(--fallback-b1, oklch(var(--b1)/var(--tw-bg-opacity))) !important;
 }
 
 .table :where(.table-pin-cols tr th) {
@@ -6022,6 +6131,11 @@ input.tab:checked + .tab-content,
 .btm-nav > * .label {
   font-size: 1rem;
   line-height: 1.5rem;
+}
+
+.btm-nav > * .\!label {
+  font-size: 1rem !important;
+  line-height: 1.5rem !important;
 }
 
 .breadcrumbs > ul > li > a:focus, .breadcrumbs > ol > li > a:focus {
@@ -7414,9 +7528,19 @@ details.collapse summary::-webkit-details-marker {
   color: var(--fallback-er, oklch(var(--er)/var(--tw-text-opacity)));
 }
 
+.\!link:focus {
+  outline: 2px solid transparent !important;
+  outline-offset: 2px !important;
+}
+
 .link:focus {
   outline: 2px solid transparent;
   outline-offset: 2px;
+}
+
+.\!link:focus-visible {
+  outline: 2px solid currentColor !important;
+  outline-offset: 2px !important;
 }
 
 .link:focus-visible {
@@ -7923,10 +8047,30 @@ details.collapse summary::-webkit-details-marker {
   }
 }
 
+.\!progress::-moz-progress-bar {
+  border-radius: var(--rounded-box, 1rem) !important;
+  --tw-bg-opacity: 1 !important;
+  background-color: var(--fallback-bc, oklch(var(--bc)/var(--tw-bg-opacity))) !important;
+}
+
 .progress::-moz-progress-bar {
   border-radius: var(--rounded-box, 1rem);
   --tw-bg-opacity: 1;
   background-color: var(--fallback-bc, oklch(var(--bc)/var(--tw-bg-opacity)));
+}
+
+.\!progress:indeterminate {
+  --progress-color: var(--fallback-bc, oklch(var(--bc)/1)) !important;
+  background-image: repeating-linear-gradient(
+          90deg,
+          var(--progress-color) -1%,
+          var(--progress-color) 10%,
+          transparent 10%,
+          transparent 90%
+  ) !important;
+  background-size: 200% !important;
+  background-position-x: 15% !important;
+  animation: progress-loading 5s ease-in-out infinite !important;
 }
 
 .progress:indeterminate {
@@ -7943,15 +8087,40 @@ details.collapse summary::-webkit-details-marker {
   animation: progress-loading 5s ease-in-out infinite;
 }
 
+.\!progress::-webkit-progress-bar {
+  border-radius: var(--rounded-box, 1rem) !important;
+  background-color: transparent !important;
+}
+
 .progress::-webkit-progress-bar {
   border-radius: var(--rounded-box, 1rem);
   background-color: transparent;
+}
+
+.\!progress::-webkit-progress-value {
+  border-radius: var(--rounded-box, 1rem) !important;
+  --tw-bg-opacity: 1 !important;
+  background-color: var(--fallback-bc, oklch(var(--bc)/var(--tw-bg-opacity))) !important;
 }
 
 .progress::-webkit-progress-value {
   border-radius: var(--rounded-box, 1rem);
   --tw-bg-opacity: 1;
   background-color: var(--fallback-bc, oklch(var(--bc)/var(--tw-bg-opacity)));
+}
+
+.\!progress:indeterminate::-moz-progress-bar {
+  background-color: transparent !important;
+  background-image: repeating-linear-gradient(
+          90deg,
+          var(--progress-color) -1%,
+          var(--progress-color) 10%,
+          transparent 10%,
+          transparent 90%
+  ) !important;
+  background-size: 200% !important;
+  background-position-x: 15% !important;
+  animation: progress-loading 5s ease-in-out infinite !important;
 }
 
 .progress:indeterminate::-moz-progress-bar {
@@ -8161,12 +8330,27 @@ details.collapse summary::-webkit-details-marker {
   display: none;
 }
 
+.\!range:focus-visible::-webkit-slider-thumb {
+  --focus-shadow: 0 0 0 6px var(--fallback-b1, oklch(var(--b1)/1)) inset, 0 0 0 2rem var(--range-shdw) inset !important;
+}
+
 .range:focus-visible::-webkit-slider-thumb {
   --focus-shadow: 0 0 0 6px var(--fallback-b1, oklch(var(--b1)/1)) inset, 0 0 0 2rem var(--range-shdw) inset;
 }
 
+.\!range:focus-visible::-moz-range-thumb {
+  --focus-shadow: 0 0 0 6px var(--fallback-b1, oklch(var(--b1)/1)) inset, 0 0 0 2rem var(--range-shdw) inset !important;
+}
+
 .range:focus-visible::-moz-range-thumb {
   --focus-shadow: 0 0 0 6px var(--fallback-b1, oklch(var(--b1)/1)) inset, 0 0 0 2rem var(--range-shdw) inset;
+}
+
+.\!range::-webkit-slider-runnable-track {
+  height: 0.5rem !important;
+  width: 100% !important;
+  border-radius: var(--rounded-box, 1rem) !important;
+  background-color: var(--fallback-bc, oklch(var(--bc)/0.1)) !important;
 }
 
 .range::-webkit-slider-runnable-track {
@@ -8176,11 +8360,38 @@ details.collapse summary::-webkit-details-marker {
   background-color: var(--fallback-bc, oklch(var(--bc)/0.1));
 }
 
+.\!range::-moz-range-track {
+  height: 0.5rem !important;
+  width: 100% !important;
+  border-radius: var(--rounded-box, 1rem) !important;
+  background-color: var(--fallback-bc, oklch(var(--bc)/0.1)) !important;
+}
+
 .range::-moz-range-track {
   height: 0.5rem;
   width: 100%;
   border-radius: var(--rounded-box, 1rem);
   background-color: var(--fallback-bc, oklch(var(--bc)/0.1));
+}
+
+.\!range::-webkit-slider-thumb {
+  position: relative !important;
+  height: 1.5rem !important;
+  width: 1.5rem !important;
+  border-radius: var(--rounded-box, 1rem) !important;
+  border-style: none !important;
+  --tw-bg-opacity: 1 !important;
+  background-color: var(--fallback-b1, oklch(var(--b1)/var(--tw-bg-opacity))) !important;
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  top: 50% !important;
+  color: var(--range-shdw) !important;
+  transform: translateY(-50%) !important;
+  --filler-size: 100rem !important;
+  --filler-offset: 0.6rem !important;
+  box-shadow: 0 0 0 3px var(--range-shdw) inset,
+  var(--focus-shadow, 0 0),
+  calc(var(--filler-size) * -1 - var(--filler-offset)) 0 0 var(--filler-size) !important;
 }
 
 .range::-webkit-slider-thumb {
@@ -8201,6 +8412,23 @@ details.collapse summary::-webkit-details-marker {
   box-shadow: 0 0 0 3px var(--range-shdw) inset,
   var(--focus-shadow, 0 0),
   calc(var(--filler-size) * -1 - var(--filler-offset)) 0 0 var(--filler-size);
+}
+
+.\!range::-moz-range-thumb {
+  position: relative !important;
+  height: 1.5rem !important;
+  width: 1.5rem !important;
+  border-radius: var(--rounded-box, 1rem) !important;
+  border-style: none !important;
+  --tw-bg-opacity: 1 !important;
+  background-color: var(--fallback-b1, oklch(var(--b1)/var(--tw-bg-opacity))) !important;
+  top: 50% !important;
+  color: var(--range-shdw) !important;
+  --filler-size: 100rem !important;
+  --filler-offset: 0.5rem !important;
+  box-shadow: 0 0 0 3px var(--range-shdw) inset,
+  var(--focus-shadow, 0 0),
+  calc(var(--filler-size) * -1 - var(--filler-offset)) 0 0 var(--filler-size) !important;
 }
 
 .range::-moz-range-thumb {
@@ -8790,8 +9018,20 @@ details.collapse summary::-webkit-details-marker {
   color: var(--fallback-pc, oklch(var(--pc)/var(--tw-text-opacity)));
 }
 
+:is([dir="rtl"] .\!table) {
+  text-align: right !important;
+}
+
 :is([dir="rtl"] .table) {
   text-align: right;
+}
+
+.\!table :where(th, td) {
+  padding-left: 1rem !important;
+  padding-right: 1rem !important;
+  padding-top: 0.75rem !important;
+  padding-bottom: 0.75rem !important;
+  vertical-align: middle !important;
 }
 
 .table :where(th, td) {
@@ -8802,11 +9042,23 @@ details.collapse summary::-webkit-details-marker {
   vertical-align: middle;
 }
 
+.\!table tr.active,
+.\!table tr.active:nth-child(even) {
+  --tw-bg-opacity: 1 !important;
+  background-color: var(--fallback-b2, oklch(var(--b2)/var(--tw-bg-opacity))) !important;
+}
+
 .table tr.active,
 .table tr.active:nth-child(even),
 .table-zebra tbody tr:nth-child(even) {
   --tw-bg-opacity: 1;
   background-color: var(--fallback-b2, oklch(var(--b2)/var(--tw-bg-opacity)));
+}
+
+.\!table tr.active,
+.\!table tr.active:nth-child(even) {
+  --tw-bg-opacity: 1 !important;
+  background-color: var(--fallback-b2, oklch(var(--b2)/var(--tw-bg-opacity))) !important;
 }
 
 .table-zebra tr.active,
@@ -8816,11 +9068,33 @@ details.collapse summary::-webkit-details-marker {
   background-color: var(--fallback-b3, oklch(var(--b3)/var(--tw-bg-opacity)));
 }
 
+.\!table :where(thead, tbody) :where(tr:not(:last-child)),
+.\!table :where(thead, tbody) :where(tr:first-child:last-child) {
+  border-bottom-width: 1px !important;
+  --tw-border-opacity: 1 !important;
+  border-bottom-color: var(--fallback-b2, oklch(var(--b2)/var(--tw-border-opacity))) !important;
+}
+
 .table :where(thead, tbody) :where(tr:not(:last-child)),
 .table :where(thead, tbody) :where(tr:first-child:last-child) {
   border-bottom-width: 1px;
   --tw-border-opacity: 1;
   border-bottom-color: var(--fallback-b2, oklch(var(--b2)/var(--tw-border-opacity)));
+}
+
+.\!table :where(thead, tbody) :where(tr:not(:last-child)),
+.\!table :where(thead, tbody) :where(tr:first-child:last-child) {
+  border-bottom-width: 1px !important;
+  --tw-border-opacity: 1 !important;
+  border-bottom-color: var(--fallback-b2, oklch(var(--b2)/var(--tw-border-opacity))) !important;
+}
+
+.\!table :where(thead, tfoot) {
+  white-space: nowrap !important;
+  font-size: 0.75rem !important;
+  line-height: 1rem !important;
+  font-weight: 700 !important;
+  color: var(--fallback-bc, oklch(var(--bc)/0.6)) !important;
 }
 
 .table :where(thead, tfoot) {
@@ -11282,6 +11556,10 @@ html:has(.drawer-open.drawer-open) {
   -webkit-line-clamp: none;
 }
 
+.\!block {
+  display: block !important;
+}
+
 .block {
   display: block;
 }
@@ -11300,6 +11578,10 @@ html:has(.drawer-open.drawer-open) {
 
 .inline-flex {
   display: inline-flex;
+}
+
+.\!table {
+  display: table !important;
 }
 
 .table {
@@ -11344,6 +11626,10 @@ html:has(.drawer-open.drawer-open) {
 
 .flow-root {
   display: flow-root;
+}
+
+.\!grid {
+  display: grid !important;
 }
 
 .grid {
@@ -14161,6 +14447,10 @@ html:has(.drawer-open.drawer-open) {
   100% {
     transform: rotateY(180deg);
   }
+}
+
+.\[a-zA-Z0-9\:\\\\-\\\\\._\$\] {
+  a-z-a--z0-9: \\-\\ . $;
 }
 
 .hover\:prose-lg:hover {

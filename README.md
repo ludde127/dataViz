@@ -67,3 +67,35 @@ pnpm dev
 ```shell
 pnpm build
 ```
+
+## Typescript
+
+If you're going write typescript code and need to recompile the javascript files:
+
+### Setup
+
+```shell
+cd typescript
+pnpm i
+```
+
+### Run continuously in development
+
+```shell
+pnpm dev
+```
+
+### Build .js files
+
+The typescript files will be compiled and placed in `static/js/compiled/`
+
+```shell
+pnpm build
+```
+
+### Add script to `base.html`
+
+```html
+
+<script type="module" src="{% static 'js/compiled/file.js' %}"></script>
+```
