@@ -8,6 +8,7 @@ type Flashcard = {
     score: number;
     times_displayed: number;
     weight: number;
+    lastScore?: number;
 };
 type InteractionResponse = Pick<Flashcard, "id" | "score" | "times_displayed" | "weight" | "last_displayed_float">;
 
@@ -26,6 +27,14 @@ class Deck {
     insert(card: Flashcard) {
         this.cards.push(card);
         this.#sort();
+    }
+
+    score() {
+        let sum = 0;
+        for (const card of this.cards) {
+            if (card.lastScore) sum += card.lastScore;
+        }
+        return sum;
     }
 
     #heuristic(card: Flashcard) {
@@ -48,10 +57,10 @@ class Deck {
 class YapityFlashcards extends HTMLElement {
     flashcards: Array<Flashcard>;
     deck: Deck;
-    scores: Array<number>;
 
+    progressBadge: HTMLElement;
     scoreBadge: HTMLElement;
-    flipButton: HTMLElement;
+
     interactionButtons: NodeListOf<Element>;
 
     frontFace: HTMLElement;
@@ -62,18 +71,18 @@ class YapityFlashcards extends HTMLElement {
     currentCard: Flashcard;
 
     faceUp: "front" | "back";
+    cardNumber: number;
 
     constructor() {
         super();
 
+        // Setup data
         this.flashcards = JSON.parse(this.dataset.cards!);
         this.deck = new Deck(this.flashcards);
-        this.scores = [];
 
+        this.cardNumber = 1;
+        this.progressBadge = this.querySelector("#progress-badge")!;
         this.scoreBadge = this.querySelector("#score-badge")!;
-
-        this.flipButton = this.querySelector("#flip-button")!;
-        this.flipButton?.addEventListener("click", () => this.#flip());
 
         // Add event listeners to progression buttons
         this.interactionButtons = this.querySelectorAll("[data-score]");
@@ -81,14 +90,15 @@ class YapityFlashcards extends HTMLElement {
             e.addEventListener("click", () => this.#nextCard(parseFloat((e as HTMLElement).dataset.score!)))
         );
 
+        // Setup faces
         this.querySelector("#face-container")?.addEventListener("click", () => this.#flip());
         this.frontFace = this.querySelector("#front-face")!;
         this.frontFaceContent = this.frontFace.querySelector("#face-content")!;
         this.backFace = this.querySelector("#back-face")!;
         this.backFaceContent = this.backFace.querySelector("#face-content")!;
 
+        // Setup first card
         this.currentCard = this.deck.draw();
-
         this.faceUp = "front";
         this.#showCard();
     }
@@ -99,11 +109,8 @@ class YapityFlashcards extends HTMLElement {
         this.frontFace.classList.toggle("flashcard-flip-out");
         this.backFace.classList.toggle("flashcard-flip-in");
         this.backFace.classList.toggle("flashcard-flip-out");
-        this.flipButton.classList.add("hidden");
-        this.interactionButtons.forEach(e => {
-            console.log("toggle");
-            e.classList.toggle("btn-disabled")
-        });
+        this.interactionButtons.forEach(e => e.classList.toggle("btn-disabled"));
+
         this.faceUp = this.faceUp == "front" ? "back" : "front";
         this.#showCard();
     }
@@ -118,11 +125,15 @@ class YapityFlashcards extends HTMLElement {
 
     async #nextCard(score: number) {
         const updates = await this.#cardInteraction(this.currentCard, score);
-        const newCard: Flashcard = {...this.currentCard, ...updates};
+        const newCard: Flashcard = {...this.currentCard, ...updates, lastScore: score};
+
         this.deck.insert(newCard);
+        this.scoreBadge.textContent = this.deck.score().toFixed(1);
         this.currentCard = this.deck.draw();
+
+        this.progressBadge.textContent = (++this.cardNumber).toString();
+
         this.#flip();
-        this.#showCard();
     }
 
     async #cardInteraction(card: Flashcard, score: number) {
@@ -135,7 +146,6 @@ class YapityFlashcards extends HTMLElement {
                 score,
             })
         });
-
         return await response.json() as InteractionResponse;
     }
 }

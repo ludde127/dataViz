@@ -53,6 +53,15 @@ class Deck {
         this.cards.push(card);
         __classPrivateFieldGet(this, _Deck_instances, "m", _Deck_sort).call(this);
     }
+
+    score() {
+        let sum = 0;
+        for (const card of this.cards) {
+            if (card.lastScore)
+                sum += card.lastScore;
+        }
+        return sum;
+    }
 }
 
 _Deck_instances = new WeakSet(), _Deck_heuristic = function _Deck_heuristic(card) {
@@ -68,18 +77,17 @@ _Deck_instances = new WeakSet(), _Deck_heuristic = function _Deck_heuristic(card
 
 class YapityFlashcards extends HTMLElement {
     constructor() {
-        var _a, _b;
+        var _a;
         super();
         _YapityFlashcards_instances.add(this);
         this.flashcards = JSON.parse(this.dataset.cards);
         this.deck = new Deck(this.flashcards);
-        this.scores = [];
+        this.cardNumber = 1;
+        this.progressBadge = this.querySelector("#progress-badge");
         this.scoreBadge = this.querySelector("#score-badge");
-        this.flipButton = this.querySelector("#flip-button");
-        (_a = this.flipButton) === null || _a === void 0 ? void 0 : _a.addEventListener("click", () => __classPrivateFieldGet(this, _YapityFlashcards_instances, "m", _YapityFlashcards_flip).call(this));
         this.interactionButtons = this.querySelectorAll("[data-score]");
         this.interactionButtons.forEach(e => e.addEventListener("click", () => __classPrivateFieldGet(this, _YapityFlashcards_instances, "m", _YapityFlashcards_nextCard).call(this, parseFloat(e.dataset.score))));
-        (_b = this.querySelector("#face-container")) === null || _b === void 0 ? void 0 : _b.addEventListener("click", () => __classPrivateFieldGet(this, _YapityFlashcards_instances, "m", _YapityFlashcards_flip).call(this));
+        (_a = this.querySelector("#face-container")) === null || _a === void 0 ? void 0 : _a.addEventListener("click", () => __classPrivateFieldGet(this, _YapityFlashcards_instances, "m", _YapityFlashcards_flip).call(this));
         this.frontFace = this.querySelector("#front-face");
         this.frontFaceContent = this.frontFace.querySelector("#face-content");
         this.backFace = this.querySelector("#back-face");
@@ -95,11 +103,7 @@ _YapityFlashcards_instances = new WeakSet(), _YapityFlashcards_flip = function _
     this.frontFace.classList.toggle("flashcard-flip-out");
     this.backFace.classList.toggle("flashcard-flip-in");
     this.backFace.classList.toggle("flashcard-flip-out");
-    this.flipButton.classList.add("hidden");
-    this.interactionButtons.forEach(e => {
-        console.log("toggle");
-        e.classList.toggle("btn-disabled");
-    });
+    this.interactionButtons.forEach(e => e.classList.toggle("btn-disabled"));
     this.faceUp = this.faceUp == "front" ? "back" : "front";
     __classPrivateFieldGet(this, _YapityFlashcards_instances, "m", _YapityFlashcards_showCard).call(this);
 }, _YapityFlashcards_showCard = function _YapityFlashcards_showCard() {
@@ -111,11 +115,12 @@ _YapityFlashcards_instances = new WeakSet(), _YapityFlashcards_flip = function _
 }, _YapityFlashcards_nextCard = function _YapityFlashcards_nextCard(score) {
     return __awaiter(this, void 0, void 0, function* () {
         const updates = yield __classPrivateFieldGet(this, _YapityFlashcards_instances, "m", _YapityFlashcards_cardInteraction).call(this, this.currentCard, score);
-        const newCard = Object.assign(Object.assign({}, this.currentCard), updates);
+        const newCard = Object.assign(Object.assign(Object.assign({}, this.currentCard), updates), {lastScore: score});
         this.deck.insert(newCard);
+        this.scoreBadge.textContent = this.deck.score().toFixed(1);
         this.currentCard = this.deck.draw();
+        this.progressBadge.textContent = (++this.cardNumber).toString();
         __classPrivateFieldGet(this, _YapityFlashcards_instances, "m", _YapityFlashcards_flip).call(this);
-        __classPrivateFieldGet(this, _YapityFlashcards_instances, "m", _YapityFlashcards_showCard).call(this);
     });
 }, _YapityFlashcards_cardInteraction = function _YapityFlashcards_cardInteraction(card, score) {
     return __awaiter(this, void 0, void 0, function* () {

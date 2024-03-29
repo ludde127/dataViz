@@ -93,11 +93,13 @@ class FlashCardGroupReference(models.Model):
         dict_repr["histories"] = histories
 
 
-def get_flashcard_history(card, user):
+def get_flashcard_history(card, user, have_full_array=False):
     times_displayed = 0
     score = 0
     weight = 0
     last_displayed_float = 0
+    array = []
+
     try:
         if user.is_authenticated:
             history = FlashCardHistory.objects.get(user=user, flashcard_id__exact=card.id)
@@ -105,12 +107,20 @@ def get_flashcard_history(card, user):
             times_displayed = history.times_shown
             weight = history.weight()
             last_displayed_float = history.last_shown.timestamp()
+            if have_full_array:
+                array = history.get_array()
     except FlashCardHistory.DoesNotExist:
         print("Flashcard history does not exist")
-    return {"last_displayed_float": last_displayed_float,
-            "score": score,
-            "times_displayed": times_displayed,
-            "weight": weight}
+
+    result = {"last_displayed_float": last_displayed_float,
+              "score": score,
+              "times_displayed": times_displayed,
+              "weight": weight}
+
+    if have_full_array:
+        result["array"] = array
+
+    return result
 
 
 class QuizCard(StructBlock):
@@ -377,12 +387,12 @@ class UsersFlashcards(models.Model):
     flashcard_groups = models.ManyToManyField(FlashCardGroupReference)
     user = models.OneToOneField("users.User", on_delete=models.CASCADE)
 
-    def get_subscribed_flashcards(self, request):
+    def get_subscribed_flashcards(self, request, have_full_array=False):
         if request.user.is_authenticated:
-            return self.get_users_flashcards(request.user)
+            return self.get_users_flashcards(request.user, have_full_array=have_full_array)
         return []
 
-    def get_users_flashcards(self, user):
+    def get_users_flashcards(self, user, have_full_array=False):
         """Create a flat list of all the cards.
 
                 class FlashCardHistory(models.Model):
@@ -414,7 +424,7 @@ class UsersFlashcards(models.Model):
                              "id": card.id,
                              "block_id": string_block_id,
                              "notepage_id": notepage_id,
-                             **get_flashcard_history(card, user)}
+                             **get_flashcard_history(card, user, have_full_array)}
                     flashcard_list.append(entry)
 
         return flashcard_list

@@ -106,7 +106,7 @@ def view_flashcards_info(request):
     except UsersFlashcards.DoesNotExist:
         return HttpResponseNotFound("You have no flashcards")
     context = BASE_CONTEXT.copy()
-    data = users_flashcards.get_subscribed_flashcards(request)
+    data = users_flashcards.get_subscribed_flashcards(request, True)
     context["flashcards"] = data
     return context_render(request, "study_notes/flashcard_info.html", context=context)
 

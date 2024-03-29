@@ -6,7 +6,7 @@
             Card:&nbsp;<span id="progress-badge">1</span>/{{ amount_of_cards }}
         </span>
         <span class="badge badge-accent lg:badge-lg text-nowrap">Score:&nbsp;
-            <span id="score-badge">0</span>
+            <span id="score-badge">0.0</span>
         </span>
     </div>
     <div class="relative my-4 h-96 cursor-pointer" id="face-container">
@@ -25,10 +25,6 @@
         </div>
     </div>
     <div>
-        <button class="btn btn-primary btn-block lg:btn-lg hidden" id="flip-button">
-            <i data-lucide="flip-horizontal"></i>
-            Flip Card
-        </button>
         <div class="join btn-block" id="interaction-buttons">
             <div class="tooltip tooltip-error flex-1" data-tip="Again">
                 <button class="btn btn-error btn-disabled sm:btn-lg join-item w-full"
