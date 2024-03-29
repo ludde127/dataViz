@@ -1,3 +1,4 @@
+"use strict";
 const setTheme = (theme, colorScheme) => {
     const root = document.querySelector(":root");
     root.dataset.theme = theme;
@@ -14,20 +15,11 @@ const checkTheme = () => {
         setTheme("light", "light");
     }
 };
-// Immediately check the theme on page load
 checkTheme();
-
-// Add event listeners to the theme picker in the navbar
 window.addEventListener("load", () => {
-    for (const element of document.getElementsByName("theme-dropdown")) {
-        element.addEventListener(
-            "click",
-            _ => setTheme(
-                element.dataset.setTheme,
-                element.dataset.hasOwnProperty("dark") ? "dark" : "light"));
-    }
+    document.getElementsByName("theme-dropdown").forEach(element => element.addEventListener("click", _ => setTheme(element.dataset.setTheme || "light", element.dataset.hasOwnProperty("dark") ? "dark" : "light")));
 });
-// Add event listener to the local storage so that all tabs sync their theme with each other
 window.addEventListener("storage", function (e) {
     checkTheme();
 }, false);
+//# sourceMappingURL=theme.js.map
