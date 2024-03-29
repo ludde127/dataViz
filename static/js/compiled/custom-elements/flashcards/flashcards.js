@@ -105,13 +105,11 @@ _YapityFlashcards_instances = new WeakSet(), _YapityFlashcards_flip = function _
     this.frontFace.classList.toggle("flashcard-flip-out");
     this.backFace.classList.toggle("flashcard-flip-in");
     this.backFace.classList.toggle("flashcard-flip-out");
-    this.interactionButtons.forEach(e => {
-        if (this.faceUp == "front") {
-            __classPrivateFieldGet(this, _YapityFlashcards_instances, "m", _YapityFlashcards_disableButtons).call(this);
-        } else {
-            __classPrivateFieldGet(this, _YapityFlashcards_instances, "m", _YapityFlashcards_enableButtons).call(this);
-        }
-    });
+    if (this.faceUp == "front") {
+        __classPrivateFieldGet(this, _YapityFlashcards_instances, "m", _YapityFlashcards_disableButtons).call(this);
+    } else {
+        __classPrivateFieldGet(this, _YapityFlashcards_instances, "m", _YapityFlashcards_enableButtons).call(this);
+    }
     __classPrivateFieldGet(this, _YapityFlashcards_instances, "m", _YapityFlashcards_showCard).call(this);
 }, _YapityFlashcards_showCard = function _YapityFlashcards_showCard() {
     if (this.faceUp == "front") {

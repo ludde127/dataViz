@@ -112,13 +112,11 @@ class YapityFlashcards extends HTMLElement {
         this.backFace.classList.toggle("flashcard-flip-in");
         this.backFace.classList.toggle("flashcard-flip-out");
 
-        this.interactionButtons.forEach(e => {
-            if (this.faceUp == "front") {
-                this.#disableButtons();
-            } else {
-                this.#enableButtons();
-            }
-        });
+        if (this.faceUp == "front") {
+            this.#disableButtons();
+        } else {
+            this.#enableButtons();
+        }
 
         this.#showCard();
     }
