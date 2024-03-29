@@ -1,3 +1,4 @@
+import json
 import time
 
 from django import forms
@@ -90,6 +91,36 @@ class FlashCardGroupReference(models.Model):
 
         histories = list()
         dict_repr["histories"] = histories
+
+
+def get_flashcard_history(card, user, have_full_array=False):
+    times_displayed = 0
+    score = 0
+    weight = 0
+    last_displayed_float = 0
+    array = []
+
+    try:
+        if user.is_authenticated:
+            history = FlashCardHistory.objects.get(user=user, flashcard_id__exact=card.id)
+            score = history.score
+            times_displayed = history.times_shown
+            weight = history.weight()
+            last_displayed_float = history.last_shown.timestamp()
+            if have_full_array:
+                array = history.get_array()
+    except FlashCardHistory.DoesNotExist:
+        print("Flashcard history does not exist")
+
+    result = {"last_displayed_float": last_displayed_float,
+              "score": score,
+              "times_displayed": times_displayed,
+              "weight": weight}
+
+    if have_full_array:
+        result["array"] = array
+
+    return result
 
 
 class QuizCard(StructBlock):
@@ -199,9 +230,8 @@ class NotePage(Page):
         quiz_json = {}
         quiz_start = {}
         quiz_length = {}
-        for (i, b) in enumerate(self.body.blocks_by_name("quiz")):
+        for b in self.body.blocks_by_name("quiz"):
             block = b.value
-            # print(block)
             inner = {"title": block["title"], "passing_score": block["passing_score"]}
             cards = {}
             first_question = ""
@@ -229,13 +259,16 @@ class NotePage(Page):
 
     def get_flashcards(self, request):
         flashcards_json = {}
-        flashcards_start = {}
         flashcards_length = {}
-        subscribed_cards = set()
-        for (i, b) in enumerate(self.body.blocks_by_name("flashcards")):
+        for b in self.body.blocks_by_name("flashcards"):
             block = b.value
+
+            inner = {
+                "title": block["title"],
+                "is_subscribed": False
+            }
+
             try:
-                # This could be used later.
                 if request.user.is_authenticated:
                     reference = request.user.usersflashcards.flashcard_groups.get(flashcards_id=b.id,
                                                                                   notepage_id=self.id,
@@ -243,23 +276,22 @@ class NotePage(Page):
             except (UsersFlashcards.DoesNotExist, FlashCardGroupReference.DoesNotExist):
                 pass
             else:
-                subscribed_cards.add(b.id)
+                inner["is_subscribed"] = True
 
-            # print(block)
-            inner = {"title": block["title"]}
-            flashcards = {}
-            first_question = ""
-            for (j, card) in enumerate(block["cards"]):
-                if not first_question:
-                    first_question = card.value["question"]
-                flashcards[str(j)] = {"q": str(richtext(card.value["question"])),
-                                      "a": str(richtext(card.value["answer"])), "id": card.id}
-            inner["cards"] = flashcards
+            flashcards = [{
+                "q": str(richtext(card.value["question"])),
+                "a": str(richtext(card.value["answer"])),
+                "id": card.id,
+                "block_id": str(b.id),
+                "notepage_id": self.id,
+                **get_flashcard_history(card, request.user)
+            } for card in block["cards"]]
+
+            inner["cards"] = json.dumps(flashcards)
 
             flashcards_json[b.id] = inner
-            flashcards_start[b.id] = first_question
             flashcards_length[b.id] = len(block["cards"])
-        return flashcards_json, flashcards_start, flashcards_length, list(subscribed_cards)
+        return flashcards_json, flashcards_length
 
     def get_context(self, request):
         # Update context to include only published posts, ordered by reverse-chron
@@ -267,11 +299,9 @@ class NotePage(Page):
         context.update(BASE_CONTEXT)
 
         quiz_json, quiz_start, quiz_length = self.get_quiz()
-        flashcards_json, flashcards_start, flashcards_length, subscribed_cards = self.get_flashcards(request)
+        flashcards_json, flashcards_length = self.get_flashcards(request)
         context["page_id"] = self.id
-        context["subscribed_cards"] = subscribed_cards
         context["flash_json"] = flashcards_json
-        context["flash_starts"] = flashcards_start
         context["flash_lengths"] = flashcards_length
 
         context["quiz_json"] = quiz_json
@@ -389,30 +419,12 @@ class UsersFlashcards(models.Model):
                 block = b.value
                 string_block_id = str(b.id)
                 for card in block["cards"]:
-                    times_displayed = 0
-                    score = 0
-                    weight = 0
-                    last_displayed_float = 0
-                    if have_full_array:
-                        array = []
-                    try:
-                        if user:
-                            history = FlashCardHistory.objects.get(user=user, flashcard_id__exact=card.id)
-                            score = history.score
-                            times_displayed = history.times_shown
-                            weight = history.weight()
-                            last_displayed_float = history.last_shown.timestamp()
-                            if have_full_array:
-                                array = history.get_array()
-                    except FlashCardHistory.DoesNotExist:
-                        print("Does not exist")
-
-                    entry = {"q": str(richtext(card.value["question"])), "a": str(richtext(card.value["answer"])),
-                             "id": card.id, "block_id": string_block_id, "notepage_id": notepage_id,
-                             "score": score, "times_displayed": times_displayed, "weight": weight,
-                             "last_displayed_float": last_displayed_float}
-                    if have_full_array:
-                        entry["array"] = array
+                    entry = {"q": str(richtext(card.value["question"])),
+                             "a": str(richtext(card.value["answer"])),
+                             "id": card.id,
+                             "block_id": string_block_id,
+                             "notepage_id": notepage_id,
+                             **get_flashcard_history(card, user, have_full_array)}
                     flashcard_list.append(entry)
 
         return flashcard_list

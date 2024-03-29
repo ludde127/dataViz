@@ -1,3 +1,4 @@
+"use strict";
 const setTheme = (theme, colorScheme) => {
     const root = document.querySelector(":root");
     root.dataset.theme = theme;
@@ -5,7 +6,6 @@ const setTheme = (theme, colorScheme) => {
     localStorage.setItem("theme", theme);
     localStorage.setItem("colorScheme", colorScheme);
 };
-
 const checkTheme = () => {
     if (localStorage.theme) {
         setTheme(localStorage.theme, localStorage.colorScheme);
@@ -15,17 +15,11 @@ const checkTheme = () => {
         setTheme("light", "light");
     }
 };
-
-for (const element of document.getElementsByName("theme-dropdown")) {
-    element.addEventListener(
-        "click",
-        _ => setTheme(
-            element.dataset.setTheme,
-            element.dataset.hasOwnProperty("dark") ? "dark" : "light"));
-}
-
+checkTheme();
+window.addEventListener("load", () => {
+    document.getElementsByName("theme-dropdown").forEach(element => element.addEventListener("click", _ => setTheme(element.dataset.setTheme || "light", element.dataset.hasOwnProperty("dark") ? "dark" : "light")));
+});
 window.addEventListener("storage", function (e) {
     checkTheme();
 }, false);
-
-checkTheme();
+//# sourceMappingURL=theme.js.map

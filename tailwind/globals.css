@@ -2,30 +2,68 @@
 @tailwind components;
 @tailwind utilities;
 
-.my-prose {
-    @apply prose lg:prose-lg prose-li:my-0 prose-ol:my-0 prose-ul:my-0 prose-p:my-1 prose-hr:my-2;
+@layer utilities {
+    .my-prose {
+        @apply prose lg:prose-lg prose-li:my-0 prose-ol:my-0 prose-ul:my-0 prose-p:my-1 prose-hr:my-2;
 
-    ol {
-        @apply list-[decimal];
-
-        & ol {
-            @apply list-[lower-alpha];
+        ol {
+            @apply list-[decimal];
 
             & ol {
-                @apply list-[lower-roman];
+                @apply list-[lower-alpha];
 
                 & ol {
-                    @apply list-[decimal];
+                    @apply list-[lower-roman];
 
                     & ol {
-                        @apply list-[lower-alpha];
+                        @apply list-[decimal];
+
+                        & ol {
+                            @apply list-[lower-alpha];
+                        }
                     }
                 }
             }
         }
     }
-}
 
-* {
-    scrollbar-color: oklch(var(--bc)) oklch(var(--b2));
+    * {
+        scrollbar-color: oklch(var(--bc)) oklch(var(--b2));
+    }
+
+    .flashcard-flip-in {
+        animation: flashcard-flip-in .25s ease-in-out 1;
+        animation-fill-mode: forwards;
+    }
+
+    .flashcard-flip-out {
+        animation: flashcard-flip-out .25s ease-in-out 1;
+        animation-fill-mode: forwards;
+    }
+
+    .flashcard-face {
+        backface-visibility: hidden;
+    }
+
+    #face-container {
+        perspective: 70rem;
+    }
+
+    @keyframes flashcard-flip-in {
+        0% {
+            transform: rotateY(180deg);
+        }
+        100% {
+            transform: rotateY(360deg);
+        }
+    }
+
+    @keyframes flashcard-flip-out {
+        0% {
+            transform: rotateY(0deg);
+        }
+        100% {
+            transform: rotateY(180deg);
+        }
+    }
 }

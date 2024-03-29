@@ -1,0 +1,11 @@
+<yapity-flashcards-subscribe-button data-block-id="{{ block_id }}"
+                                    data-page-id="{{ page_id }}"
+                                    {% if is_subscribed %}data-is-subscribed{% endif %}>
+    <button class="btn btn-sm btn-neutral btn-outline">
+        {% if is_subscribed %}
+            Unsubscribe
+        {% else %}
+            Subscribe
+        {% endif %}
+    </button>
+</yapity-flashcards-subscribe-button>
