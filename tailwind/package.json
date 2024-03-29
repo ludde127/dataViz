@@ -2,7 +2,7 @@
   "type": "module",
   "scripts": {
     "dev": "tailwindcss -w -i globals.css -o ../static/css/tailwind.css",
-    "build": "tailwindcss -m -i globals.css -o ../static/css/tailwind.css"
+    "build": "tailwindcss -i globals.css -o ../static/css/tailwind.css"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.10",
