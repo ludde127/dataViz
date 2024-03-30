@@ -63,7 +63,7 @@ class YapitySearch extends HTMLElement {
                 if (delta !== 0) {
                     e.preventDefault();
                     const n = this.focusableElements.length;
-                    this.#updateFocus((this.focusIndex + n + delta) % n);
+                    this.#updateFocus((this.focusIndex + n + delta) % n, true);
                 }
             }
         });
@@ -147,17 +147,17 @@ class YapitySearch extends HTMLElement {
         this.focusableElements = [...this.searchResultsContainer.querySelectorAll("a")];
         this.focusableElements.forEach((e, i) => {
             e.addEventListener("mouseenter", () => {
-                this.#updateFocus(i);
+                this.#updateFocus(i, false);
             });
         })
 
         this.searchResultsContainer.classList.toggle("hidden", !hasResults);
         this.noSearchResultsContainer.classList.toggle("hidden", hasResults);
 
-        this.#updateFocus(hasResults ? 0 : undefined);
+        this.#updateFocus(hasResults ? 0 : undefined, true);
     }
 
-    #updateFocus(index?: number) {
+    #updateFocus(index?: number, scroll?: boolean) {
         if (this.focusIndex !== undefined) {
             this.focusableElements[this.focusIndex].classList.remove("focus");
         }
@@ -167,7 +167,9 @@ class YapitySearch extends HTMLElement {
         if (this.focusIndex !== undefined) {
             const element = this.focusableElements[this.focusIndex];
             element.classList.add("focus");
-            element.scrollIntoView({block: "center", behavior: "smooth"});
+            if (scroll) {
+                element.scrollIntoView({block: "center", behavior: "smooth"});
+            }
         }
     }
 

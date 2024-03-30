@@ -53,7 +53,7 @@ class YapitySearch extends HTMLElement {
                 if (delta !== 0) {
                     e.preventDefault();
                     const n = this.focusableElements.length;
-                    __classPrivateFieldGet(this, _YapitySearch_instances, "m", _YapitySearch_updateFocus).call(this, (this.focusIndex + n + delta) % n);
+                    __classPrivateFieldGet(this, _YapitySearch_instances, "m", _YapitySearch_updateFocus).call(this, (this.focusIndex + n + delta) % n, true);
                 }
             }
         });
@@ -120,13 +120,13 @@ _YapitySearch_instances = new WeakSet(), _YapitySearch_openModal = function _Yap
     this.focusableElements = [...this.searchResultsContainer.querySelectorAll("a")];
     this.focusableElements.forEach((e, i) => {
         e.addEventListener("mouseenter", () => {
-            __classPrivateFieldGet(this, _YapitySearch_instances, "m", _YapitySearch_updateFocus).call(this, i);
+            __classPrivateFieldGet(this, _YapitySearch_instances, "m", _YapitySearch_updateFocus).call(this, i, false);
         });
     });
     this.searchResultsContainer.classList.toggle("hidden", !hasResults);
     this.noSearchResultsContainer.classList.toggle("hidden", hasResults);
-    __classPrivateFieldGet(this, _YapitySearch_instances, "m", _YapitySearch_updateFocus).call(this, hasResults ? 0 : undefined);
-}, _YapitySearch_updateFocus = function _YapitySearch_updateFocus(index) {
+    __classPrivateFieldGet(this, _YapitySearch_instances, "m", _YapitySearch_updateFocus).call(this, hasResults ? 0 : undefined, true);
+}, _YapitySearch_updateFocus = function _YapitySearch_updateFocus(index, scroll) {
     if (this.focusIndex !== undefined) {
         this.focusableElements[this.focusIndex].classList.remove("focus");
     }
@@ -134,7 +134,9 @@ _YapitySearch_instances = new WeakSet(), _YapitySearch_openModal = function _Yap
     if (this.focusIndex !== undefined) {
         const element = this.focusableElements[this.focusIndex];
         element.classList.add("focus");
-        element.scrollIntoView({ block: "center", behavior: "smooth" });
+        if (scroll) {
+            element.scrollIntoView({ block: "center", behavior: "smooth" });
+        }
     }
 }, _YapitySearch_selectFocusedResult = function _YapitySearch_selectFocusedResult() {
     if (this.focusIndex !== undefined) {
