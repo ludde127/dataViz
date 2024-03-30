@@ -1,32 +1,10 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) {
-        return value instanceof P ? value : new P(function (resolve) {
-            resolve(value);
-        });
-    }
-
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) {
-            try {
-                step(generator.next(value));
-            } catch (e) {
-                reject(e);
-            }
-        }
-
-        function rejected(value) {
-            try {
-                step(generator["throw"](value));
-            } catch (e) {
-                reject(e);
-            }
-        }
-
-        function step(result) {
-            result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
-        }
-
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -35,10 +13,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
-var _YapitySearch_instances, _YapitySearch_openModal, _YapitySearch_search, _YapitySearch_getSearchResults,
-    _YapitySearch_setLoadingState, _YapitySearch_updateSearchResults, _YapitySearch_updateFocus,
-    _YapitySearch_selectFocusedResult;
-
+var _YapitySearch_instances, _YapitySearch_openModal, _YapitySearch_search, _YapitySearch_getSearchResults, _YapitySearch_setLoadingState, _YapitySearch_updateSearchResults, _YapitySearch_updateFocus, _YapitySearch_selectFocusedResult;
 class YapitySearch extends HTMLElement {
     constructor() {
         super();
@@ -88,7 +63,6 @@ class YapitySearch extends HTMLElement {
         });
     }
 }
-
 _YapitySearch_instances = new WeakSet(), _YapitySearch_openModal = function _YapitySearch_openModal() {
     this.searchModal.showModal();
 }, _YapitySearch_search = function _YapitySearch_search(query) {
@@ -98,7 +72,8 @@ _YapitySearch_instances = new WeakSet(), _YapitySearch_openModal = function _Yap
             const searchResults = yield __classPrivateFieldGet(this, _YapitySearch_instances, "m", _YapitySearch_getSearchResults).call(this, query);
             __classPrivateFieldGet(this, _YapitySearch_instances, "m", _YapitySearch_setLoadingState).call(this, false);
             __classPrivateFieldGet(this, _YapitySearch_instances, "m", _YapitySearch_updateSearchResults).call(this, searchResults);
-        } catch (e) {
+        }
+        catch (e) {
             console.log(e);
         }
     });
@@ -114,6 +89,9 @@ _YapitySearch_instances = new WeakSet(), _YapitySearch_openModal = function _Yap
             method: "GET",
             signal: this.abortController.signal
         });
+        if (!res.ok) {
+            return {};
+        }
         return yield res.json();
     });
 }, _YapitySearch_setLoadingState = function _YapitySearch_setLoadingState(isLoading) {
@@ -156,7 +134,7 @@ _YapitySearch_instances = new WeakSet(), _YapitySearch_openModal = function _Yap
     if (this.focusIndex !== undefined) {
         const element = this.focusableElements[this.focusIndex];
         element.classList.add("focus");
-        element.scrollIntoView({block: "center", behavior: "smooth"});
+        element.scrollIntoView({ block: "center", behavior: "smooth" });
     }
 }, _YapitySearch_selectFocusedResult = function _YapitySearch_selectFocusedResult() {
     if (this.focusIndex !== undefined) {

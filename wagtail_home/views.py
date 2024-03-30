@@ -27,7 +27,8 @@ def search(request):
             "name": datastore.name,
             "url": datastore.get_url(),
             "type": "datastore"
-        } for datastore in s.autocomplete(query, DataStorage.objects.filter(owner__user=request.user))]
+        } for datastore in s.autocomplete(query,
+                                          DataStorage.objects.filter(owner__user__username=request.user.username))]
 
         return JsonResponse(data={
             "Pages": pages,

@@ -104,6 +104,10 @@ class YapitySearch extends HTMLElement {
             signal: this.abortController.signal
         });
 
+        if (!res.ok) {
+            return {}
+        }
+
         return await res.json() as SearchResults;
     }
 
