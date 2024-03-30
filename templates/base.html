@@ -11,7 +11,8 @@
     <meta name="description"
           content="{% block meta_description %}{% endblock %}"/>
     <link rel="preconnect" href="https://fonts.googleapis.com"/>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/tailwind.css' %}?v={{ GIT_HASH }}"/>
+    <link rel="stylesheet" type="text/css"
+          href="{% static 'css/tailwind.css' %}?v={{ GIT_HASH }}{% if DEBUG %}-{% now "U" %}{% endif %}"/>
     <link rel="icon" type="image/x-icon" href="{% static 'website_logo/favicon.ico' %}"/>
     <script src="{% static 'js/compiled/theme.js' %}"></script>
 </head>
@@ -42,6 +43,8 @@
 
     <script type="module" src="{% static 'js/compiled/custom-elements/flashcards/flashcards.js' %}"></script>
     <script type="module" src="{% static 'js/compiled/custom-elements/flashcards/subscribe-button.js' %}"></script>
+    <script type="module" src="{% static 'js/compiled/custom-elements/search/search.js' %}"></script>
+
 {% endblock %}
 {% block custom_scripts %}
 {% endblock %}
