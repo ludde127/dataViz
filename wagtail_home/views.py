@@ -13,25 +13,25 @@ def search(request):
         query = request.GET.get("query", None)
         objects = NotePage.objects.live()
 
+        data = {}
+
         notepages = list(objects.search(query))
         for page in objects.autocomplete(query):
             if page not in notepages:
                 notepages.append(page)
-        pages = [{
+        data["Pages"] = [{
             "name": page.title,
             "url": page.get_url(),
             "type": "page"
         } for page in notepages]
 
-        datastores = [{
-            "name": datastore.name,
-            "url": datastore.get_url(),
-            "type": "datastore"
-        } for datastore in s.autocomplete(query,
-                                          DataStorage.objects.filter(owner__user__username=request.user.username))]
+        if request.user.is_authenticated:
+            data["Datastores"] = [{
+                "name": datastore.name,
+                "url": datastore.get_url(),
+                "type": "datastore"
+            } for datastore in s.autocomplete(query,
+                                              DataStorage.objects.filter(owner__user=request.user))]
 
-        return JsonResponse(data={
-            "Pages": pages,
-            "Datastores": datastores
-        })
+        return JsonResponse(data=data)
     return HttpResponseBadRequest()

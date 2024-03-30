@@ -67,7 +67,7 @@ class DataStorage(Permissions, index.Indexed):
         index.SearchField('description'),
         index.AutocompleteField('description'),
         index.AutocompleteField('csv_names'),
-        index.FilterField('username'),
+        index.FilterField('user_id'),
     ]
 
     def clean(self):
