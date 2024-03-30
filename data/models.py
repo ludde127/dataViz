@@ -8,6 +8,8 @@ import pandas as pd
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.http import QueryDict
+from django.urls import reverse
+from wagtail.search import index
 
 from dataViz.settings import DATA_FILES
 # Create your models here.
@@ -41,7 +43,7 @@ def float_timestamp_to_dt(v: float) -> datetime.datetime:
     return datetime.datetime.fromtimestamp(v)
 
 
-class DataStorage(Permissions):
+class DataStorage(Permissions, index.Indexed):
     csv_names = models.CharField(verbose_name="Data column names (ex. 'time, velocity, position')", max_length=1000)
     key = models.CharField(verbose_name="KEY", default=uuid.uuid4, unique=True,
                            max_length=200)  # TODO MAKE THIS ACTUALLY SAFE
@@ -59,6 +61,15 @@ class DataStorage(Permissions):
     index_column_values_are_time = models.BooleanField(verbose_name="Index is a time format", default=True)
     all_can_view_key = models.UUIDField(default=uuid.uuid4)
 
+    search_fields = [
+        index.SearchField('name'),
+        index.AutocompleteField('name'),
+        index.SearchField('description'),
+        index.AutocompleteField('description'),
+        index.AutocompleteField('csv_names'),
+        index.FilterField('user_id')
+    ]
+
     def clean(self):
         if self.index_column not in self.csv_column_names():
             raise ValidationError("The index must be one of the columns.")
@@ -68,6 +79,9 @@ class DataStorage(Permissions):
 
     def __str__(self):
         return f"{self.name} - {self.owner}"
+
+    def get_url(self):
+        return reverse('plot', kwargs={'key': self.key})
 
     def valid_authorization(self, request):
         try:
