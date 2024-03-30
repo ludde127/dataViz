@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 
 {% load static %}
+{% load tags %}
 
 <html lang="en">
 <head>
@@ -8,15 +9,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <meta name="HandheldFriendly" content="true"/>
     <title>{{ title }}</title>
-    <meta name="description"
-          content="{% block meta_description %}{% endblock %}"/>
+    <meta name="description" content="{% block meta_description %}{% endblock %}"/>
     <link rel="preconnect" href="https://fonts.googleapis.com"/>
-    <link rel="stylesheet" type="text/css"
-          href="{% static 'css/tailwind.css' %}?v={{ GIT_HASH }}{% if DEBUG %}-{% now "U" %}{% endif %}"/>
     <link rel="icon" type="image/x-icon" href="{% static 'website_logo/favicon.ico' %}"/>
-    <script src="{% static 'js/compiled/theme.js' %}"></script>
+    <link rel="stylesheet" type="text/css"
+          href="{% static 'css/tailwind.css' %}{% file_version_hash %}"/>
+    <script src="{% static 'js/compiled/theme.js' %}{% file_version_hash %}"></script>
 </head>
 <body class="{% block body_class %}{% endblock %}">
+
 <div class="relative flex min-h-screen flex-col overflow-x-clip">
     {% include 'components/navbar.html' %}
     {% if messages %}
@@ -41,10 +42,12 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <script type="module">lucide.createIcons()</script>
 
-    <script type="module" src="{% static 'js/compiled/custom-elements/flashcards/flashcards.js' %}"></script>
-    <script type="module" src="{% static 'js/compiled/custom-elements/flashcards/subscribe-button.js' %}"></script>
-    <script type="module" src="{% static 'js/compiled/custom-elements/search/search.js' %}"></script>
-
+    <script type="module"
+            src="{% static 'js/compiled/custom-elements/flashcards/flashcards.js' %}{% file_version_hash %}"></script>
+    <script type="module" src="
+            {% static 'js/compiled/custom-elements/flashcards/subscribe-button.js' %}{% file_version_hash %}"></script>
+    <script type="module"
+            src="{% static 'js/compiled/custom-elements/search/search.js' %}{% file_version_hash %}"></script>
 {% endblock %}
 {% block custom_scripts %}
 {% endblock %}

@@ -28,6 +28,15 @@ def bool_to_int(boolean):
 def path_to_breadcrumb_list(path: str):
     return [p.capitalize() for p in path.split("/")[1:]]
 
+
 @register.filter
 def timestamp_to_datetime(timestamp):
     return datetime.datetime.fromtimestamp(timestamp)
+
+
+@register.simple_tag(takes_context=True)
+def file_version_hash(context):
+    version = f"?v={context['GIT_HASH']}"
+    if context['DEBUG']:
+        version += f"-{datetime.datetime.now().strftime('%Y%m%d%H%M%S')}"
+    return version
