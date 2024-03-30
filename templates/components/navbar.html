@@ -21,17 +21,9 @@
 
 
         <div class="flex-none gap-2">
-            {% include 'theme-picker.html' %}
-            {% include 'components/search-bar.html' %}
+            {% include 'components/theme-picker.html' %}
+            {% include 'components/search/search.html' %}
             {% include 'components/user-button.html' %}
         </div>
     </div>
 </header>
-
-<div id="search-results-div" style="width: 100%;display: none;visibility: hidden">
-    <div class="text-center search-div gradient-bg-transparent d-flex align-content-center">
-        <ul class="search-ul navbar-nav" id="search-results">
-            {# INSERT CHILDREN :D #}
-        </ul>
-    </div>
-</div>
