@@ -3,9 +3,7 @@ type SearchResult = {
     url: string;
     type: "page" | "datastore"
 };
-type SearchResults = {
-    results: Array<SearchResult>;
-};
+type SearchResults = Record<string, Array<SearchResult>>;
 
 class YapitySearch extends HTMLElement {
     searchButton: HTMLButtonElement;
@@ -14,6 +12,7 @@ class YapitySearch extends HTMLElement {
     searchResultsContainer: HTMLElement;
     noSearchResultsContainer: HTMLElement;
 
+    iconTemplates: Record<SearchResult['type'], HTMLElement>;
     searchIcon: HTMLElement;
     loadingIcon: HTMLElement;
 
@@ -21,7 +20,7 @@ class YapitySearch extends HTMLElement {
     iconTimeout?: number;
     focusIndex?: number;
 
-    iconTemplates: Record<SearchResult['type'], HTMLElement>;
+    focusableElements: Array<HTMLAnchorElement>;
 
     constructor() {
         super();
@@ -63,15 +62,15 @@ class YapitySearch extends HTMLElement {
                 }
                 if (delta !== 0) {
                     e.preventDefault();
-                    const n = this.searchResultsContainer.children.length;
+                    const n = this.focusableElements.length;
                     this.#updateFocus((this.focusIndex + n + delta) % n);
                 }
             }
         });
 
-        let first = Date.now();
+        this.focusableElements = [];
+
         this.searchInput.addEventListener("input", e => {
-            first = Date.now();
             this.#search(this.searchInput.value);
         });
     }
@@ -117,20 +116,36 @@ class YapitySearch extends HTMLElement {
     }
 
     #updateSearchResults(searchResults: SearchResults) {
-        const hasResults = searchResults.results.length > 0;
+        const children = [];
+        for (const type in searchResults) {
+            if (searchResults[type].length <= 0) continue;
 
-        this.searchResultsContainer.replaceChildren(
-            ...searchResults.results.map(
-                sr => {
-                    const template = document.createElement("template");
-                    template.innerHTML = `<li>
-                        <a href="${sr.url}">
-                            ${this.iconTemplates[sr.type].outerHTML}${sr.name}
-                        </a>
-                    </li>`;
-                    return template.content.children[0];
-                }
-            ));
+            const div = document.createElement("div");
+            div.classList.add("menu");
+
+            // Add type header
+            div.innerHTML += `<li class="opacity-60 pb-2">${type}</li>`
+
+            // Add search results for the specific type
+            div.innerHTML += searchResults[type].map(
+                sr => `<li>
+                    <a href="${sr.url}" class="">
+                        ${this.iconTemplates[sr.type].outerHTML}${sr.name}
+                    </a>
+                </li>`).join("");
+
+            children.push(div);
+        }
+        const hasResults = children.length > 0;
+
+        this.searchResultsContainer.replaceChildren(...children);
+
+        this.focusableElements = [...this.searchResultsContainer.querySelectorAll("a")];
+        this.focusableElements.forEach((e, i) => {
+            e.addEventListener("mouseenter", () => {
+                this.#updateFocus(i);
+            });
+        })
 
         this.searchResultsContainer.classList.toggle("hidden", !hasResults);
         this.noSearchResultsContainer.classList.toggle("hidden", hasResults);
@@ -140,26 +155,21 @@ class YapitySearch extends HTMLElement {
 
     #updateFocus(index?: number) {
         if (this.focusIndex !== undefined) {
-            this.searchResultsContainer
-                .children[this.focusIndex]
-                .children[0]
-                ?.classList.remove("focus");
+            this.focusableElements[this.focusIndex].classList.remove("focus");
         }
 
         this.focusIndex = index;
 
         if (this.focusIndex !== undefined) {
-            console.log("here");
-            this.searchResultsContainer
-                .children[this.focusIndex]
-                .children[0]
-                ?.classList.add("focus");
+            const element = this.focusableElements[this.focusIndex];
+            element.classList.add("focus");
+            element.scrollIntoView({block: "center", behavior: "smooth"});
         }
     }
 
     #selectFocusedResult() {
         if (this.focusIndex !== undefined) {
-            const a = this.searchResultsContainer.children[this.focusIndex].children[0] as HTMLAnchorElement;
+            const a = this.focusableElements[this.focusIndex];
             document.location.replace(a.href);
         }
     }

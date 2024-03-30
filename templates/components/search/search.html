@@ -7,16 +7,17 @@
         <i data-lucide="line-chart" class="w-4 h-4" id="icon-template-datastore"></i>
     </span>
     <dialog id="search-modal" class="modal items-start">
-        <div class="modal-box p-0 overflow-hidden mt-24">
-            <label class="input input-bordered flex items-center gap-2 focus-within:outline-none rounded-none">
+        <div class="modal-box p-0 overflow-hidden mt-24 divide-y divide-base-content/60">
+            <label class="input input-bordered border-none border-b flex items-center gap-2 focus-within:outline-none rounded-none">
                 <input type="text" class="grow" placeholder="Search" id="search-input"/>
                 <span id="search-icon"><i data-lucide="search"></i></span>
                 <span class="loading loading-spinner hidden" id="loading-icon"></span>
             </label>
-            <div id="search-results" class="menu menu-vertical max-h-96 overflow-y-auto flex-nowrap hidden">
+            <div id="search-results"
+                 class="max-h-96 overflow-y-auto flex-nowrap hidden divide-y divide-base-content/60">
             </div>
             <div id="no-search-results" class="px-6 py-3">
-                <span class="text-lg font-bold">No results matched your search</span>
+                <span class="text-lg opacity-60">No results matched your search</span>
             </div>
         </div>
         <form method="dialog" class="modal-backdrop">

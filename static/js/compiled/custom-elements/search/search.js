@@ -77,14 +77,13 @@ class YapitySearch extends HTMLElement {
                 }
                 if (delta !== 0) {
                     e.preventDefault();
-                    const n = this.searchResultsContainer.children.length;
+                    const n = this.focusableElements.length;
                     __classPrivateFieldGet(this, _YapitySearch_instances, "m", _YapitySearch_updateFocus).call(this, (this.focusIndex + n + delta) % n);
                 }
             }
         });
-        let first = Date.now();
+        this.focusableElements = [];
         this.searchInput.addEventListener("input", e => {
-            first = Date.now();
             __classPrivateFieldGet(this, _YapitySearch_instances, "m", _YapitySearch_search).call(this, this.searchInput.value);
         });
     }
@@ -124,36 +123,44 @@ _YapitySearch_instances = new WeakSet(), _YapitySearch_openModal = function _Yap
         this.searchIcon.classList.toggle("hidden", isLoading);
     }, isLoading ? 0 : 150);
 }, _YapitySearch_updateSearchResults = function _YapitySearch_updateSearchResults(searchResults) {
-    const hasResults = searchResults.results.length > 0;
-    this.searchResultsContainer.replaceChildren(...searchResults.results.map(sr => {
-        const template = document.createElement("template");
-        template.innerHTML = `<li>
-                        <a href="${sr.url}">
-                            ${this.iconTemplates[sr.type].outerHTML}${sr.name}
-                        </a>
-                    </li>`;
-        return template.content.children[0];
-    }));
+    const children = [];
+    for (const type in searchResults) {
+        if (searchResults[type].length <= 0)
+            continue;
+        const div = document.createElement("div");
+        div.classList.add("menu");
+        div.innerHTML += `<li class="opacity-60 pb-2">${type}</li>`;
+        div.innerHTML += searchResults[type].map(sr => `<li>
+                    <a href="${sr.url}" class="">
+                        ${this.iconTemplates[sr.type].outerHTML}${sr.name}
+                    </a>
+                </li>`).join("");
+        children.push(div);
+    }
+    const hasResults = children.length > 0;
+    this.searchResultsContainer.replaceChildren(...children);
+    this.focusableElements = [...this.searchResultsContainer.querySelectorAll("a")];
+    this.focusableElements.forEach((e, i) => {
+        e.addEventListener("mouseenter", () => {
+            __classPrivateFieldGet(this, _YapitySearch_instances, "m", _YapitySearch_updateFocus).call(this, i);
+        });
+    });
     this.searchResultsContainer.classList.toggle("hidden", !hasResults);
     this.noSearchResultsContainer.classList.toggle("hidden", hasResults);
     __classPrivateFieldGet(this, _YapitySearch_instances, "m", _YapitySearch_updateFocus).call(this, hasResults ? 0 : undefined);
 }, _YapitySearch_updateFocus = function _YapitySearch_updateFocus(index) {
-    var _a, _b;
     if (this.focusIndex !== undefined) {
-        (_a = this.searchResultsContainer
-            .children[this.focusIndex]
-            .children[0]) === null || _a === void 0 ? void 0 : _a.classList.remove("focus");
+        this.focusableElements[this.focusIndex].classList.remove("focus");
     }
     this.focusIndex = index;
     if (this.focusIndex !== undefined) {
-        console.log("here");
-        (_b = this.searchResultsContainer
-            .children[this.focusIndex]
-            .children[0]) === null || _b === void 0 ? void 0 : _b.classList.add("focus");
+        const element = this.focusableElements[this.focusIndex];
+        element.classList.add("focus");
+        element.scrollIntoView({block: "center", behavior: "smooth"});
     }
 }, _YapitySearch_selectFocusedResult = function _YapitySearch_selectFocusedResult() {
     if (this.focusIndex !== undefined) {
-        const a = this.searchResultsContainer.children[this.focusIndex].children[0];
+        const a = this.focusableElements[this.focusIndex];
         document.location.replace(a.href);
     }
 };
