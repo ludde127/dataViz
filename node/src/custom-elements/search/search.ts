@@ -1,7 +1,9 @@
+import DOMPurify from "dompurify";
+
 type SearchResult = {
     name: string;
     url: string;
-    type: "page" | "datastore"
+    type: "page" | "datastore" | "user"
 };
 type SearchResults = Record<string, Array<SearchResult>>;
 
@@ -34,6 +36,7 @@ class YapitySearch extends HTMLElement {
         this.iconTemplates = {
             page: this.querySelector("#icon-template-page")!,
             datastore: this.querySelector("#icon-template-datastore")!,
+            user: this.querySelector("#icon-template-user")!,
         }
 
         this.searchIcon = this.querySelector("#search-icon")!;
@@ -45,25 +48,32 @@ class YapitySearch extends HTMLElement {
         document.addEventListener("keydown", e => {
             if (e.key === "k" && e.ctrlKey) {
                 e.preventDefault();
+
+                if (!this.searchModal.open) {
+                    this.searchInput.value = "";
+                }
+
                 this.#openModal();
             }
-            if (e.target === this.searchInput && this.focusIndex !== undefined) {
-                let delta = 0;
-                switch (e.key) {
-                    case "ArrowUp":
-                        delta = -1;
-                        break;
-                    case "ArrowDown":
-                        delta = 1;
-                        break;
-                    case "Enter":
-                        this.#selectFocusedResult();
-                        break;
-                }
-                if (delta !== 0) {
-                    e.preventDefault();
-                    const n = this.focusableElements.length;
-                    this.#updateFocus((this.focusIndex + n + delta) % n, true);
+            if (this.searchModal.open) {
+                if (e.target === this.searchInput && this.focusIndex !== undefined) {
+                    let delta = 0;
+                    switch (e.key) {
+                        case "ArrowUp":
+                            delta = -1;
+                            break;
+                        case "ArrowDown":
+                            delta = 1;
+                            break;
+                        case "Enter":
+                            this.#selectFocusedResult();
+                            break;
+                    }
+                    if (delta !== 0) {
+                        e.preventDefault();
+                        const n = this.focusableElements.length;
+                        this.#updateFocus((this.focusIndex + n + delta) % n, true);
+                    }
                 }
             }
         });
@@ -134,7 +144,7 @@ class YapitySearch extends HTMLElement {
             div.innerHTML += searchResults[type].map(
                 sr => `<li>
                     <a href="${sr.url}" class="">
-                        ${this.iconTemplates[sr.type].outerHTML}${sr.name}
+                        ${this.iconTemplates[sr.type]?.outerHTML || ""}${DOMPurify.sanitize(sr.name, {USE_PROFILES: {html: true}})}
                     </a>
                 </li>`).join("");
 
@@ -159,7 +169,7 @@ class YapitySearch extends HTMLElement {
 
     #updateFocus(index?: number, scroll?: boolean) {
         if (this.focusIndex !== undefined) {
-            this.focusableElements[this.focusIndex].classList.remove("focus");
+            this.focusableElements[this.focusIndex]?.classList.remove("focus");
         }
 
         this.focusIndex = index;

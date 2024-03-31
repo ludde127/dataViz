@@ -208,6 +208,7 @@ class NotePage(Page):
         index.RelatedFields('tags', [
             index.AutocompleteField('name'),
         ]),
+        index.FilterField('username'),
     ]
 
     content_panels = Page.content_panels + [

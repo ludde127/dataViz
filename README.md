@@ -45,57 +45,33 @@ python manage.py migrate
 python manage.py runserver
 ```
 
-## Tailwind
+## Typescript and Tailwind
 
-If you're going to change the html templates and need to recompile tailwind:
+If you're going to change the typescript code or the html templates and need to recompile typescript or tailwind:
 
 ### Setup
 
 ```shell
-cd tailwind
+cd node
 pnpm i
 ```
 
-### Run continuously in development
+### Run build script
 
-```shell
-pnpm dev
-```
-
-### Build minified tailwind.css
+The script will be watching for changes and continuously recompile, interrupt it using <kbd>Ctrl</kbd>+<kbd>C</kbd>.
 
 ```shell
 pnpm build
 ```
 
-## Typescript
+### Adding new scripts
 
-If you're going to write typescript code and need to recompile the javascript files:
+#### Standalone scripts
 
-### Setup
+When adding new scripts, you can add a new standalone script if you put it directly in the [src](./node/src/) directory.
+This script will have to be manually added to [base.html](./templates/base.html).
 
-```shell
-cd typescript
-pnpm i
-```
+#### Imported scripts
 
-### Run continuously in development
-
-```shell
-pnpm dev
-```
-
-### Build .js files
-
-The typescript files will be compiled and placed in `static/js/compiled/`
-
-```shell
-pnpm build
-```
-
-### Adding scripts to `base.html`
-
-```html
-
-<script type="module" src="{% static 'js/compiled/file.js' %}"></script>
-```
+Scripts can also be imported in other script files, this way they will all be bundled into one big script.
+See [main.ts](./node/src/main.ts) for reference.
