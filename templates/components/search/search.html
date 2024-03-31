@@ -1,0 +1,32 @@
+<yapity-search>
+    <button tabindex="0" aria-label="Search" class="btn btn-ghost btn-circle" id="search-button">
+        <i data-lucide="search" class="w-6 h-6"></i>
+    </button>
+    <span class="hidden">
+        <i data-lucide="file-text" class="w-4 h-4" id="icon-template-page"></i>
+        <i data-lucide="line-chart" class="w-4 h-4" id="icon-template-datastore"></i>
+        <i data-lucide="user-round" class="w-4 h-4" id="icon-template-user"></i>
+    </span>
+    <dialog id="search-modal" class="modal items-start">
+        <div class="modal-box p-0 overflow-hidden mt-24 divide-y divide-base-content/60 border-base-content/60 border">
+            <label class="input input-bordered border-none border-b flex items-center gap-2 focus-within:outline-none rounded-none">
+                <input type="text" class="grow" placeholder="Search" id="search-input"/>
+                <span id="search-icon"><i data-lucide="search"></i></span>
+                <span class="loading loading-spinner hidden" id="loading-icon"></span>
+            </label>
+            <div id="search-results"
+                 class="max-h-96 overflow-y-auto flex-nowrap hidden divide-y divide-base-content/60">
+            </div>
+            <div id="no-search-results" class="px-6 py-3">
+                <span class="text-lg opacity-60">No results matched your search</span>
+            </div>
+            <div class="hidden lg:block px-4 py-1 text-right">
+                <small class="opacity-60">Search shortcut:</small>
+                <kbd class="kbd kbd-xs">Ctrl</kbd> + <kbd class="kbd kbd-xs">K</kbd>
+            </div>
+        </div>
+        <form method="dialog" class="modal-backdrop">
+            <button>close</button>
+        </form>
+    </dialog>
+</yapity-search>

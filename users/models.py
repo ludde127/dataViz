@@ -1,10 +1,10 @@
-import json
-
+from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.contrib.auth.models import AbstractUser
 # Create your models here.
 from django.db.models import Q
+from django.urls import reverse
+from wagtail.search import index
 from wagtail.snippets.models import register_snippet
 
 
@@ -13,16 +13,26 @@ class User(AbstractUser):
     switch is annoying."""
     pass
 
+
 @register_snippet
-class NormalUser(models.Model):
+class NormalUser(models.Model, index.Indexed):
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=False)
     profile_image = models.ImageField("Profile picture",
                                       null=True, default=None, blank=True)
     description = models.TextField("Description about me.", max_length=1000)
     api_access_count = models.IntegerField("Amount of calls to the api", default=0, editable=False)
 
+    search_fields = [
+        index.RelatedFields("user", [
+            index.AutocompleteField("username")
+        ])
+    ]
+
     def __str__(self):
         return self.user.__str__()
+
+    def get_url(self):
+        return reverse("user_profile", kwargs={"user": self})
 
     def has_change_permission(self, content):
         return self in content.permissions.change_permission
