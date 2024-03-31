@@ -3,14 +3,14 @@ server {
     location = /favicon.ico { access_log off; log_not_found off; }
 
     location /media/ {
-	alias /root/dataViz/media/;
-    	autoindex on;
-	expires 1y;
+        alias /root/dataViz/media/;
+        autoindex on;
+        expires 1y;
     }
     location /static/ {
-	alias /root/dataViz/static_root/;
-    	autoindex on;
-	expires 1y;
+        alias /root/dataViz/static_root/;
+        autoindex on;
+        expires 1y;
     }
 
     location / {
