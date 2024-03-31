@@ -5,9 +5,6 @@ settings:
   excludeLinksFromLockfile: false
 
 devDependencies:
-  '@luncheon/esbuild-plugin-gzip':
-    specifier: ^0.1.0
-    version: 0.1.0(esbuild@0.20.2)
   '@tailwindcss/typography':
     specifier: ^0.5.12
     version: 0.5.12(tailwindcss@3.4.3)
@@ -287,14 +284,6 @@ packages:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.4.15
-    dev: true
-
-  /@luncheon/esbuild-plugin-gzip@0.1.0(esbuild@0.20.2):
-    resolution: {integrity: sha512-xd67Zj2ERUjcyycwOu2xn+PIMWoi/ApHf3ooiYz7+uZsD+0i8psaQ+b5T4B2PBU0FYfgSxYsnwfwqeg70ZKRdw==}
-    peerDependencies:
-      esbuild: '>=0.11.15'
-    dependencies:
-      esbuild: 0.20.2
     dev: true
 
   /@nodelib/fs.scandir@2.1.5:
