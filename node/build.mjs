@@ -17,7 +17,7 @@ const ctx = await esbuild.context({
     })],
 });
 
-const watcher = chokidar.watch("../**/*.{html,js,ts}", {
+const watcher = chokidar.watch(["../**/*.html", "src/**/*.{ts,css}"], {
     persistent: true
 });
 
