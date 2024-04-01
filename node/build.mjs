@@ -2,6 +2,7 @@ import * as esbuild from "esbuild";
 import stylePlugin from "esbuild-style-plugin";
 import tailwindcss from "tailwindcss";
 import autoprefixer from "autoprefixer";
+import chokidar from "chokidar";
 
 const ctx = await esbuild.context({
     entryPoints: ["src/*.ts"],
@@ -9,14 +10,20 @@ const ctx = await esbuild.context({
     bundle: true,
     minify: true,
     treeShaking: true,
-    plugins: [
-        stylePlugin({
-            postcss: {
-                plugins: [tailwindcss, autoprefixer]
-            }
-        })
-    ],
+    plugins: [stylePlugin({
+        postcss: {
+            plugins: [tailwindcss, autoprefixer]
+        }
+    })],
 });
 
-await ctx.watch();
+const watcher = chokidar.watch("../**/*.{html,js,ts}", {
+    persistent: true
+});
+
+watcher.on("change", async path => {
+    console.log(`Detected changed in: ${path}`);
+    await ctx.rebuild();
+});
+
 console.log("Watching...");
