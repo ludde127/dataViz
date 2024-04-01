@@ -3,7 +3,7 @@ import DOMPurify from "dompurify";
 type SearchResult = {
     name: string;
     url: string;
-    type: "page" | "datastore" | "user"
+    type: "page" | "datastore" | "user" | "tag"
 };
 type SearchResults = Record<string, Array<SearchResult>>;
 
@@ -37,6 +37,7 @@ class YapitySearch extends HTMLElement {
             page: this.querySelector("#icon-template-page")!,
             datastore: this.querySelector("#icon-template-datastore")!,
             user: this.querySelector("#icon-template-user")!,
+            tag: this.querySelector("#icon-template-tag")!,
         }
 
         this.searchIcon = this.querySelector("#search-icon")!;

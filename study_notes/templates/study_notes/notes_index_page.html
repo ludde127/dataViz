@@ -8,25 +8,6 @@
 {% block content %}
     {% include "study_notes/components/hero.html" %}
     <div class="py-8 container">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {% for post in note_pages %}
-                {% with post=post.specific %}
-                    <div class="card bg-neutral text-neutral-content shadow-xl">
-                        <div class="card-body">
-                            {% with post.main_image as main_image %}
-                                {% if main_image %}{% image main_image fill-160x100 class="boxed-image" %}{% endif %}
-                            {% endwith %}
-                            <a href="{% pageurl post %}">
-                                <h2 class="card-title">{{ post.title }}</h2>
-                                <p>{{ post.intro }}</p>
-                            </a>
-                            <div class="flex flex-row flex-wrap gap-2">
-                                {% include 'shortcuts/notepage-tags.html' with tags=post.tags.all %}
-                            </div>
-                        </div>
-                    </div>
-                {% endwith %}
-            {% endfor %}
-        </div>
+        {% include "study_notes/components/page-grid/page-grid.html" with note_pages=note_pages %}
     </div>
 {% endblock %}

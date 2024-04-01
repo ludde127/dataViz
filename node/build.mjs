@@ -9,6 +9,7 @@ const ctx = await esbuild.context({
     outdir: "../static/compiled/",
     bundle: true,
     minify: true,
+    sourcemap: true,
     treeShaking: true,
     plugins: [stylePlugin({
         postcss: {

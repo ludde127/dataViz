@@ -4,7 +4,7 @@ from wagtail.search.utils import parse_query_string
 
 from data.models import DataStorage
 # Create your views here.
-from study_notes.models import NotePage
+from study_notes.models import NotePage, NotePageTag
 from users.models import NormalUser
 
 s = get_search_backend()
@@ -42,6 +42,14 @@ def search(request):
                 "type": "datastore"
             } for datastore in _search_and_autocomplete(query,
                                                         DataStorage.objects.filter(owner__user=request.user))]
+
+        seen_tags = set()
+        data["Tags"] = [x for x in [{
+            "name": tag.tag.name,
+            "url": tag.get_url(),
+            "type": "tag"
+        } for tag in _search_and_autocomplete(query, NotePageTag)]
+                        if not (x["name"] in seen_tags or seen_tags.add(x["name"]))]
 
         data["Users"] = [{
             "name": user.user.get_username(),
