@@ -17,7 +17,7 @@
 </head>
 <body class="{% block body_class %}{% endblock %}">
 <div class="relative flex min-h-screen flex-col overflow-x-clip">
-    {% include 'components/navbar.html' %}
+    {% include 'components/navbar/navbar.html' %}
     {% if messages %}
         <div class="toast toast-end">
             {% for message in messages %}
@@ -33,7 +33,7 @@
             {% endblock %}
         </div>
     </div>
-    {% include 'footer.html' %}
+    {% include 'components/footer.html' %}
 </div>
 
 {% block scripts %}
