@@ -33,6 +33,7 @@
 
     .flashcard-face {
         backface-visibility: hidden;
+        @apply h-full;
     }
 
     #face-container {

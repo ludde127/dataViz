@@ -99,8 +99,7 @@ class YapityFlashcards extends HTMLElement {
 
         // Setup first card
         this.currentCard = this.deck.draw();
-        this.faceUp = "front";
-        this.#showCard();
+        this.faceUp = "back";
     }
 
 
