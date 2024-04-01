@@ -18,15 +18,7 @@
 <body class="{% block body_class %}{% endblock %}">
 <div class="relative flex min-h-screen flex-col overflow-x-clip">
     {% include 'components/navbar/navbar.html' %}
-    {% if messages %}
-        <div class="toast toast-end">
-            {% for message in messages %}
-                <div {% if message.tags %}class="alert alert-{{ message.tags }}"{% endif %}>
-                    <span>{{ message|safe }}</span>
-                </div>
-            {% endfor %}
-        </div>
-    {% endif %}
+    {% include 'components/toasts/toaster.html' %}
     <div class="flex flex-1">
         <div class="w-full">
             {% block content %}
