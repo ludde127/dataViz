@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "build": "node ./build.mjs"
+    "build": "node ./build.mjs --analyze",
+    "dev": "node ./build.mjs --watch"
   },
   "keywords": [],
   "author": "",
