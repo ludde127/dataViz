@@ -30,7 +30,7 @@
 
         <div id="subscribed-cards">
             <h2 class="flex flex-row items-center flex-wrap">
-                <span class="flex-1">Subscribed cards!</span>
+                <span class="flex-1">Subscribed flashcards</span>
                 {% if users_id == current_user_id and are_there_cards %}
                     <div>
                         <a href="{% url 'view_flashcard_stats' %}">
