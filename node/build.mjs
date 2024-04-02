@@ -24,7 +24,11 @@ const watcher = chokidar.watch(["../**/*.html", "src/**/*.{ts,css}"], {
 
 watcher.on("change", async path => {
     console.log(`Detected changed in: ${path}`);
-    await ctx.rebuild();
+    try {
+        await ctx.rebuild();
+    } catch (e) {
+        console.error(e);
+    }
 });
 
 console.log("Watching...");
