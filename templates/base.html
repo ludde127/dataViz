@@ -16,7 +16,7 @@
     <script src="{% static 'compiled/theme.js' %}{% file_version_hash %}"></script>
 </head>
 <body class="{% block body_class %}{% endblock %}">
-<div class="relative flex min-h-screen flex-col overflow-x-clip">
+<div class="relative flex min-h-dvh flex-col overflow-x-clip">
     {% include 'components/navbar/navbar.html' %}
     {% include 'components/toasts/toaster.html' %}
     <div class="flex flex-1">
