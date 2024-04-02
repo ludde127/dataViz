@@ -1,0 +1,25 @@
+{% load wagtailcore_tags %}
+<div class="overflow-x-auto not-prose">
+    <table class="table table-zebra">
+        <thead>
+        <tr>
+            <th>Title</th>
+            <th>Date</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for page in pages %}
+            <tr>
+                <td>
+                    <a href="{% pageurl page %}">
+                    {{ page.title|truncatechars:32 }}
+                    </a>
+                </td>
+                <td>
+                    {{ page.live_revision.created_at|date:"Y-m-d" }}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>

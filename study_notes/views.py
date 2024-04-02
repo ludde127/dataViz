@@ -125,6 +125,9 @@ def user_profile(request, user):
         context["users_page"] = user_object
         context["users_id"] = user_object.id
         context["title"] = str(user) + "'s profile"
+
+        context["edited_pages"] = NotePage.objects.live().filter(live_revision__user=user_object)
+
         try:
             flash_card_list = user_object.usersflashcards.get_subscribed_flashcards(request)
             if flash_card_list and len(flash_card_list) > 0:
