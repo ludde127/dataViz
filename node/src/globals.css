@@ -4,7 +4,7 @@
 
 @layer utilities {
     .my-prose {
-        @apply prose lg:prose-lg prose-li:my-0 prose-ol:my-0 prose-ul:my-0 prose-p:my-1 prose-hr:my-2;
+        @apply prose lg:prose-lg prose-li:my-0 prose-ol:my-0 prose-ul:my-0 prose-p:my-1 prose-hr:my-2 max-w-[90ch];
 
         ol {
             @apply list-[decimal];
@@ -25,6 +25,10 @@
                 }
             }
         }
+    }
+
+    .container {
+        @apply px-4 lg:px-8;
     }
 
     * {
