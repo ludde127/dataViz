@@ -9,7 +9,9 @@
          style="background-image: url({% static 'images/yapity-hero.webp' %}">
         <div class="hero-overlay bg-base-100/50 glass"></div>
         <div class="hero-content text-center p-12 flex-wrap items-center">
-            {% include "components/navbar/user-avatar.html" with user=users_page class="w-32" %}
+            {% if users_page.wagtail_userprofile.avatar %}
+                {% include "components/navbar/user-avatar.html" with user=users_page class="w-32" %}
+            {% endif %}
             <div class="prose lg:prose-lg">
                 <h1 class="text-base-content">{{ users_page|capfirst }}'s profile</h1>
             </div>
