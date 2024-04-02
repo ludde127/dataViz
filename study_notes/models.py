@@ -163,6 +163,11 @@ class NotePageTag(TaggedItemBase, index.Indexed):
     def get_url(self):
         return f"/tags/?tag={self.tag.name}"
 
+    def get_sitemap_urls(self, request):
+        return [{
+            "location": request.build_absolute_uri(self.get_url())
+        }]
+
 
 class NotesIndexPage(Page):
     # title = RichTextField(blank=False)
@@ -218,7 +223,6 @@ class NotePage(Page):
         index.RelatedFields('tags', [
             index.AutocompleteField('name'),
         ]),
-        index.FilterField('username'),
     ]
 
     content_panels = Page.content_panels + [

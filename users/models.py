@@ -34,6 +34,12 @@ class NormalUser(models.Model, index.Indexed):
     def get_url(self):
         return reverse("user_profile", kwargs={"user": self})
 
+    def get_sitemap_urls(self, request=None):
+        return [{
+            "location": request.build_absolute_uri(self.get_url()),
+            "lastmod": self.user.date_joined
+        }]
+
     def has_change_permission(self, content):
         return self in content.permissions.change_permission
 
