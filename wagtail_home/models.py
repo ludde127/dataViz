@@ -1,11 +1,11 @@
 # Create your models here.
-from django.db import models
-from wagtail.models import PageViewRestriction
+
+from wagtail.admin.panels import FieldPanel
+from wagtail.fields import RichTextField
+from wagtail.models import Page
 
 from dataViz.settings import BASE_CONTEXT
-from wagtail.models import Page
-from wagtail.fields import RichTextField
-from wagtail.admin.panels import FieldPanel
+
 
 def filter_non_viewable(user, qs):
     """Given a user and a queryset this filters all the objects not viewable by the user. If page_model_string is supplied
@@ -27,6 +27,7 @@ def filter_non_viewable(user, qs):
         # TODO implement an actual way to limit this
     return pages
 
+
 class HomePage(Page):
     body = RichTextField(blank=True)
 
@@ -40,38 +41,4 @@ class HomePage(Page):
         context["children"] = filter_non_viewable(request.user, self.get_children())
         context["title"] = "Pages"
 
-        return context
-
-class UserPage(Page):
-    intro = models.CharField(blank=True, max_length=250)
-    body = RichTextField(blank=True)
-
-    user = models.OneToOneField(to="users.User", on_delete=models.SET_NULL, null=True, editable=True)
-    subpage_types = []
-    parent_page_type = ["wagtail_home.UsersPage"]
-
-    content_panels = Page.content_panels + [
-        FieldPanel('body', classname="full"),
-        FieldPanel('user', classname="full"),
-    ]
-
-    def get_context(self, request):
-        context = super().get_context(request)
-        context.update(BASE_CONTEXT)
-        return context
-
-
-class UsersPage(Page):
-    body = RichTextField(blank=True)
-
-    content_panels = Page.content_panels + [
-        FieldPanel('body', classname="full"),
-    ]
-
-    subpage_types = ["wagtail_home.UserPage"]
-    parent_page_type = ["wagtail_home.HomePage"]
-
-    def get_context(self, request):
-        context = super().get_context(request)
-        context.update(BASE_CONTEXT)
         return context

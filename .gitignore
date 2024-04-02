@@ -17,5 +17,5 @@ venv/
 .yapenv*.local
 .yapenv*.production
 
-*.js.map
+*.map
 *.tsbuildinfo

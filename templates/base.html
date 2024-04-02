@@ -12,35 +12,24 @@
     <meta name="description" content="{% block meta_description %}{% endblock %}"/>
     <link rel="preconnect" href="https://fonts.googleapis.com"/>
     <link rel="icon" type="image/x-icon" href="{% static 'website_logo/favicon.ico' %}"/>
+    <script src="{% static 'compiled/theme.js' %}{% file_version_hash %}" async></script>
     <link rel="stylesheet" type="text/css" href="{% static 'compiled/main.css' %}{% file_version_hash %}"/>
-    <script src="{% static 'compiled/theme.js' %}{% file_version_hash %}"></script>
 </head>
 <body class="{% block body_class %}{% endblock %}">
-<div class="relative flex min-h-screen flex-col overflow-x-clip">
-    {% include 'components/navbar.html' %}
-    {% if messages %}
-        <div class="toast toast-end">
-            {% for message in messages %}
-                <div {% if message.tags %}class="alert alert-{{ message.tags }}"{% endif %}>
-                    <span>{{ message|safe }}</span>
-                </div>
-            {% endfor %}
-        </div>
-    {% endif %}
+<div class="relative flex min-h-dvh flex-col overflow-x-clip">
+    {% include 'components/navbar/navbar.html' %}
+    {% include 'components/toasts/toaster.html' %}
     <div class="flex flex-1">
         <div class="w-full">
             {% block content %}
             {% endblock %}
         </div>
     </div>
-    {% include 'footer.html' %}
+    {% include 'components/footer.html' %}
 </div>
 
 {% block scripts %}
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <script type="module">lucide.createIcons()</script>
-
-    <script type="module" src="{% static 'compiled/main.js' %}{% file_version_hash %}"></script>
+    <script type="module" src="{% static 'compiled/main.js' %}{% file_version_hash %}" defer></script>
 {% endblock %}
 {% block custom_scripts %}
 {% endblock %}

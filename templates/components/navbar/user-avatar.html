@@ -1,10 +1,10 @@
 <div class="avatar">
     {% if user.wagtail_userprofile.avatar %}
-        <div class="avatar rounded-full w-10">
+        <div class="avatar rounded-full w-10 {{ class }}">
             <img alt="{{ user }} profile picture" src="{{ user.wagtail_userprofile.avatar.url }}"/>
         </div>
     {% else %}
-        <div class="avatar placeholder rounded-full w-10">
+        <div class="avatar placeholder rounded-full w-10 {{ class }}">
             <div class="bg-neutral text-neutral-content">
                 <span class="text-xl">{{ user|capfirst|slice:"1" }}</span>
             </div>

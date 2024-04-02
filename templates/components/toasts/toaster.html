@@ -1,0 +1,11 @@
+{% if messages %}
+    <yapity-toaster>
+        <div class="toast toast-end">
+            {% for message in messages %}
+                <div {% if message.tags %}class="alert alert-{{ message.tags }} toast-fly-in"{% endif %}>
+                    <span>{{ message|safe }}</span>
+                </div>
+            {% endfor %}
+        </div>
+    </yapity-toaster>
+{% endif %}

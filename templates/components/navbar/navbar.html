@@ -5,25 +5,25 @@
             <a class="text-xl hidden lg:inline-flex">{{ brand_name }}</a>
 
             <div class="dropdown">
-                <div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
+                <div tabindex="0" role="button" aria-label="Menu Button" class="btn btn-ghost lg:hidden">
                     <i data-lucide="menu" class="h-6 w-6"></i>
                 </div>
                 <ul tabindex="0"
                     class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
-                    {% include "components/nav-items.html" %}
+                    {% include "components/navbar/nav-items.html" %}
                 </ul>
             </div>
-            
+
             <ul class="menu menu-horizontal hidden lg:flex">
-                {% include "components/nav-items.html" %}
+                {% include "components/navbar/nav-items.html" %}
             </ul>
         </div>
 
 
         <div class="flex-none gap-2">
-            {% include 'components/theme-picker.html' %}
+            {% include 'components/navbar/theme-picker.html' %}
             {% include 'components/search/search.html' %}
-            {% include 'components/user-button.html' %}
+            {% include 'components/navbar/user-button.html' %}
         </div>
     </div>
 </header>

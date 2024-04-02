@@ -145,13 +145,23 @@ class ManyFlashcards(StructBlock):
     cards = StreamBlock([("Card", FlashCard()), ], use_json_field=True)
 
 
-class NotePageTag(TaggedItemBase):
+class NotePageTag(TaggedItemBase, index.Indexed):
     subpage_types = []
     parent_page_type = ["wagtail_home.HomePage"]
 
     content_object = ParentalKey(
         "NotePage", related_name="tagged_items", on_delete=models.CASCADE
     )
+
+    search_fields = [
+        index.RelatedFields("tag", [
+            index.SearchField("name"),
+            index.AutocompleteField("name")
+        ])
+    ]
+
+    def get_url(self):
+        return f"/tags/?tag={self.tag.name}"
 
 
 class NotesIndexPage(Page):
@@ -350,7 +360,6 @@ class NoteTagIndexPage(Page):
         context = super().get_context(request)
 
         # Filter by tag
-
         tag = request.GET.get('tag')
         if tag:
             pages = NotePage.objects.live().filter(tags__name=tag)

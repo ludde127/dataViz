@@ -5,19 +5,33 @@
 {% load custom_filters %}
 
 {% block content %}
-    <div class="hero bg-base-200 p-12">
-        <div class="hero-content text-center">
-            <div class="max-w-md prose lg:prose-lg">
-                <h1>{{ users_page|capfirst }}'s profile</h1>
+    <div class="hero bg-base-200"
+         style="background-image: url({% static 'images/yapity-hero.webp' %}">
+        <div class="hero-overlay bg-base-100/50 glass"></div>
+        <div class="hero-content text-center p-12 flex-wrap items-center">
+            {% if users_page.wagtail_userprofile.avatar %}
+                {% include "components/navbar/user-avatar.html" with user=users_page class="w-32" %}
+            {% endif %}
+            <div class="prose lg:prose-lg">
+                <h1 class="text-base-content">{{ users_page|capfirst }}'s profile</h1>
             </div>
         </div>
     </div>
 
     <div class="container my-prose py-8">
-        {% if are_there_cards %}
+        <div>
+            <h2>Edited pages</h2>
+            {% if edited_pages.all.count %}
+                {% include "study_notes/components/user-profile/edit-history.html" with pages=edited_pages %}
+            {% else %}
+                {{ users_page|capfirst }} hasn't edited any pages.
+            {% endif %}
+        </div>
+
+        <div id="subscribed-cards">
             <h2 class="flex flex-row items-center flex-wrap">
-                <span class="flex-1">Subscribed cards!</span>
-                {% if users_id == current_user_id %}
+                <span class="flex-1">Subscribed flashcards</span>
+                {% if users_id == current_user_id and are_there_cards %}
                     <div>
                         <a href="{% url 'view_flashcard_stats' %}">
                             <button class="btn btn-sm btn-neutral btn-outline">View Collection</button>
@@ -25,10 +39,12 @@
                     </div>
                 {% endif %}
             </h2>
-            {% include "study_notes/components/flashcards/flashcards.html" %}
-        {% else %}
-            <p>{{ users_page|capfirst }} hasn't subscribed to any flashcards... 🥺👉👈</p>
-        {% endif %}
+            {% if are_there_cards %}
+                {% include "study_notes/components/flashcards/flashcards.html" %}
+            {% else %}
+                <p>{{ users_page|capfirst }} hasn't subscribed to any flashcards... 🥺👉👈</p>
+            {% endif %}
+        </div>
     </div>
 {% endblock %}
 
