@@ -34,7 +34,7 @@ SECRET_KEY = DJANGO_SECRET_KEY
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = not IS_PRODUCTION
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "llindholm.com"]
+ALLOWED_HOSTS = ["llindholm.com", "localhost", "127.0.0.1"]
 ALLOWED_HOSTS.extend(os.environ.get("ALLOWED_HOSTS", "").split(","))
 
 if "CSRF_TRUSTED_ORIGINS" in os.environ:
