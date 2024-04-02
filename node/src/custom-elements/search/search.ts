@@ -1,4 +1,5 @@
 import DOMPurify from "dompurify";
+import {createElement, FileText, IconNode, LineChart, Tag, UserRound} from "lucide";
 
 type SearchResult = {
     name: string;
@@ -7,6 +8,19 @@ type SearchResult = {
 };
 type SearchResults = Record<string, Array<SearchResult>>;
 
+const getIcon = (icon: IconNode) => {
+    const i = createElement(icon);
+    i.classList.add("w-4", "h-4");
+    return i;
+}
+
+const ICON_TEMPLATES = {
+    page: getIcon(FileText),
+    datastore: getIcon(LineChart),
+    user: getIcon(UserRound),
+    tag: getIcon(Tag),
+}
+
 class YapitySearch extends HTMLElement {
     searchButton: HTMLButtonElement;
     searchModal: HTMLDialogElement;
@@ -14,7 +28,6 @@ class YapitySearch extends HTMLElement {
     searchResultsContainer: HTMLElement;
     noSearchResultsContainer: HTMLElement;
 
-    iconTemplates: Record<SearchResult['type'], HTMLElement>;
     searchIcon: HTMLElement;
     loadingIcon: HTMLElement;
 
@@ -32,13 +45,6 @@ class YapitySearch extends HTMLElement {
         this.searchInput = this.querySelector("#search-input")!;
         this.searchResultsContainer = this.querySelector("#search-results")!;
         this.noSearchResultsContainer = this.querySelector("#no-search-results")!;
-
-        this.iconTemplates = {
-            page: this.querySelector("#icon-template-page")!,
-            datastore: this.querySelector("#icon-template-datastore")!,
-            user: this.querySelector("#icon-template-user")!,
-            tag: this.querySelector("#icon-template-tag")!,
-        }
 
         this.searchIcon = this.querySelector("#search-icon")!;
         this.loadingIcon = this.querySelector("#loading-icon")!;
@@ -145,7 +151,7 @@ class YapitySearch extends HTMLElement {
             div.innerHTML += searchResults[type].map(
                 sr => `<li>
                     <a href="${sr.url}" class="">
-                        ${this.iconTemplates[sr.type]?.outerHTML || ""}${DOMPurify.sanitize(sr.name, {USE_PROFILES: {html: true}})}
+                        ${ICON_TEMPLATES[sr.type]?.outerHTML || ""}${DOMPurify.sanitize(sr.name, {USE_PROFILES: {html: true}})}
                     </a>
                 </li>`).join("");
 
@@ -187,7 +193,7 @@ class YapitySearch extends HTMLElement {
     #selectFocusedResult() {
         if (this.focusIndex !== undefined) {
             const a = this.focusableElements[this.focusIndex];
-            document.location.replace(a.href);
+            document.location.href = a.href;
         }
     }
 }

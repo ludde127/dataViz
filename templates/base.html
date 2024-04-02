@@ -12,8 +12,8 @@
     <meta name="description" content="{% block meta_description %}{% endblock %}"/>
     <link rel="preconnect" href="https://fonts.googleapis.com"/>
     <link rel="icon" type="image/x-icon" href="{% static 'website_logo/favicon.ico' %}"/>
+    <script src="{% static 'compiled/theme.js' %}{% file_version_hash %}" async></script>
     <link rel="stylesheet" type="text/css" href="{% static 'compiled/main.css' %}{% file_version_hash %}"/>
-    <script src="{% static 'compiled/theme.js' %}{% file_version_hash %}"></script>
 </head>
 <body class="{% block body_class %}{% endblock %}">
 <div class="relative flex min-h-dvh flex-col overflow-x-clip">
@@ -29,10 +29,7 @@
 </div>
 
 {% block scripts %}
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <script type="module">lucide.createIcons()</script>
-
-    <script type="module" src="{% static 'compiled/main.js' %}{% file_version_hash %}"></script>
+    <script type="module" src="{% static 'compiled/main.js' %}{% file_version_hash %}" defer></script>
 {% endblock %}
 {% block custom_scripts %}
 {% endblock %}

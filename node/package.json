@@ -13,10 +13,12 @@
     "@types/dompurify": "^3.0.5",
     "autoprefixer": "^10.4.19",
     "chokidar": "^3.6.0",
+    "cssnano": "^6.1.2",
     "daisyui": "^4.9.0",
     "dompurify": "^3.0.11",
     "esbuild": "^0.20.2",
     "esbuild-style-plugin": "^1.6.3",
+    "lucide": "^0.364.0",
     "tailwindcss": "^3.4.3"
   }
 }
