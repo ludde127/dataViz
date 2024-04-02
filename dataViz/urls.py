@@ -13,16 +13,24 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.urls import path, include
-from .admin import admin_site
-from . import settings
 from django.conf.urls.static import static
-
-from wagtail.admin import urls as wagtailadmin_urls
+from django.urls import path, include
 from wagtail import urls as wagtail_urls
+from wagtail.admin import urls as wagtailadmin_urls
+from wagtail.contrib.sitemaps import Sitemap
+from wagtail.contrib.sitemaps.views import sitemap
 from wagtail.documents import urls as wagtaildocs_urls
 
+from . import settings
+from .admin import admin_site
+from .sitemaps import UserSitemap, TagSitemap
+
 wagtail_urlpatterns = [
+    path("sitemap.xml", sitemap, {"sitemaps": {
+        "wagtail": Sitemap,
+        "users": UserSitemap,
+        "tags": TagSitemap
+    }}),
     path('cms/', include(wagtailadmin_urls)),
     path('documents/', include(wagtaildocs_urls)),
     path('', include(wagtail_urls)),
@@ -30,7 +38,6 @@ wagtail_urlpatterns = [
 
 urlpatterns = [
     path('dashboard/', include("dashboard.urls")),
-    # path("social/", include("blocks.urls")),
     path("data/", include("data.urls")),
     path('admin/', admin_site.urls),
     path("users/", include("users.urls")),
@@ -40,7 +47,7 @@ urlpatterns = [
     path("stocks/", include("stocks.urls")),
     path("time-booking/", include("time_booking.urls")),
     path("personal-site/api/", include("personal_site_content.urls")),
-    path("__reload__/", include("django_browser_reload.urls"))
+    path("__reload__/", include("django_browser_reload.urls")),
 ]
 urlpatterns.extend(wagtail_urlpatterns)
 
