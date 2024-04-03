@@ -47,36 +47,11 @@
                     </a>
                 </div>
             {% endif %}
-            <p id="chart-p-{{ forloop.counter0 }}"></p>
-            <div class="plot text-center m-auto">
-                <canvas id="chart{{ forloop.counter0 }}"></canvas>
-            </div>
+            
+            {% include "dashboard/components/chart.html" with chart=plot %}
             {% if not forloop.last %}
                 <hr>
             {% endif %}
         {% endfor %}
     </div>
-{% endblock %}
-{% block custom_scripts %}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.js"
-            integrity="sha512-d6nObkPJgV791iTGuBoVC9Aa2iecqzJRE0Jiqvk85BhLHAPhWqkuBiQb1xz2jvuHNqHLYoN3ymPfpiB1o+Zgpw=="
-            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
-
-    <script>
-        {# Todo, modify so that choosing timeframes is possible, should probably stream data as that happens. #}
-        {% for plot in plots %}
-            {% with plot.plottable as plt %}
-                {% if plt != "No data." %}
-                    const ctx{{ forloop.counter0 }} = document.getElementById('chart{{ forloop.counter0 }}');
-                    const myChart{{ forloop.counter0 }} = new Chart(ctx{{ forloop.counter0 }}, {{ plt | safe }});
-                {% else %}
-                    document.getElementById('chart-p-{{ forloop.counter0 }}').innerHTML = "No data present to plot";
-                    document.getElementById('chart{{ forloop.counter0 }}').classList.add("hidden");
-                {% endif %}
-            {% endwith %}
-        {% endfor %}
-
-    </script>
-
 {% endblock %}

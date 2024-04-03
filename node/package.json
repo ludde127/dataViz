@@ -2,6 +2,7 @@
   "name": "yapity",
   "version": "1.0.0",
   "description": "",
+  "type": "module",
   "scripts": {
     "build": "node ./build.mjs --analyze",
     "dev": "node ./build.mjs --watch"
@@ -13,6 +14,7 @@
     "@tailwindcss/typography": "^0.5.12",
     "@types/dompurify": "^3.0.5",
     "autoprefixer": "^10.4.19",
+    "chart.js": "^4.4.2",
     "chokidar": "^3.6.0",
     "cssnano": "^6.1.2",
     "daisyui": "^4.9.0",
