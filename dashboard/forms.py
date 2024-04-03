@@ -5,6 +5,12 @@ from dashboard.models import PlottingSetup
 from ui.widgets import CheckboxSelectMultipleWOA
 
 
+class ChoiceSettings:
+    def __init__(self, label, **kwargs):
+        self.label = label
+        self.kwargs = kwargs
+
+
 class PlottingSetupForm(ModelForm):
     plot_type = forms.ChoiceField(
         choices=[("line", "line")],
@@ -23,18 +29,20 @@ class PlottingSetupForm(ModelForm):
 
             cols = self.instance.y_columns()
             self.fields["columns_to_plot"] = forms.MultipleChoiceField(
-                choices=[(c, {
-                    "label": c,
-                    "class": "toggle",
-                    "checked": c in cols
-                }) for c in self.instance.data.csv_column_names()],
+                choices=[(c,
+                          ChoiceSettings(c,
+                                         **{"class": "toggle",
+                                            "checked": c in cols})
+                          )
+                         for c in self.instance.data.csv_column_names()],
                 widget=CheckboxSelectMultipleWOA,
                 label="Columns to plot (Y axes)")
 
     class Meta:
         model = PlottingSetup
-        fields = ["name", "plot_type", "columns_to_plot", "index_column", "index_is_time",
-                  "round_index", "x_tick_size", "y_tick_size"]
+        fields = ["name", "plot_type", "index_column", "index_is_time", "round_index",
+                  "columns_to_plot",
+                  "x_tick_size", "y_tick_size"]
 
     def clean_columns_to_plot(self):
         data = ",".join(self.cleaned_data["columns_to_plot"])
