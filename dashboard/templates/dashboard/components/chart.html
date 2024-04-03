@@ -1,0 +1,7 @@
+{% if chart.plottable != "No data." %}
+    <yapity-chart data-data="{{ chart.plottable }}">
+        <canvas id="canvas"></canvas>
+    </yapity-chart>
+{% else %}
+    <p>No data present to plot.</p>
+{% endif %}

@@ -9,7 +9,9 @@ const enableWatch = process.argv.some(a => a === "--watch");
 const enableAnalyze = process.argv.some(a => a === "--analyze");
 
 const ctx = await esbuild.context({
-    entryPoints: ["src/*.ts"],
+    entryPoints: [
+        "src/*.ts"
+    ],
     outdir: "../static/compiled/",
     bundle: true,
     minify: true,
@@ -37,7 +39,13 @@ const doBuild = async () => {
 }
 
 if (enableWatch) {
-    const watcher = chokidar.watch(["../**/*.html", "src/**/*.{ts,css}"], {
+    const watcher = chokidar.watch([
+        "src/**/*.{ts,css}",
+        "../**/*.html",
+        "!../.venv/**/*",
+        "!../venv/**/*",
+        "!node_modules/**/*",
+    ], {
         persistent: true
     });
     watcher.on("change", async path => {
